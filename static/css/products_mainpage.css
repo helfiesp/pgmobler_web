@@ -1,0 +1,96 @@
+/* Include this in your products.css file */
+.page-container-products {
+  width: 80%;
+  margin: auto;
+  display: flex;
+  align-items: flex-start; /* Align items to the start of the cross axis */
+  margin-top:50px;
+}
+
+.products-container {
+  display: flex;
+  align-items: flex-start; /* Align items to the start if .products-container is also a flex container */
+  width: 100%; /* Adjust as necessary */
+  /* Add additional styling here */
+}
+
+.sidebar-container-products {
+  width: 20%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.filter-group {
+  margin-bottom: 40px;
+
+}
+
+.filter-title {
+  font-size: 1.5em;
+  margin-bottom: 15px;
+  font-weight: bold;
+  color: black;
+  text-decoration: none;
+}
+
+
+.filter-options {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.filter-options li {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.filter-options a {
+  text-decoration: none;
+  color: #000;
+  font-size: 1em;
+}
+
+.item-count {
+  background-color: #e0e0e0;
+  border-radius: 10px;
+  padding: 2px 10px;
+  font-size: 0.8em;
+  margin-left: 5px;
+}
+
+.recent-product-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.recent-product-image {
+  width: 80px;
+  height: 80px;
+  margin-right: 10px;
+  object-fit: cover;
+}
+
+.recent-product-details {
+  flex-grow: 1;
+}
+
+.recent-product-title {
+  margin: 0;
+  font-size: 1em;
+}
+
+.recent-product-price {
+  margin: 0;
+  color: #666;
+  font-size: 0.9em;
+}
+
+/* Styles for the main product section (not shown in the provided image) */
+.product-section {
+  width: 80%;
+  /* other styles */
+}
+
+/* Additional styles and media queries may be required for a responsive design */
