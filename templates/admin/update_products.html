@@ -1,0 +1,90 @@
+
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/update_products.css' %}">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Produktoversikt</title>
+</head>
+<body>
+    <h1>Produktoversikt</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Subtitle</th>
+                <th>Category</th>
+                <th style="width:350px">Description</th>
+                <th style="width:100px">Price</th>
+                <th style="width:100px">Sale Price</th>
+                <th>Material</th>
+                <th>Color</th>
+                <th style="width:80px">Height</th>
+                <th style="width:80px">Width</th>
+                <th style="width:80px">Depth</th>
+                <th style="width:100px">Supplier</th>
+                <th>Enabled</th>
+                <th>Date Added</th>
+                <th>Last Edited</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <form method="post" action="{% url 'update_products_id' product.id %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <td><input type="text" name="title" value="{{ product.title }}"></td>
+                    <td><input type="text" name="subtitle" value="{{ product.subtitle }}"></td>
+
+                    <td>
+                        <input type="text" name="category" value="{{ product.category }}">
+
+                    </td>
+                    <td><textarea name="description">{{ product.description }}</textarea></td>
+                    <td><input type="number" step="0.01" name="price" value="{{ product.price }}"></td>
+                    <td><input type="number" step="0.01" name="sale_price" value="{{ product.sale_price }}"></td>
+                    <td><input type="text" name="material" value="{{ product.material }}"></td>
+                    <td><input type="text" name="color" value="{{ product.color }}"></td>
+                    <td><input type="number" name="height" value="{{ product.height }}"></td>
+                    <td><input type="number" name="width" value="{{ product.width }}"></td>
+                    <td><input type="number" name="depth" value="{{ product.depth }}"></td>
+                    <td><input type="text" name="supplier" value="{{ product.supplier }}"></td>
+                    <td>
+                        <input type="checkbox" name="enabled" {% if product.enabled %}checked{% endif %}>
+                    </td>
+                    <td>{{ product.date_added }}</td>
+                    <td>{{ product.date_edited }}</td>
+                    <td><button type="submit">Update</button></td>
+                </form>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+     <script>
+        // Function to resize textareas based on their content
+        function resizeTextarea() {
+            const textareas = document.querySelectorAll('textarea');
+            textareas.forEach(textarea => {
+                textarea.style.height = 'auto';
+                textarea.style.height = textarea.scrollHeight + 'px';
+            });
+        }
+
+        // Resize textareas on page load
+        window.onload = resizeTextarea;
+
+        // Resize textareas on input
+        document.addEventListener('input', function (event) {
+            if (event.target.tagName.toLowerCase() !== 'textarea') return;
+            resizeTextarea();
+        }, false);
+    </script>
+</body>
+</html>
+
+
+{% endblock %}

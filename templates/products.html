@@ -1,0 +1,50 @@
+{% extends 'base/base.html' %}
+{% load static %}
+{% load form_tags %}
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/products_mainpage.css' %}">
+<link rel="stylesheet" href="{% static 'css/mobile.css' %}">
+<div class="page-container-products">
+  <aside class="sidebar-container-products">
+    <!-- Filter Groups -->
+    <div class="filter-group">
+    {% for category in all_categories %}
+        {% if not category.parent %}
+            <a style="text-decoration: none" href="{% url 'category_search' category.name %}">
+            <h4 class="filter-title">{{ category.name }}</h4></a>
+            {% if category.subcategories.all %}
+                <ul class="filter-options">
+                    {% for subcategory in category.subcategories.all %}
+                        <li>
+                            <a href="{% url 'category_search' subcategory.name %}">{{ subcategory.name }}<span class="item-count">{{ subcategory.name|get_category_count }}</span></a>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+    </div>
+    <!-- Additional filter groups for Bathroom, Kitchen, etc. -->
+
+    <!-- Recent Products -->
+    <div class="filter-group">
+      <h4 class="filter-title">Nye produkter</h4>
+      {% for product in all_products %}
+      <div class="recent-product-item">
+        <a href="{% url 'product_page' product.id %}">
+        <img src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="recent-product-image"></a>
+
+        <div class="recent-product-details">
+          <h5 class="recent-product-title">{{ product.title }}</h5>
+          <p class="recent-product-price">{{ product.price }} kr</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </aside>
+  
+  {% include 'product/single_product.html' %}
+</div>
+
+{% endblock %}

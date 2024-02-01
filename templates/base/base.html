@@ -1,0 +1,151 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+  
+  <title>PG Møbler</title>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bottom_nav.css' %}">
+  <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
+  <link rel="icon" type="image/x-icon" href="{{ MEDIA_URL }}favicon/favicon-32x32.png">
+
+<style>
+.main-header {
+  background-image: url('{{ MEDIA_URL }}header.png');
+}
+</style>
+</head>
+<body>
+  <header>
+    <nav>
+<div id="overlay" onclick="closeMobileMenu()"></div>
+<!-- Mobile Menu Icon -->
+<a href="javascript:void(0);" class="menu-icon" onclick="openMobileMenu()">
+  <img src="{{ MEDIA_URL }}icons/menu.png" alt="Kategorier">
+</a>
+
+      <ul class="nav-list">
+        <li><a href="{% url 'hjem' %}">{{ text_areas.nav_item_1 }}</a></li>
+        <li><a href="{% url 'products' %}">{{ text_areas.nav_item_2 }}</a></li>
+        <li><a href="{% url 'about_us' %}">{{ text_areas.nav_item_3 }}</a></li>
+        <li><a href="{% url 'contact' %}">{{ text_areas.nav_item_4 }}</a></li>
+      </ul>
+
+      <!-- Logo -->
+      <div class="nav-logo">
+        <a href="{% url 'hjem' %}">
+          <img src="{{ MEDIA_URL }}pg_logo.png" alt="Logo">
+        </a>
+      </div>
+
+    <a href="#" class="search-icon">
+      <img src="{{ MEDIA_URL }}icons/magnifying-glass.png" alt="Søk">
+    </a>
+
+{% if not admin %}
+  <div class="nav-search">
+    <form action="{% url 'general_search' %}" method="get">
+      <input type="text" placeholder="Søk..." name="query">
+      <button type="submit">
+        <img class="nav-icon" style="width:18px" src="{{ MEDIA_URL }}icons/magnifying-glass.png" alt="Søk">
+      </button>
+    </form>
+  </div>
+
+      <div class="nav-icons">
+        <a href="#" class="account-icon"><img class="nav-icon" style="width:18px" src="{{ MEDIA_URL }}icons/avatar.png" alt="Logo"></a>
+      </div>
+    </nav>
+    {% endif %}
+</header>
+
+
+<!-- Mobile Menu Structure -->
+<div id="mobileMenu" class="mobile-menu">
+  <!-- Close Button -->
+  <a href="javascript:void(0);" class="closebtn" onclick="closeMobileMenu()">&times;</a>
+  
+  <!-- Menu Content -->
+  <div class="menu-content">
+    {% for category in all_categories %}
+      {% if not category.parent %}
+        <h4 class="filter-title-m"><a href="{% url 'category_search' category.name %}">{{ category.name }}</a></h4>
+        {% if category.subcategories.all %}
+          <ul class="filter-options-m">
+            {% for subcategory in category.subcategories.all %}
+              <li>
+                <a href="{% url 'category_search' subcategory.name %}">{{ subcategory.name }}<span class="item-count">{{ subcategory.product_set.all.count }}</a></span></a>
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
+</div>
+</div>
+<!--
+<div class="bottom-nav">
+  <a href="#" class="nav-item">
+    
+    <img src="{{ MEDIA_URL }}icons/menu.png" alt="Kategorier">
+  </a>
+  <a href="#" class="nav-item">
+    <img src="{{ MEDIA_URL }}icons/magnifying-glass.png" alt="Søk">
+  </a>
+  <a href="#" class="nav-item">
+    <img src="{{ MEDIA_URL }}icons/house.png" alt="Hjem">
+  </a>
+  <a href="#" class="nav-item">
+    <img src="{{ MEDIA_URL }}icons/shopping-cart.png" alt="Handlekurv">
+  </a>
+  <a href="#" class="nav-item">
+    <img src="{{ MEDIA_URL }}icons/avatar.png" alt="Account">
+  </a>
+</div>
+-->
+
+
+    {% block content %}{% endblock %}
+
+    {% block extra_scripts %}{% endblock %}
+
+<script>
+function openMobileMenu() {
+  var menu = document.getElementById("mobileMenu");
+  var overlay = document.getElementById("overlay");
+  
+  // Set initial states before displaying them
+  menu.style.transform = "translateX(-100%)";
+  overlay.style.opacity = "0";
+  
+  // Make the menu and overlay visible
+  menu.style.display = "block";
+  overlay.style.display = "block";
+  
+  // Trigger the transitions after a brief timeout
+  setTimeout(function() {
+    menu.style.transform = "translateX(0)";
+    overlay.style.opacity = "1";
+  }, 10);
+}
+
+function closeMobileMenu() {
+  var menu = document.getElementById("mobileMenu");
+  var overlay = document.getElementById("overlay");
+  
+  // Start the transitions
+  menu.style.transform = "translateX(-100%)";
+  overlay.style.opacity = "0";
+  
+  // Set a timeout to match the transition duration
+  setTimeout(function() {
+    menu.style.display = "none"; // Hide the menu after the transition
+    overlay.style.display = "none"; // Also hide the overlay
+  }, 300); // Match the timeout to your CSS transition time
+} 
+</script>
+</body>
+</html>

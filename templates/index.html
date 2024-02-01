@@ -1,0 +1,54 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block extra_head %}
+<style>
+@media only screen and (max-width: 768px) {
+  .header-title h1{
+    font-size:10px;
+  }
+}
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<header class="main-header">
+  <div class="header-content">
+    <h1 class="header-title">{{ text_areas.front_page_header }}</h1>
+    <p class="header-subtitle">{{ text_areas.front_page_subtitle }}</p>
+    <a href="#" class="explore-button">{{ text_areas.front_page_button_text }}</a>
+  </div>
+</header>
+
+<div class="main-container">
+    <div class="product-categories">
+      {% for category in all_categories %}
+        {% if not category.parent %}
+          <div class="category-item">
+            <a style="text-decoration: none" href="{% url 'category_search' category.name %}">
+            <img src="{{ MEDIA_URL }}{{ category.image }}" alt="{{ category.name }}" class="category-image">
+            <h3>{{ category.name }}</h3></a>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+    <div class="recent-products-section">
+      <h2>{{ text_areas.recent_product_header }}</h2>
+      <p>{{ text_areas.recent_product_text }}</p>
+      <!-- Product items will be same as previous section -->
+      <!-- Add your product items here -->
+    </div>
+
+
+    <div style="justify-content: center;" class="products-container">
+        {% include 'product/single_product.html' %}
+    </div>
+
+
+</div>
+
+
+
+{% include 'base/footer.html' %}
+{% endblock %}

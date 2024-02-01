@@ -1,0 +1,226 @@
+{% extends "base/base.html" %}
+{% load static %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+          /* Style for the image preview container */
+    .image-preview-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px; /* Adjust the gap as needed */
+        margin-top: 10px;
+    }
+    .image-preview {
+        position: relative;
+        display: inline-block;
+    }
+    .image-preview img {
+        max-width: 100px; /* Adjust the size as needed */
+        max-height: 100px;
+        object-fit: cover;
+        border: 1px solid #ddd;
+        margin-right: 5px;
+    }
+    .image-preview .remove-image {
+        display: none;
+        position: absolute;
+        top: -10px; /* Adjust the position as needed */
+        right: -10px;
+        background-color: #ff0000;
+        color: #ffffff;
+        border-radius: 50%;
+        padding: 2px 6px;
+        cursor: pointer;
+    }
+    .image-preview:hover .remove-image {
+        display: block;
+    }
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<script type="text/javascript">
+    // This script will add the 'multiple' attribute to all image input fields
+    document.addEventListener('DOMContentLoaded', function() {
+        // Select all file input elements that contain 'image' in their name attribute
+        var imageInputs = document.querySelectorAll('input[type="file"][name^="image"]');
+        imageInputs.forEach(function(input) {
+            input.setAttribute('multiple', 'multiple');
+        });
+    });
+
+</script>
+
+<div class="add-item-container">
+    <form id="product-form" action="{% url 'add_product' %}" method="POST" enctype="multipart/form-data" class="form-style">
+            {% csrf_token %}
+            <div class="form-section">
+                <h2>Nytt produkt</h2>
+                <p>Tittel</p>
+                {{ form.title }}
+                <p>Undertittel</p>
+                {{ form.subtitle }}
+                
+
+                <p>Beskrivelse</p>
+                {{ form.description }}
+                {% if categories %}
+                <div class="form-section">
+                    <label for="name">Velg kategori</label>
+                    <select name="category" id="category">
+                        {% for category in categories %}
+                            <option value="{{ category.name }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
+                <p>Pris</p>
+                {{ form.price }}
+                <p>Salgspris</p>
+                {{ form.sale_price }}
+                <p>Materiale</p>
+                {{ form.material }}
+                <p>Farge</p>
+                {{ form.color }}
+                <p>Høyde</p>
+                {{ form.height }}
+                <p>Bredde</p>
+                {{ form.width }}
+                <p>Dybde</p>
+                {{ form.depth }}
+                <p>Lengde</p>
+                {{ form.length }}
+                <p>Mer informasjon</p>
+                {{ form.more_information }}
+                <p>Leverandør</p>
+                {{ form.supplier }}
+           
+            </div>
+
+
+    <div class="form-section image-upload-section">
+        <h3>Last opp bilder</h3>
+        {{ formset.management_form }}
+        <input type="file" name="images" multiple id="id_images" style="display: none;"> <!-- Hide the original input -->
+        <label for="id_images" class="custom-file-upload">Last opp</label> <!-- Custom upload label -->
+        <div id="image-preview-container"></div> <!-- Container for image previews -->
+    </div>
+
+
+
+    <div class="form-buttons">
+    <button type="submit" class="submit-btn">Legg ut annonse</button>
+</div>
+
+</form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('product-form');
+    const previewContainer = document.getElementById('image-preview-container');
+
+    fileInput.addEventListener('change', function() {
+        previewContainer.innerHTML = '';
+        Array.from(this.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const previewWrapper = document.createElement('div');
+                previewWrapper.classList.add('image-preview');
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                const removeButton = document.createElement('button');
+                removeButton.textContent = 'X';
+                removeButton.classList.add('remove-image');
+                removeButton.type = 'button';
+                removeButton.onclick = function() {
+                    previewWrapper.remove();
+                    updateFileList(fileInput, file);
+                };
+                previewWrapper.appendChild(img);
+                previewWrapper.appendChild(removeButton);
+                previewContainer.appendChild(previewWrapper);
+            };
+            reader.readAsDataURL(file);
+        });
+    });
+
+    form.addEventListener('submit', submitForm);
+});
+
+const fileInput = document.getElementById('id_images');
+
+function updateFileList(fileInput, fileToRemove) {
+    const dt = new DataTransfer();
+    Array.from(fileInput.files).forEach(file => {
+        if (file !== fileToRemove) {
+            dt.items.add(file);
+        }
+    });
+    fileInput.files = dt.files;
+}
+
+function submitForm(e) {
+    e.preventDefault();
+    const form = e.target;
+    const formData = new FormData(form);
+
+    // Append other non-file form inputs first.
+    Array.from(form.elements).forEach(element => {
+        if (element.name && element.type !== 'file') {
+            formData.append(element.name, element.value);
+        }
+    });
+
+    // Append the images in the order they appear in the preview.
+    const imagePreviews = document.querySelectorAll('.image-preview img');
+    imagePreviews.forEach((img, index) => {
+        // Use the 'data-filename' attribute to match the file in the original file input
+        const file = Array.from(fileInput.files).find(f => f.name === img.getAttribute('data-filename'));
+        if (file) {
+            formData.append('images[]', file, `image_${index}_${file.name}`);
+        }
+    });
+
+
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.href = data.redirect_url;  // Redirect to the URL sent from the server
+        } else {
+            console.error('Form errors:', data.errors);
+            // Optionally display these errors to the user
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        // Handle submission error
+    });
+}
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+</script>
+{% endblock %}
