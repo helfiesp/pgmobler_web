@@ -112,10 +112,10 @@ nav {
 .nav-logo {
   position: absolute; /* Absolute positioning */
   left: 50%; /* Center horizontally */
-  transform: translateX(-50%); /* Offset by half the width of the logo */
-  top: 50%; /* Optional: Adjust if you want to center vertically */
-  transform: translateY(-50%); /* Optional: Same as above */
+  top: 50%; /* Center vertically */
+  transform: translate(-50%, -50%); /* Offset by half the width and height of the logo */
 }
+
 .menu-icon{
   display: none ;
 }
@@ -123,7 +123,7 @@ nav {
   display: none;
 }
 .nav-logo a img {
-  max-width: 70px;
+  max-width: 250px;
   height: auto;
 }
 .header-content {
