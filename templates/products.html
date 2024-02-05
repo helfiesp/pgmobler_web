@@ -5,6 +5,7 @@
 
 <link rel="stylesheet" href="{% static 'css/products_mainpage.css' %}">
 <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
+
 <div class="page-container-products">
   <aside class="sidebar-container-products">
     <!-- Filter Groups -->
@@ -43,8 +44,9 @@
       {% endfor %}
     </div>
   </aside>
-  
+  <div class="products-container">
   {% include 'product/single_product.html' %}
+</div>
 </div>
 
 {% endblock %}
