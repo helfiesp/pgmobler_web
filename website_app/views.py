@@ -13,6 +13,9 @@ from django.utils import timezone
 def index(request):
     return render(request, 'index.html')
 
+def administration(request):
+    return render(request, 'admin/admin_base.html')
+
 def categories(request):
     return render(request, 'categories.html')
 

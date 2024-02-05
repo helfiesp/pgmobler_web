@@ -1,14 +1,9 @@
+{% extends "base/base.html" %}
+
 {% load static %}
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/update_products.css' %}">
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Kategorioversikt</title>
-</head>
-<body>
     <h1>Kategorioversikt</h1>
     <table>
         <thead>
@@ -48,7 +43,6 @@
             {% endfor %}
         </tbody>
     </table>
-</body>
-</html>
+
 
 {% endblock %}

@@ -24,19 +24,22 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='hjem'),
     path('categories', views.categories, name='categories'),
-    path('categories/add', views.add_category, name='add_category'),
     path('categories/<str:category_name>', views.category_search, name='category_search'),
 
     path('products', views.all_products, name='products'),
     path('product/<int:product_id>/', views.product_page, name='product_page'),
     path('search/', views.general_search, name='general_search'),
 
-    path('products/add', views.add_product, name='add_product'),
 
+    # ADMIN STUFF
+    path('administration', views.administration, name='administration'),
+
+    path('products/add', views.add_product, name='add_product'),
 
     path('products/edit/', views.product_list_and_update, name='update_products'),
     path('products/edit/<int:product_id>/', views.product_list_and_update, name='update_products_id'),
 
+    path('categories/add/', views.add_category, name='add_category'),
     path('categories/edit/', views.category_list_and_update, name='update_categories'),
     path('categories/edit/<int:category_id>/', views.category_list_and_update, name='update_categories_id'),
 
@@ -52,7 +55,7 @@ urlpatterns = [
     path('business_information/', views.text_areas_list_and_update, name='business_information'),
     path('business_information/create/', views.text_areas_list_and_update, name='create_business_information'),
     path('business_information/edit/<int:business_info_id>/', views.text_areas_list_and_update, name='update_business_information'),
-
+    # END OF ADMIN STUFF
 
     path('about_us', views.about_us, name='about_us'),
     path('contact', views.contact, name='contact'),
