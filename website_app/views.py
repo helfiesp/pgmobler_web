@@ -112,7 +112,7 @@ def add_product(request):
         }
         return render(request, 'admin/add_product.html', context)
 
-@login_required
+@login_required(login_url='/admin')
 def add_category(request):
     if request.method == 'POST':
         form = forms.category_form(request.POST, request.FILES)
