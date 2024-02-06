@@ -5,7 +5,7 @@ from django.forms import inlineformset_factory
 class product_form(forms.ModelForm):
     class Meta:
         model = product
-        fields = ['title', 'subtitle', 'category', 'description', 'price', 'sale_price', 'material', 'color', 'height', 'width', 'depth','length', 'more_information', 'supplier', 'enabled']
+        fields = ['title', 'subtitle', 'category', 'description', 'price', 'sale_price', 'material', 'color', 'height', 'width', 'depth','length', 'more_information', 'supplier', 'enabled', 'bestseller']
 
 
 product_image_formset = inlineformset_factory(
