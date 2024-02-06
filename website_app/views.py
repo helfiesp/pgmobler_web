@@ -14,7 +14,7 @@ from django.contrib.auth.decorators import login_required
 def index(request):
     return render(request, 'index.html')
 
-@login_required
+@login_required(login_url='/admin')
 def administration(request):
     return render(request, 'admin/admin_base.html')
 
@@ -79,7 +79,7 @@ def product_page(request, product_id):
     context = {'product': product}
     return render(request, 'product_page.html', context)
 
-@login_required
+@login_required(login_url='/admin')
 def add_product(request):
     categories = models.category.objects.all()
     if request.method == 'POST':
@@ -129,7 +129,7 @@ def add_category(request):
 
     return render(request, 'admin/add_category.html', {'category_form': form})
 
-@login_required
+@login_required(login_url='/admin')
 def product_list_and_update(request, product_id=None):
     if request.method == 'POST':
         product = get_object_or_404(models.product, pk=product_id)
@@ -145,7 +145,7 @@ def product_list_and_update(request, product_id=None):
         products = models.product.objects.all()
         return render(request, 'admin/update_products.html', {'products': products, 'admin':True })
 
-@login_required
+@login_required(login_url='/admin')
 def category_list_and_update(request, category_id=None):
     if request.method == 'POST':
         category = get_object_or_404(models.category, pk=category_id)
@@ -158,7 +158,7 @@ def category_list_and_update(request, category_id=None):
         categories = models.category.objects.all()
         return render(request, 'admin/update_categories.html', {'categories': categories, 'admin':True })
 
-@login_required
+@login_required(login_url='/admin')
 def text_areas_list_and_update(request, text_area_id=None, footer_text_area_id=None, business_info_id=None):
     context = {
         'text_areas': models.text_areas.objects.all(),
@@ -209,7 +209,7 @@ def text_areas_list_and_update(request, text_area_id=None, footer_text_area_id=N
     return render(request, 'admin/update_text_areas.html', context)
 
 
-@login_required
+@login_required(login_url='/admin')
 def business_information_update(request, business_info_id=None):
     if request.method == 'POST':
         if business_info_id:
