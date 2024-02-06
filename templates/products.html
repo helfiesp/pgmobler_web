@@ -31,17 +31,21 @@
     <!-- Recent Products -->
     <div class="filter-group">
       <h4 class="filter-title">Nye produkter</h4>
-      {% for product in all_products %}
-      <div class="recent-product-item">
-        <a href="{% url 'product_page' product.id %}">
-        <img src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="recent-product-image"></a>
+        {% for product in all_products %}
+          {% if forloop.counter <= 5 %}
+            <div class="recent-product-item">
+              <a href="{% url 'product_page' product.id %}">
+              <img src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="recent-product-image"></a>
 
-        <div class="recent-product-details">
-          <h5 class="recent-product-title">{{ product.title }}</h5>
-          <p class="recent-product-price">{{ product.price }} kr</p>
-        </div>
-      </div>
-      {% endfor %}
+              <div class="recent-product-details">
+                <h5 class="recent-product-title">{{ product.title }}</h5>
+                <p class="recent-product-price">{{ product.price }} kr</p>
+              </div>
+            </div>
+          {% else %}
+            {% break %}
+          {% endif %}
+        {% endfor %}
     </div>
   </aside>
   <div class="products-container">
