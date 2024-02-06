@@ -11,19 +11,17 @@
                 <th>Undertittel</th>
                 <th>Kategori</th>
                 <th style="width:350px">Beskrivelse</th>
-                <th style="width:100px">Pris</th>
-                <th style="width:100px">Salgspris</th>
+                <th style="width:70px">Pris</th>
+                <th style="width:70px">Salgspris</th>
                 <th>Materiale</th>
                 <th>Farge</th>
-                <th style="width:80px">Høyde</th>
-                <th style="width:80px">Bredde</th>
-                <th style="width:80px">Dybde</th>
-                <th style="width:80px">Lengde</th>
+                <th style="width:60px">Høyde</th>
+                <th style="width:60px">Bredde</th>
+                <th style="width:60px">Dybde</th>
+                <th style="width:60px">Lengde</th>
                 <th style="width:100px">Leverandør</th>
                 <th>Aktiv</th>
                 <th>Bestselger</th>
-                <th>Lagt til</th>
-                <th>Sist redigert</th>
                 <th>Oppdater</th>
             </tr>
         </thead>
@@ -55,8 +53,6 @@
                     <td>
                         <input type="checkbox" name="bestseller" {% if product.bestseller %}checked{% endif %}>
                     </td>
-                    <td>{{ product.date_added }}</td>
-                    <td>{{ product.date_edited }}</td>
                     <td><button type="submit">Oppdater</button></td>
                 </form>
             </tr>
