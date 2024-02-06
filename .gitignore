@@ -3,3 +3,4 @@ secrets.py
 *.log
 *.pyc
 *.pyc
+..gitignore.swp
