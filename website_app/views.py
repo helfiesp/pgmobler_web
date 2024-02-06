@@ -142,7 +142,7 @@ def product_list_and_update(request, product_id=None):
             form.save_m2m()  # In case there are many-to-many fields on the form
             return redirect('update_products')
     else:
-        products = models.product.objects.all()
+        products = models.product.objects.all().order_by('id')
         return render(request, 'admin/update_products.html', {'products': products, 'admin':True })
 
 @login_required(login_url='/admin')
