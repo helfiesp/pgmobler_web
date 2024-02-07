@@ -127,14 +127,16 @@ function openTab(event, tabName) {
     {% endif %}
 </div>
 
-<div class="product-thumbnails-section">
-    <!-- Thumbnails -->
-    {% for image in product.images.all %}
-        <a href="{{ image.image.url }}">
-            <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail">
-        </a>
-    {% endfor %}
-</div>
+{% if product.images.count > 1 %}
+    <div class="product-thumbnails-section">
+        <!-- Thumbnails -->
+        {% for image in product.images.all %}
+            <a href="{{ image.image.url }}">
+                <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail">
+            </a>
+        {% endfor %}
+    </div>
+{% endif %}
 
 
     

@@ -237,8 +237,7 @@ h1 {
     }
 
     .product-image-section {
-        width: 100%;
-        max-height:100px;
+        width: 100%;    
     }
 
     .product-thumbnails-section {
