@@ -39,9 +39,7 @@
 
 
       <div style="justify-content: center;" class="products-container">
-        {% for product in all_products|slice:":4" %}
-          {% include 'product/single_product_code.html' %}
-        {% endfor %}
+          {% include 'product/single_product.html' %}
       </div>
     </div>
 
