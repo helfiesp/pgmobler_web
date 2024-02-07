@@ -234,6 +234,9 @@ h1 {
     .product-page-container {
         flex-direction: column;
         margin-top:25px;
+        width:100%;
+        margin-left:14px;
+        margin-right:0px;
     }
 
     .product-image-section {
