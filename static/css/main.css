@@ -142,7 +142,6 @@ nav {
 }
 .nav-search form {
   display: flex;
-  margin-right:150%;
 }
 
 .nav-search input[type="text"] {
@@ -150,7 +149,7 @@ nav {
   padding: 5px 10px;
   margin-right: 5px;
   border-radius: 5px;
-  width:200px;
+  width:300px;
 }
 
 .nav-search button {
