@@ -99,7 +99,7 @@ nav {
 .search-icon {
   display: flex;
   align-items: center;
-  margin-right:15px;
+  margin-bottom:20px;
 }
 /* Display search and menu icons */
 .menu-icon img, .search-icon img {
@@ -291,6 +291,5 @@ width: 80px; /* Adjust for mobile */
 .menu-content {
     margin-left:20px;
 }
-
 
 
