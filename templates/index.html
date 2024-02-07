@@ -36,15 +36,14 @@
     <div class="recent-products-section">
       <h2>{{ text_areas.recent_product_header }}</h2>
       <p>{{ text_areas.recent_product_text }}</p>
-      <!-- Product items will be same as previous section -->
-      <!-- Add your product items here -->
+
+
+      <div style="justify-content: center;" class="products-container">
+        {% for product in all_products|slice:":4" %}
+          {% include 'product/single_product_code.html' %}
+        {% endfor %}
+      </div>
     </div>
-
-
-    <div style="justify-content: center;" class="products-container">
-        {% include 'product/single_product.html' %}
-    </div>
-
 
 </div>
 

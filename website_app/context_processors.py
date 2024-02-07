@@ -1,7 +1,7 @@
 from . import models
 
 def base_info(request):
-    products = models.product.objects.all()
+    products = models.product.objects.all().order_by('-date_added')
     categories = models.category.objects.all()
     text_areas = models.text_areas.objects.first()
     footer_textareas = models.footer_textareas.objects.first()

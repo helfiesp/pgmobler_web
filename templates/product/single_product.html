@@ -2,11 +2,32 @@
 
 <link rel="stylesheet" href="{% static 'css/products.css' %}">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
-
     
-    {% if not query %}
-        {% for product in all_products %}
-            {% if product.enabled %}
+{% if not query %}
+    {% for product in all_products %}
+        {% if product.enabled %}
+        <div class="product-card">
+            <a href="{% url 'product_page' product.id %}" class="product-link">
+            <div class="product-image-container">
+                <img src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="product-image">
+                <img src="{{ product.images.all.1.image.url }}" class="product-image second-image"> <!-- This is the second image -->
+            </div>
+                <div class="product-details">
+                    <h2 class="product-name">{{ product.title }}</h2>
+                    <p class="product-price">{{ product.price }} kr</p>
+                </div>
+            </a>
+                <a style="text-decoration: none;" href="{% url 'category_search' product.category %}">
+                    <p class="product-category">{{ product.category|upper }}</p>
+                </a>
+            </a>
+        </div>
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <!-- For when there is a search going on -->
+    {% for product in products %}
+        {% if product.enabled %}
             <div class="product-card">
                 <a href="{% url 'product_page' product.id %}" class="product-link">
                 <div class="product-image-container">
@@ -18,34 +39,12 @@
                         <p class="product-price">{{ product.price }} kr</p>
                     </div>
                 </a>
-                    <a style="text-decoration: none;" href="{% url 'category_search' product.category %}">
-                        <p class="product-category">{{ product.category|upper }}</p>
-                    </a>
+
+                <a style="text-decoration: none;" href="{% url 'category_search' product.category %}">
+                    <p class="product-category">{{ product.category|upper }}</p>
                 </a>
             </div>
             {% endif %}
-        {% endfor %}
-    {% else %}
-        <!-- For when there is a search going on -->
-        {% for product in products %}
-            {% if product.enabled %}
-                <div class="product-card">
-                    <a href="{% url 'product_page' product.id %}" class="product-link">
-                    <div class="product-image-container">
-                        <img src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="product-image">
-                        <img src="{{ product.images.all.1.image.url }}" class="product-image second-image"> <!-- This is the second image -->
-                    </div>
-                        <div class="product-details">
-                            <h2 class="product-name">{{ product.title }}</h2>
-                            <p class="product-price">{{ product.price }} kr</p>
-                        </div>
-                    </a>
-
-                    <a style="text-decoration: none;" href="{% url 'category_search' product.category %}">
-                        <p class="product-category">{{ product.category|upper }}</p>
-                    </a>
-                </div>
-                {% endif %}
-        {% endfor %}
-    {% endif %}
+    {% endfor %}
+{% endif %}
 

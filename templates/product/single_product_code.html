@@ -1,0 +1,20 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+
+<div class="product-card">
+    <a href="{% url 'product_page' product.id %}" class="product-link">
+    <div class="product-image-container">
+        <img src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="product-image">
+        <img src="{{ product.images.all.1.image.url }}" class="product-image second-image"> <!-- This is the second image -->
+    </div>
+        <div class="product-details">
+            <h2 class="product-name">{{ product.title }}</h2>
+            <p class="product-price">{{ product.price }} kr</p>
+        </div>
+    </a>
+        <a style="text-decoration: none;" href="{% url 'category_search' product.category %}">
+            <p class="product-category">{{ product.category|upper }}</p>
+        </a>
+    </a>
+</div>

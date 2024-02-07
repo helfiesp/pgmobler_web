@@ -187,16 +187,45 @@ function openTab(event, tabName) {
   <div class="description-row">
     <div class="description-column">
       <h4>Farge</h4>
-      <p>{{ product.color }}</p>
+      <p>
+        {% if product.color %}
+            {{ product.color }}
+        {% else %}
+            Ingen fargeinformasjon tilgjengelig
+        {% endif %}
+    </p>
     </div>
     <div class="description-column">
       <h4>Materiale</h4>
-      <p>{{ product.material }}</p>
+      <p>
+        {% if product.material %}
+            {{ product.material }}
+        {% else %}
+            Ingen materialeinformasjon tilgjengelig
+        {% endif %}
+    </p>
     </div>
-    <div class="description-column">
-      <h4>Dimensjoner</h4>
-      <p>Høyde: {{ product.height }}cm Bredde: {{ product.width }}cm Dybde: {{ product.depth }}cm</p>
-    </div>
+<div class="description-column">
+    <h4>Dimensjoner</h4>
+    <p>
+        {% if product.height is not None or product.width is not None or product.depth is not None or product.length is not None %}
+            {% if product.height is not None %}
+                Høyde: {{ product.height }}cm
+            {% endif %}
+            {% if product.width is not None %}
+                Bredde: {{ product.width }}cm
+            {% endif %}
+            {% if product.depth is not None %}
+                Dybde: {{ product.depth }}cm
+            {% endif %}
+            {% if product.length is not None %}
+                Lengde: {{ product.length }}cm
+            {% endif %}
+        {% else %}
+            Ingen mål tilgjengelig
+        {% endif %}
+    </p>
+</div>
   </div>
   <div class="description-row">
     <div class="description-column">
@@ -209,7 +238,13 @@ function openTab(event, tabName) {
     </div>
     <div class="description-column">
       <h4>Leverandør</h4>
-      <p>{{ product.supplier }}</p>
+      <p>
+        {% if product.supplier %}
+            {{ product.supplier }}
+        {% else %}
+            Ingen leverandørinfo tilgjengelig
+        {% endif %}
+    </p>
     </div>
   </div>
 </div>
@@ -224,8 +259,11 @@ function openTab(event, tabName) {
       <h2>{{ text_areas.recent_product_header }}</h2>
       <p>{{ text_areas.recent_product_text }}</p>
     </div>
+
     <div style="justify-content: center;" class="products-container">
-        {% include 'product/single_product.html' %}
+    {% for product in all_products|slice:":4" %}
+        {% include 'product/single_product_code.html' %}
+    {% endfor %}
     </div>
 
     </div>
