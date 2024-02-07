@@ -27,7 +27,6 @@
   <img src="{{ MEDIA_URL }}icons/menu.png" alt="Kategorier">
 </a>
 
-<div id="mainContent">
       <ul class="nav-list">
         <li><a href="{% url 'hjem' %}">{{ text_areas.nav_item_1 }}</a></li>
         <li><a href="{% url 'products' %}">{{ text_areas.nav_item_2 }}</a></li>
@@ -49,7 +48,6 @@
       <img src="{{ MEDIA_URL }}icons/magnifying-glass.png" alt="Søk">
     </a>
 
-{% if not admin %}
   <div class="nav-search">
     <form action="{% url 'general_search' %}" method="get">
       <input type="text" placeholder="Søk..." name="query">
@@ -59,11 +57,6 @@
     </form>
   </div>
 
-      <div class="nav-icons">
-        <a href="{% url 'login' %}" class="account-icon"><img class="nav-icon" style="width:18px" src="{{ MEDIA_URL }}icons/avatar.png" alt="Logo"></a>
-      </div>
-    </nav>
-    {% endif %}
 </header>
 
 

@@ -142,7 +142,7 @@ nav {
 }
 .nav-search form {
   display: flex;
-  margin-right: -100%; /* Adjust this percentage to move the search bar towards the middle */
+  margin-right:150%;
 }
 
 .nav-search input[type="text"] {
