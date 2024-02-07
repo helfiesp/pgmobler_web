@@ -20,12 +20,12 @@
 <body>
   <header>
     <nav>
+
 <div id="overlay" onclick="closeMobileMenu()"></div>
 <!-- Mobile Menu Icon -->
 <a href="javascript:void(0);" class="menu-icon" onclick="openMobileMenu()">
   <img src="{{ MEDIA_URL }}icons/menu.png" alt="Kategorier">
 </a>
-
       <ul class="nav-list">
         <li><a href="{% url 'hjem' %}">{{ text_areas.nav_item_1 }}</a></li>
         <li><a href="{% url 'products' %}">{{ text_areas.nav_item_2 }}</a></li>
@@ -35,7 +35,7 @@
             <li><a href="{% url 'administration' %}">Administrasjon</a></li>
         {% endif %}
       </ul>
-
+      <
       <!-- Logo -->
       <div class="nav-logo">
         <a href="{% url 'hjem' %}">
@@ -89,6 +89,20 @@
   </div>
 </div>
 </div>
+
+</div>
+<div id="searchModal" class="search-modal">
+  <div class="search-content">
+    <form action="{% url 'general_search' %}" method="get">
+      <!-- Just the text input, styled to look like the full search bar -->
+      <input type="text" placeholder="Søk..." name="query">
+      <!-- Hidden submit button -->
+      <button type="submit"></button>
+    </form>
+  </div>
+</div>
+
+
 <!--
 <div class="bottom-nav">
   <a href="#" class="nav-item">
@@ -116,6 +130,25 @@
     {% block extra_scripts %}{% endblock %}
 
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+  var searchIcon = document.querySelector('.search-icon');
+  var searchModal = document.getElementById('searchModal');
+  var mainContent = document.getElementById('mainContent');
+
+  searchIcon.addEventListener('click', function(event) {
+    event.preventDefault();
+    searchModal.style.display = "flex"; // Change display to flex to show the modal
+    mainContent.classList.add("modal-open");
+  });
+
+  // Close the modal if the user clicks anywhere outside the .search-content
+  window.addEventListener('click', function(event) {
+    if (event.target === searchModal) {
+      searchModal.style.display = "none";
+      mainContent.classList.remove("modal-open");
+    }
+  });
+});
 function openMobileMenu() {
   var menu = document.getElementById("mobileMenu");
   var overlay = document.getElementById("overlay");
@@ -148,7 +181,7 @@ function closeMobileMenu() {
     menu.style.display = "none"; // Hide the menu after the transition
     overlay.style.display = "none"; // Also hide the overlay
   }, 300); // Match the timeout to your CSS transition time
-} 
+}
 </script>
 </body>
 </html>
