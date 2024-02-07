@@ -26,6 +26,8 @@
 <a href="javascript:void(0);" class="menu-icon" onclick="openMobileMenu()">
   <img src="{{ MEDIA_URL }}icons/menu.png" alt="Kategorier">
 </a>
+
+<div id="mainContent">
       <ul class="nav-list">
         <li><a href="{% url 'hjem' %}">{{ text_areas.nav_item_1 }}</a></li>
         <li><a href="{% url 'products' %}">{{ text_areas.nav_item_2 }}</a></li>
@@ -137,18 +139,23 @@ document.addEventListener('DOMContentLoaded', function () {
 
   searchIcon.addEventListener('click', function(event) {
     event.preventDefault();
-    searchModal.style.display = "flex"; // Change display to flex to show the modal
+    searchModal.style.display = "flex"; // Show the modal
     mainContent.classList.add("modal-open");
   });
 
-  // Close the modal if the user clicks anywhere outside the .search-content
-  window.addEventListener('click', function(event) {
+  // This function will handle closing the modal
+  function closeModal(event) {
     if (event.target === searchModal) {
       searchModal.style.display = "none";
       mainContent.classList.remove("modal-open");
     }
-  });
+  }
+
+  // Close the modal if the user clicks or touches anywhere outside the .search-content
+  window.addEventListener('click', closeModal);
+  window.addEventListener('touchstart', closeModal); // Listen for touch events
 });
+
 function openMobileMenu() {
   var menu = document.getElementById("mobileMenu");
   var overlay = document.getElementById("overlay");

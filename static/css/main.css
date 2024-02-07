@@ -337,33 +337,37 @@ nav {
 #mainContent {
   z-index: 1;
 }
-#mainContent.modal-open {
-  filter: blur(5px);
-}
 
 .search-modal {
-  display: none; /* Hidden by default */
+  display: none; /* Ensure this is hidden by default */
   position: fixed; 
   z-index: 1000; 
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.4);
-  align-items: center; /* Center vertically */
-  justify-content: center; /* Center horizontally */
+  background-color: rgba(0,0,0,0.6);
+  align-items: center;
+  justify-content: center;
 }
 
+.search-content {
+  width:90%;
+  margin: 0 auto;
+  margin-left:5px;
+}
 /* Style the form and input for a full-width modern look */
 .search-content form {
-  width: 80%; /* Adjust the width as needed */
-  max-width: 600px; /* Maximum width */
+  width: 90%; /* Default width for larger devices */
+  margin: 0 auto; /* Center the form */
+  max-width: 800px; /* Maximum width */
+
 }
 
 .search-content input[type="text"] {
   width: 100%; /* Make the input extend full-width of its container */
-  padding: 10px; /* Add some padding inside the input */
-  font-size: 16px; /* Increase font size for better readability */
+  padding: 15px; /* Add some padding inside the input */
+  font-size: 20px; /* Increase font size for better readability */
   border: 2px solid #ddd; /* Add a border to the input */
   border-radius: 25px; /* Rounded corners for the input */
   box-shadow: none; /* Remove any box shadows */
@@ -403,6 +407,7 @@ body.modal-open {
   overflow: hidden;
   filter: blur(5px);
 }
+
 
 
 @media only screen and (max-width: 768px) {
