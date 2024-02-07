@@ -9,6 +9,9 @@ from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate, login, get_user_model
+import json
 
 
 def index(request):
@@ -91,9 +94,33 @@ def add_product(request):
             product_instance.enabled = True
             product_instance.save()
 
-            images = request.FILES.getlist('images')
-            for image_file in images:
-                models.product_image.objects.create(product=product_instance, image=image_file)
+
+            image_order_combined_json = request.POST.get('image_order_combined')
+            if image_order_combined_json:
+                image_order_combined = json.loads(image_order_combined_json)
+
+                # Retrieve the list of uploaded image files
+                images = request.FILES.getlist('images')
+
+                # Create a dictionary to easily find images by filename
+                images_dict = {image.name: image for image in images}
+
+                # Create a list of tuples (image file, order) based on the image_order_combined
+                images_with_order = []
+                for item in image_order_combined:
+                    filename = item['filename']
+                    order = item['order']
+                    image_file = images_dict.get(filename)
+                    if image_file:
+                        images_with_order.append((image_file, order))
+
+                # Now, sort images_with_order by order
+                images_with_order.sort(key=lambda x: int(x[1]))
+
+                # Save the images using the order provided
+                for image_file, _ in images_with_order:
+                    models.product_image.objects.create(product=product_instance, image=image_file)
+
 
             formset.instance = product_instance
             formset.save()
@@ -239,3 +266,20 @@ def business_information_update(request, business_info_id=None):
         'business_info_list': business_info_list,
         'admin': True
     })
+
+
+def login_view(request):
+    if request.user.is_authenticated:
+        return redirect('administration')
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('administration')  # Redirect to the user's home page after login
+        else:
+            # Return the form with errors
+            return render(request, 'login.html', {'form': form})
+    else:
+        form = AuthenticationForm()
+        return render(request, 'login.html', {'form': form})

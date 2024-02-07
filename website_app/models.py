@@ -72,7 +72,7 @@ class footer_textareas(models.Model):
 
 class business_information(models.Model):
     street_address = models.CharField(max_length=200, null=True, blank=True)
-    zip_code = models.IntegerField(max_length=200, null=True, blank=True)
+    zip_code = models.IntegerField(null=True, blank=True)
     zip_code_area = models.CharField(max_length=200, null=True, blank=True)
     main_email = models.CharField(max_length=300, null=True, blank=True)
     secondary_email = models.CharField(max_length=300, null=True, blank=True)

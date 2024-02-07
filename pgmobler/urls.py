@@ -19,9 +19,11 @@ from django.urls import path
 from website_app import views
 from django.conf.urls.static import static
 from pgmobler import settings
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('login/', views.login_view, name='login'), 
     path('', views.index, name='hjem'),
     path('categories', views.categories, name='categories'),
     path('categories/<str:category_name>', views.category_search, name='category_search'),
