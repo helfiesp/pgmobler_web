@@ -20,8 +20,13 @@ from website_app import views
 from django.conf.urls.static import static
 from pgmobler import settings
 from django.contrib.auth import views as auth_views
+from django.conf.urls import handler404, handler500
+
+handler404 = 'website_app.views.error_404_view'
+handler500 = 'website_app.views.error_500_view'
 
 urlpatterns = [
+
     path('admin/', admin.site.urls),
     path('login/', views.login_view, name='login'), 
     path('', views.index, name='hjem'),

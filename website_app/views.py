@@ -14,6 +14,12 @@ from django.contrib.auth import authenticate, login, get_user_model
 import json
 
 
+def error_404_view(request, exception):
+    return render(request, 'error/404.html', status=404)
+
+def error_500_view(request):
+    return render(request, 'error/500.html', status=500)
+    
 def index(request):
     return render(request, 'index.html')
 
