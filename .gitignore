@@ -6,3 +6,4 @@ product_images/
 ..gitignore.swp
 static/admin/
 settings.py
+*.jpg

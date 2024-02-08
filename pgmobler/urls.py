@@ -35,7 +35,6 @@ urlpatterns = [
     path('product/<int:product_id>/', views.product_page, name='product_page'),
     path('search/', views.general_search, name='general_search'),
 
-
     # ADMIN STUFF
     path('administration', views.administration, name='administration'),
 
@@ -51,7 +50,6 @@ urlpatterns = [
     path('text_areas/edit/', views.text_areas_list_and_update, name='update_text_areas'),
     path('text_areas/edit/<int:text_area_id>/', views.text_areas_list_and_update, name='update_text_areas_id'),
     path('text_areas/create/', views.text_areas_list_and_update, name='create_text_area'),
-
 
     path('footer_textareas/edit/', views.text_areas_list_and_update, name='update_footer_text_areas'),
     path('footer_textareas/edit/<int:footer_text_area_id>/', views.text_areas_list_and_update, name='update_footer_textareas_id'),
