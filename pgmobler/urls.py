@@ -26,8 +26,6 @@ handler404 = 'website_app.views.error_404_view'
 handler500 = 'website_app.views.error_500_view'
 
 urlpatterns = [
-
-    path('admin/', admin.site.urls),
     path('login/', views.login_view, name='login'), 
     path('', views.index, name='hjem'),
     path('categories', views.categories, name='categories'),
