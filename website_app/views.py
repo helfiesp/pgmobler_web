@@ -170,7 +170,9 @@ def edit_product(request, product_id):
         if form.is_valid() and formset.is_valid():
             with transaction.atomic():
                 # Save product instance
-                product_instance = form.save()
+                product_instance = form.save(commit=False) 
+                product_instance.enabled = True
+                product_instance.save()
 
                 # Delete any images that were marked for deletion
                 for form in formset.deleted_forms:
