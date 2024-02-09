@@ -1,5 +1,5 @@
 from django import forms
-from .models import product, product_image, category, text_areas, footer_textareas, business_information, supplier
+from .models import product, product_image, category, text_areas, footer_textareas, business_information
 from django.forms import inlineformset_factory
 
 class product_form(forms.ModelForm):
@@ -20,11 +20,6 @@ class category_form(forms.ModelForm):
         model = category
         fields = ['name', 'parent', 'image'] 
 
-
-class supplier_form(forms.ModelForm):
-    class Meta:
-        model = supplier
-        fields = ['name', 'image'] 
 
 class text_areas_form(forms.ModelForm):
     class Meta:

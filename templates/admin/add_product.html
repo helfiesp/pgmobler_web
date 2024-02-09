@@ -120,16 +120,8 @@
                 {{ form.length }}
                 <p>Mer informasjon</p>
                 {{ form.more_information }}
-                {% if suppliers %}
-                <div class="form-section">
-                    <label for="name">Velg leverandør</label>
-                    <select name="supplier" id="supplier">
-                        {% for supplier in suppliers %}
-                            <option value="{{ supplier.name }}">{{ supplier.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                {% endif %}
+                <p>Leverandør</p>
+                {{ form.supplier }}
            
             </div>
 
