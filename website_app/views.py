@@ -241,6 +241,24 @@ def add_category(request):
 
     return render(request, 'admin/add_category.html', {'category_form': form})
 
+
+@login_required(login_url='/admin')
+def add_supplier(request):
+    if request.method == 'POST':
+        form = forms.supplier_form(request.POST, request.FILES)
+        if form.is_valid():
+            supplier = form.save(commit=False)
+            supplier.image = request.FILES['supplier_image']
+            supplier.save()
+            return redirect('hjem')  # Redirect to the index page or wherever you want
+        else:
+            print("Form Errors:", form.errors)
+            return HttpResponse(json.dumps(form.errors), content_type="application/json")
+    else:
+        form = forms.category_form()
+
+    return render(request, 'admin/add_supplier.html', {'supplier_form': form})
+
 @login_required(login_url='/admin')
 def product_list_and_update(request, product_id=None):
     if request.method == 'POST':

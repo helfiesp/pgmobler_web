@@ -62,6 +62,10 @@ urlpatterns = [
     path('business_information/', views.text_areas_list_and_update, name='business_information'),
     path('business_information/create/', views.text_areas_list_and_update, name='create_business_information'),
     path('business_information/edit/<int:business_info_id>/', views.text_areas_list_and_update, name='update_business_information'),
+
+
+    path('suppliers/add/', views.add_supplier, name='add_supplier'),
+
     # END OF ADMIN STUFF
 
     path('about_us', views.about_us, name='about_us'),
