@@ -39,6 +39,7 @@ class category(models.Model):
 
     def __str__(self):
         return self.name
+
  
 class text_areas(models.Model):
     front_page_header = models.CharField(max_length=200, null=True, blank=True)
@@ -78,3 +79,12 @@ class business_information(models.Model):
     secondary_email = models.CharField(max_length=300, null=True, blank=True)
     main_phone = models.CharField(max_length=300, null=True, blank=True)
     secondary_phone = models.CharField(max_length=300, null=True, blank=True)
+
+
+
+class supplier(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    image = models.ImageField(upload_to='supplier_images/', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
