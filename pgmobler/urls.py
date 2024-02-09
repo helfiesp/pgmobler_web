@@ -37,6 +37,7 @@ urlpatterns = [
     path('product/<int:product_id>/', views.product_page, name='product_page'),
     path('product/<int:product_id>/edit/', views.edit_product, name='edit_product'),
     path('product/edit/image/delete/<int:image_id>/', views.delete_product_image, name='delete_product_image'),
+    path('product/<int:product_id>/edit/delete/', views.delete_product, name='delete_product'),
     path('search/', views.general_search, name='general_search'),
 
     # ADMIN STUFF

@@ -208,11 +208,19 @@ def edit_product(request, product_id):
         })
 
 
+
 @require_POST
+@login_required(login_url='/admin')
 def delete_product_image(request, image_id):
     image = get_object_or_404(models.product_image, id=image_id)
     image.delete()
     return JsonResponse({"success": True, "redirect_url": reverse('edit_product', kwargs={'product_id': image.product.id})})
+
+@login_required(login_url='/admin')
+def delete_product(request, product_id):
+    product = get_object_or_404(models.product, id=product_id)
+    product.delete()
+    return redirect('products')
 
 @login_required(login_url='/admin')
 def add_category(request):
