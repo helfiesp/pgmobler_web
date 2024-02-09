@@ -80,8 +80,6 @@ class business_information(models.Model):
     main_phone = models.CharField(max_length=300, null=True, blank=True)
     secondary_phone = models.CharField(max_length=300, null=True, blank=True)
 
-
-
 class supplier(models.Model):
     name = models.CharField(max_length=255, unique=True)
     image = models.ImageField(upload_to='supplier_images/', null=True, blank=True)
