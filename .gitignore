@@ -7,3 +7,5 @@ product_images/
 static/admin/
 settings.py
 *.jpg
+website_app/migrations/0001_change_int_to_char.py
+website_app/migrations/__init__.py
