@@ -109,9 +109,12 @@ function openTab(event, tabName) {
 
 </script>
 <div class="product-page-container">
+
+
+
 <div class="product-image-section">
     <!-- Check if the product has images and display the first one as the main image -->
-    {% if product.images.all %}
+    {% if product.images.count > 0 %}
         <a href="{{ product.images.all.0.image.url }}" data-lightbox="product-gallery" data-title="{{ product.title }}" id="main-image-link">
             <img id="main-image" src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="main-product-image">
         </a>
@@ -119,7 +122,9 @@ function openTab(event, tabName) {
         <!-- Hidden links for lightbox -->
         <div style="display: none;">
             {% for image in product.images.all %}
-                <a href="{{ image.image.url }}" data-lightbox="product-gallery" data-title="Image {{ forloop.counter }}"></a>
+                {% if image and image.image %}
+                    <a href="{{ image.image.url }}" data-lightbox="product-gallery" data-title="Image {{ forloop.counter }}"></a>
+                {% endif %}
             {% endfor %}
         </div>
     {% else %}
@@ -132,14 +137,14 @@ function openTab(event, tabName) {
     <div class="product-thumbnails-section">
         <!-- Thumbnails -->
         {% for image in product.images.all %}
-            <a href="{{ image.image.url }}">
-                <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail">
-            </a>
+            {% if image and image.image %}
+                <a href="{{ image.image.url }}">
+                    <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail">
+                </a>
+            {% endif %}
         {% endfor %}
     </div>
 {% endif %}
-
-
     
    <div class="product-details-section">
     <h1>{{ product.title }}</h1>
@@ -253,7 +258,13 @@ function openTab(event, tabName) {
     <div id="MerInformasjon" class="tab-content" style="display: none;">
         <p>Her kan du legge inn mer informasjon...</p>
     </div>
+    {% if user.is_authenticated %}
+        <br>
+        <p>Du er logget inn som admin, vil du <a style="color: black;" href="{% url 'edit_product' product.id %}">redigere produktet?</a></p>
+    {% endif %}
 </div>
+
+
 
 <div class="main-container">
     <div class="related-products-header">

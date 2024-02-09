@@ -12,7 +12,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, get_user_model
 import json
-
+from django.views.decorators.http import require_POST
+from django.db import transaction
 
 def error_404_view(request, exception):
     return render(request, 'error/404.html', status=404)
@@ -84,8 +85,19 @@ def general_search(request):
     return render(request, 'products.html', context)
 
 def product_page(request, product_id):
-    product = get_object_or_404(models.product, pk=product_id)  # Replace 'Product' with your product model
-    context = {'product': product}
+    product = get_object_or_404(models.product, pk=product_id)
+    
+    # Filter out images with empty values
+    product_images = product.images.exclude(image__isnull=True).exclude(image__exact='')
+
+    # Print information about the images
+    print("Product ID:", product_id)
+    print("Product Title:", product.title)
+    print("Number of images:", product_images.count())
+    for idx, image in enumerate(product_images.all(), start=1):
+        print(f"Image {idx} URL:", image.image.url)
+
+    context = {'product': product, 'product_images': product_images}
     return render(request, 'product_page.html', context)
 
 @login_required(login_url='/admin')
@@ -144,6 +156,63 @@ def add_product(request):
             'categories':categories
         }
         return render(request, 'admin/add_product.html', context)
+
+
+
+
+@login_required(login_url='/admin')
+def edit_product(request, product_id):
+    product_instance = get_object_or_404(models.product, id=product_id)
+    if request.method == 'POST':
+        form = forms.product_form(request.POST, request.FILES, instance=product_instance)
+        formset = forms.product_image_formset(request.POST, request.FILES, queryset=product_instance.images.all())
+
+        if form.is_valid() and formset.is_valid():
+            with transaction.atomic():
+                # Save product instance
+                product_instance = form.save()
+
+                # Delete any images that were marked for deletion
+                for form in formset.deleted_forms:
+                    if form.instance.pk:
+                        form.instance.delete()
+
+                # Update the remaining images
+                formset.save()
+
+                # Handle new images
+                image_order_combined_json = request.POST.get('image_order_combined')
+                if image_order_combined_json:
+                    image_order_combined = json.loads(image_order_combined_json)
+                    images = request.FILES.getlist('images')
+                    images_dict = {image.name: image for image in images}
+                    images_with_order = [
+                        (images_dict[item['filename']], item['order'])
+                        for item in image_order_combined
+                        if item['filename'] in images_dict
+                    ]
+                    images_with_order.sort(key=lambda x: int(x[1]))
+                    for image_file, _ in images_with_order:
+                        models.product_image.objects.create(product=product_instance, image=image_file)
+
+            return JsonResponse({"success": True, "redirect_url": reverse('edit_product', kwargs={'product_id': product_instance.id})})
+        else:
+            return JsonResponse({"success": False, "errors": form.errors, "formset_errors": formset.errors})
+    else:
+        form = forms.product_form(instance=product_instance)
+        formset = forms.product_image_formset(queryset=product_instance.images.all())
+        return render(request, 'admin/edit_product.html', {
+            'form': form,
+            'formset': formset,
+            'product': product_instance,
+        })
+
+
+@require_POST
+def delete_product_image(request, image_id):
+    image = get_object_or_404(models.product_image, id=image_id)
+    image.delete()
+    return JsonResponse({"success": True, "redirect_url": reverse('edit_product', kwargs={'product_id': image.product.id})})
 
 @login_required(login_url='/admin')
 def add_category(request):

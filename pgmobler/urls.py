@@ -32,14 +32,17 @@ urlpatterns = [
     path('categories/<str:category_name>', views.category_search, name='category_search'),
 
     path('products', views.all_products, name='products'),
+
+
     path('product/<int:product_id>/', views.product_page, name='product_page'),
+    path('product/<int:product_id>/edit/', views.edit_product, name='edit_product'),
+    path('product/edit/image/delete/<int:image_id>/', views.delete_product_image, name='delete_product_image'),
     path('search/', views.general_search, name='general_search'),
 
     # ADMIN STUFF
     path('administration', views.administration, name='administration'),
 
     path('products/add', views.add_product, name='add_product'),
-
     path('products/edit/', views.product_list_and_update, name='update_products'),
     path('products/edit/<int:product_id>/', views.product_list_and_update, name='update_products_id'),
 
