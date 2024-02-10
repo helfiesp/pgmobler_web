@@ -20,7 +20,7 @@
     display: flex; /* Use flex to position title and price */
     flex-direction: column; /* Stack children vertically */
     align-items: flex-start; /* Align children to the start */
-    width: 20%; /* Adjust the width as necessary, accounting for the gap */
+    width: 22%; /* Adjust the width as necessary, accounting for the gap */
     margin: 10px; /* Margin around the card */
     box-sizing: border-box; /* Include padding and border in the width calculation */
 }

@@ -261,6 +261,7 @@ h1 {
     .product-details-section {
         width: 100%; /* Full width */
         margin-left: 0; /* Reset margin */
+        text-align: center;
     }
 
     .product-thumbnail {
