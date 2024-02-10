@@ -282,7 +282,7 @@ def product_list_and_update(request, product_id=None):
             return redirect('update_products')
     else:
         products = models.product.objects.all().order_by('id')
-        return render(request, 'admin/update_products.html', {'products': products, 'admin':True })
+        return render(request, 'admin/update_products.html', {'products': products, 'admin':True, 'suppliers': models.supplier.objects.all()})
 
 @login_required(login_url='/admin')
 def category_list_and_update(request, category_id=None):

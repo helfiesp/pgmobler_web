@@ -57,7 +57,17 @@
                     <td><input type="number" name="width" value="{{ product.width }}"></td>
                     <td><input type="number" name="depth" value="{{ product.depth }}"></td>
                     <td><input type="number" name="length" value="{{ product.length }}"></td>
-                    <td><input type="text" name="supplier" value="{{ product.supplier }}"></td>
+                    <td>
+                        <select name="supplier">
+                            {% for supplier in suppliers %}
+                                {% if supplier.name == product.supplier %}
+                                    <option value="{{ supplier.name }}" selected>{{ supplier.name }}</option>
+                                {% else %}
+                                    <option value="{{ supplier.name }}">{{ supplier.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </td>
                     <td>
                         <input type="checkbox" name="enabled" {% if product.enabled %}checked{% endif %}>
                     </td>
