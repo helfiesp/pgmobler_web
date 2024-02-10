@@ -23,10 +23,36 @@
 
 .product-image-container {
     width: 100%;
-    height: auto; /* Adjust height based on content */
+    height: auto;
     overflow: hidden;
-    position: relative; /* Needed for absolute positioning of child img elements */
+    position: relative;
     transition: opacity 0.8s ease;
+}
+.price-overlay {
+    position: absolute;
+    top: 10px; /* Positioning it towards the top of the container */
+    right: 10px; /* Positioning it towards the right of the container */
+    background-color: #5D6D7E; /* A soft, muted blue-grey that complements the design */
+    color: #ffffff; /* Keeping the text color white for contrast */
+    font-size: 0.9em; /* Slightly smaller font size to match the design's elegance */
+    padding: 8px 16px; /* Adequate padding for aesthetic spacing */
+    font-weight: 500; /* Medium font weight to blend in with the page's text styling */
+    border-radius: 5px; /* Soft, rounded corners for a modern look */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* A subtle shadow for depth */
+    z-index: 10; /* Ensures it's above the image */
+    transition: all 0.3s ease; /* Smooth transition for any hover effects */
+    display: flex; /* To center the text inside the box */
+    justify-content: center; /* Center the text horizontally */
+    align-items: center; /* Center the text vertically */
+
+    letter-spacing: 1px; /* Increase letter spacing for a touch of sophistication */
+
+    /* Optional: Add a hover effect for interactivity */
+    cursor: pointer;
+}
+.price-overlay:hover {
+    background-color: #6E7B8B; /* A slightly lighter shade on hover for subtle feedback */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* A more pronounced shadow on hover */
 }
 
 .product-image-container img {

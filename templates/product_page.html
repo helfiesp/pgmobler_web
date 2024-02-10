@@ -162,9 +162,16 @@ function openTab(event, tabName) {
 
     <!-- Product description -->
     <p class="product-description">{{ product.subtitle }}</p>
-    
+    <div class="product-price-section">
     <!-- Product price -->
-    <p class="product-price">{{ product.price }} kr</p>
+    {% if product.sale_price %}
+        <p class="product-price">{{ product.sale_price }} kr</p>
+        <p class="product-price-dashed">{{ product.price }} kr</p>
+    {% else %}
+
+        <p class="product-price">{{ product.price }} kr</p>
+    {% endif %} 
+</div>
 
     <!-- Purchase buttons and options -->
     <!--

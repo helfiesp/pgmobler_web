@@ -21,3 +21,14 @@ def fetch_category_id(category_name):
         return category_results.id
     except category_results.DoesNotExist:
         return 0
+
+@register.filter
+def subtract(value, arg):
+    """Subtracts the arg from the value"""
+    try:
+        return float(value) - float(arg)
+    except (ValueError, TypeError):
+        try:
+            return value - arg
+        except Exception:
+            return ''
