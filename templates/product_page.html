@@ -171,7 +171,7 @@ function openTab(event, tabName) {
 
         <p class="product-price">{{ product.price }} kr</p>
     {% endif %} 
-</div>
+</div>  
 
     <!-- Purchase buttons and options -->
     <!--
@@ -192,7 +192,7 @@ function openTab(event, tabName) {
         <span class="tab-item" onclick="openTab(event, 'MerInformasjon')">{{ text_areas.product_desc_item_3 }}</span>
     </div>
     <div id="Beskrivelse" class="tab-content">
-        <p>{{ product.description }}</p>
+        <p>{{ product.description|title }}</p>
     </div>
     <div id="Detaljer" class="tab-content" style="display: none;">
         <div class="description-section">
@@ -202,7 +202,7 @@ function openTab(event, tabName) {
       <h4>Farge</h4>
       <p>
         {% if product.color %}
-            {{ product.color }}
+            {{ product.color|title }}
         {% else %}
             Ingen fargeinformasjon tilgjengelig
         {% endif %}
@@ -212,7 +212,7 @@ function openTab(event, tabName) {
       <h4>Materiale</h4>
       <p>
         {% if product.material %}
-            {{ product.material }}
+            {{ product.material|title }}
         {% else %}
             Ingen materialeinformasjon tilgjengelig
         {% endif %}
@@ -263,7 +263,13 @@ function openTab(event, tabName) {
 </div>
     </div>
     <div id="MerInformasjon" class="tab-content" style="display: none;">
-        <p>Her kan du legge inn mer informasjon...</p>
+        <p>
+        {% if product.more_information %}
+            {{ product.more_information|title }}
+        {% else %}
+            Ingen ekstra informasjon tilgjengelig
+        {% endif %}
+    </p>
     </div>
     {% if user.is_authenticated %}
         <br>
