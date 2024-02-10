@@ -114,13 +114,11 @@ def category_search(request, category_name):
     )
 
     # Apply sorting and pagination
-    products_page, sort, per_page = apply_sort_and_pagination(request, products)
+    products_page = apply_sort_and_pagination(request, products)
 
     context = {
         'category': main_category,
-        'products': products_page,  # Paginated and sorted products
-        'current_sort': sort,       # Current sorting method
-        'per_page': per_page,       # Number of products per page
+        'products': products_page,
         'query': True,
     }
 
