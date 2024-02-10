@@ -165,7 +165,7 @@ def add_product(request):
 def edit_product(request, product_id):
     product_instance = get_object_or_404(models.product, id=product_id)
     categories = models.category.objects.all()
-    #suppliers = models.supplier.objects.all()
+    suppliers = models.supplier.objects.all()
     if request.method == 'POST':
         form = forms.product_form(request.POST, request.FILES, instance=product_instance)
         formset = forms.product_image_formset(request.POST, request.FILES, queryset=product_instance.images.all())
@@ -211,7 +211,7 @@ def edit_product(request, product_id):
             'formset': formset,
             'product': product_instance,
             'categories': categories,
-            #'suppliers': suppliers,
+            'suppliers': suppliers,
         })
 
 
