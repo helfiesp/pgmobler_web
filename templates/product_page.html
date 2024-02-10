@@ -284,23 +284,11 @@ function openTab(event, tabName) {
       <h2>{{ text_areas.recent_product_header }}</h2>
       <p>{{ text_areas.recent_product_text }}</p>
     </div>
-    
-  <div class="product-cards-section" style="justify-content: center;">
+
+    <div class="product-cards-section" style="justify-content: center;">
         {% for product in recent_products %}
-
-        {% if per_page == 1 %}
-            <div class="product-card" style="width:90%">
-        {% elif per_page == 2 %}
-            <div class="product-card" style="width:46%">
-        {% elif per_page == 3 %}
-            <div class="product-card" style="width:29%">
-        {% else %}
-            <div class="product-card" style="width:20%">
-        {% endif %}
           {% include 'product/single_product_code.html' %}
-        </div>
         {% endfor %}
-
       </div>
 
     </div>

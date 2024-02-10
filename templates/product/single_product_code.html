@@ -1,5 +1,15 @@
 {% load form_tags %}
 
+        {% if per_page == 1 %}
+            <div class="product-card" style="width:90%">
+        {% elif per_page == 2 %}
+            <div class="product-card" style="width:46%">
+        {% elif per_page == 3 %}
+            <div class="product-card" style="width:32%">
+        {% else %}
+            <div class="product-card" style="width:23%">
+        {% endif %}
+
 <a href="{% url 'product_page' product.id %}" class="product-link">
 <div class="product-image-container">
     <img src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="product-image">
@@ -34,3 +44,4 @@
         </a>
     {% endif %}
 </a>
+</div>
