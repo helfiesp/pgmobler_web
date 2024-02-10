@@ -59,13 +59,11 @@ def apply_sort_and_pagination(request, base_queryset, default_sort='newly_added'
     else:  # Default sort, including 'newly_added'
         queryset = queryset.order_by('-date_added')
 
-    # Applying pagination
-    paginator = Paginator(queryset, per_page)
+
     page_number = request.GET.get('page', 1)
-    page_obj = paginator.get_page(page_number)
 
     # Return the paginated products, the sort, and the per_page values
-    return page_obj, sort, per_page
+    return queryset, sort, per_page
 
 
 def error_404_view(request, exception):
