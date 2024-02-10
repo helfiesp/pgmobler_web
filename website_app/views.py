@@ -107,18 +107,23 @@ def category_search(request, category_name):
     # Fetch the names of all subcategories of the main category
     subcategory_names = models.category.objects.filter(parent=main_category).values_list('name', flat=True)
 
-    # Fetch products that belong to the main category or any of its subcategories
+    # Create a list to hold the main category name and all subcategory names
+    category_names = [category_name] + list(subcategory_names)
+
+    # Fetch products that belong to the main category or any of its subcategories by name
     products = models.product.objects.filter(
-        Q(category=main_category) | Q(category__name__in=subcategory_names),
+        Q(category__in=category_names),
         enabled=True
     )
 
     # Apply sorting and pagination
-    products_page = apply_sort_and_pagination(request, products)
+    products_page, sort, per_page = apply_sort_and_pagination(request, products)
 
     context = {
         'category': main_category,
         'products': products_page,
+        'current_sort': sort,      
+        'per_page': per_page,      
         'query': True,
     }
 
