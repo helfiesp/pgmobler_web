@@ -12,6 +12,10 @@ body, h1, a, button {
     margin-right:0%;
 }
 
+.per-page-selector li:nth-child(3),
+  .per-page-selector li:nth-child(4) {
+      display: none;
+  }
 /* Main container */
 .main-container {
   width: 100%;
