@@ -35,7 +35,13 @@ def categories(request):
 
 def all_products(request):
     sort = request.GET.get('sort', 'newly_added')  # Default sorting is by 'newly_added'
-    
+    per_page = request.GET.get('per_page', 4)  # Default is 4 if not provided
+
+    try:
+        per_page = int(per_page)  # Convert to int and handle possible ValueError
+    except ValueError:
+        per_page = 1
+
     products = models.product.objects.annotate(
         discount_percentage=Case(
             When(
@@ -66,7 +72,11 @@ def all_products(request):
         products = products.filter(sale_price__isnull=False, sale_price__lt=F('price'))
         products = products.order_by('-discount_percentage')
     
-    context = {'products': products, 'current_sort': sort}
+    context = {
+        'products': products,
+        'current_sort': sort,
+        'per_page': per_page  # Pass 'per_page' to the template
+    }
     return render(request, 'products.html', context)
 
 def about_us(request):

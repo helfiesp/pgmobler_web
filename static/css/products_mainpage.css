@@ -1,7 +1,5 @@
 .top-bar-products {
-  margin-top:50px;
-  width: 80%;
-  margin: auto;
+  width: 100%;
 }
 .filter-bar {
     padding: 10px 20px; /* Padding to give some space inside the bar */
@@ -13,24 +11,70 @@
 
 .filter-select {
     font-size: 1rem; /* Match the font size from the dropdown image */
-    color: #333; /* A dark grey for text to maintain readability */
+    color: #333; /* Dark grey for text to maintain readability */
     background-color: #ffffff; /* White background for the dropdown */
-    border: 1px solid #ccc; /* A subtle border for the select box */
+    border: 1px solid #ccc; /* Subtle border for the select box */
     border-radius: 5px; /* Rounded corners to match the modern design */
-    padding: 5px 10px 5px 10px; /* Padding inside the select box */
-    padding-right: 35px; /* Additional right padding to make room for the arrow */
+    padding: 10px 30px; /* Padding inside the select box, adjust as needed */
+    padding-left: 10px;
     cursor: pointer; /* Change the cursor to indicate this is a dropdown */
     appearance: none; /* Remove default styling to apply custom styles */
-    margin-left: auto; /* Push the select box to the right */
-    position: relative; /* Positioning context for the background image */
-    
+    display: inline-block; /* Needed for custom width and center alignment */
+    position: relative; /* Positioning context for pseudo-elements */
+    margin-left:auto;
     /* Use a background image for the dropdown arrow */
     background-image: url('/media/icons/icons8-arrow-down-50.png');    
-    background-position: right 10px center; /* Position the arrow inside the right padding area */
+    background-position: right 7px center; /* Position the arrow inside the right padding area */
     background-size: 14px; /* Size of the arrow */
     background-repeat: no-repeat; /* Do not repeat the background image */
 }
 
+/* Custom arrow using a pseudo-element */
+.filter-select::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    width: 0; 
+    height: 0; 
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #333; /* Arrow color */
+    transform: translateY(-50%);
+    pointer-events: none; /* Prevent the arrow from being clickable */
+}
+
+/* Focus styles for accessibility */
+.filter-select:focus {
+    outline: none; /* Removes the default outline */
+    border-color: #007bff; /* Focus color */
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); /* Mimics a focus ring */
+}
+
+.per-page-selector {
+  list-style-type: none; /* Remove default list styling */
+  padding: 0; /* Remove default padding */
+  display: flex; /* Use flexbox for horizontal layout */
+  gap: 10px; /* Space between items */
+}
+
+.per-page-selector li {
+  display: flex; /* Align the number within the grid item */
+}
+
+.per-page-selector a {
+  text-decoration: none; /* Remove underline from links */
+  color: black; /* Number color */
+  padding: 10px 20px; /* Padding for aesthetics */
+  border-radius: 5px; /* Rounded corners for the grid item */
+  display: block; /* Ensure the padding and border are applied correctly */
+}
+
+.per-page-selector a.active {
+  background-color: #007bff; /* Active item background color */
+  color: white; /* Active item number color */
+  border-color: #007bff; /* Active item border color */
+}
 /* Include this in your products.css file */
 .page-container-products {
   width: 80%;

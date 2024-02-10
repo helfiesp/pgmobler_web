@@ -1,10 +1,19 @@
-
-
 .products-container {
-    display: flex; /* Display products in a row */
-    flex-wrap: wrap; /* Allow products to wrap to next line */
-    gap: 10px; /* Space between products */
-    width:100%;
+    display: flex; /* Establishes a flex container */
+    flex-direction: column; /* Stacks children vertically */
+    width: 100%; /* Takes full width of the parent */
+}
+
+/* This ensures the form and the product cards section are stacked vertically */
+.top-bar-products, .product-cards-section {
+    width: 100%; /* Each takes full width */
+}
+
+.product-cards-section {
+    display: flex; /* Establishes a flex container */
+    flex-wrap: wrap; /* Allows flex items to wrap */
+    gap: 10px; /* Space between the product cards */
+    justify-content: flex-start; /* Aligns items to the start of the container */
 }
 
 .product-card {
@@ -30,7 +39,7 @@
 }
 .price-overlay {
     position: absolute;
-    top: 10px; /* Positioning it towards the top of the container */
+    top: 10px; /* Positioning it towards the bottom of the container */
     right: 10px; /* Positioning it towards the right of the container */
     background-color: #5D6D7E; /* A soft, muted blue-grey that complements the design */
     color: #ffffff; /* Keeping the text color white for contrast */
