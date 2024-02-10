@@ -67,6 +67,27 @@
     color: #333; /* Dark color for text */
     margin: 4px 0; /* Spacing above and below the price */
 }
+
+.product-price-dashed {
+    font-size: 1rem; /* Standard size for the price */
+    color: #999; /* Slightly grey color for the category */
+    font-weight: 400; /* Regular font weight */
+    margin: 4px 0; /* Spacing above and below the price */
+    position: relative; /* Required for positioning the pseudo-element */
+    display: inline-block; /* Ensures the pseudo-element aligns correctly */
+
+}
+
+.product-price-dashed::after {
+    content: ""; /* Necessary for a pseudo-element */
+    position: absolute; /* Positions the pseudo-element in relation to its parent */
+    left: 0; /* Aligns the start of the line with the left edge of the price tag */
+    top: 50%; /* Positions the line in the middle of the price tag vertically */
+    width: 95%; /* Ensures the line stretches across the entire price */
+    height: 1px; /* Sets the thickness of the line */
+    background-color: #333; /* Color of the dash, matching the text */
+    transform: rotate(-10deg); /* Optional: tilts the line for a more dynamic effect */
+}
 /* Initial state for the second image */
 .product-image-container .second-image {
     opacity: 0;
