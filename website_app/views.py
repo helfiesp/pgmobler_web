@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.db.models import Q, F, FloatField, ExpressionWrapper, Case, When
 from django.db.models.functions import Coalesce
-
+from django.core.paginator import Paginator
 from . import models
 from . import forms
 from django.shortcuts import render, redirect
@@ -16,6 +16,57 @@ from django.contrib.auth import authenticate, login, get_user_model
 import json
 from django.views.decorators.http import require_POST
 from django.db import transaction
+
+
+def apply_sort_and_pagination(request, base_queryset, default_sort='newly_added'):
+    # Annotate the queryset with discount_percentage and effective_price
+    queryset = base_queryset.annotate(
+        discount_percentage=Case(
+            When(
+                sale_price__isnull=False,
+                sale_price__lt=F('price'),
+                then=ExpressionWrapper(
+                    (F('price') - F('sale_price')) * 100.0 / F('price'),
+                    output_field=FloatField()
+                )
+            ),
+            default=None,
+            output_field=FloatField()
+        ),
+        effective_price=Coalesce('sale_price', 'price')
+    )
+
+    sort = request.GET.get('sort', default_sort)
+    per_page = request.GET.get('per_page', 4)
+
+    try:
+        per_page = max(int(per_page), 1)  # Ensure at least 1 item per page and handle possible ValueError
+    except ValueError:
+        per_page = 4
+
+    # Applying sorting based on the request
+    if sort == 'price_low_high':
+        queryset = queryset.order_by('effective_price')
+    elif sort == 'price_high_low':
+        queryset = queryset.order_by('-effective_price')
+    elif sort == 'name_a_z':
+        queryset = queryset.order_by('title')
+    elif sort == 'name_z_a':
+        queryset = queryset.order_by('-title')
+    elif sort == 'most_discounted':
+        queryset = queryset.filter(sale_price__isnull=False, sale_price__lt=F('price'))
+        queryset = queryset.order_by('-discount_percentage')
+    else:  # Default sort, including 'newly_added'
+        queryset = queryset.order_by('-date_added')
+
+    # Applying pagination
+    paginator = Paginator(queryset, per_page)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    # Return the paginated products, the sort, and the per_page values
+    return page_obj, sort, per_page
+
 
 def error_404_view(request, exception):
     return render(request, 'error/404.html', status=404)
@@ -34,49 +85,13 @@ def categories(request):
     return render(request, 'categories.html')
 
 def all_products(request):
-    sort = request.GET.get('sort', 'newly_added')  # Default sorting is by 'newly_added'
-    per_page = request.GET.get('per_page', 4)  # Default is 4 if not provided
-
-    try:
-        per_page = int(per_page)  # Convert to int and handle possible ValueError
-    except ValueError:
-        per_page = 1
-
-    products = models.product.objects.annotate(
-        discount_percentage=Case(
-            When(
-                sale_price__isnull=False,
-                sale_price__lt=F('price'),
-                then=ExpressionWrapper(
-                    (F('price') - F('sale_price')) * 100.0 / F('price'),
-                    output_field=FloatField()
-                )
-            ),
-            default=None,
-            output_field=FloatField()
-        ),
-        effective_price=Coalesce('sale_price', 'price')  # Coalesce will return sale_price if it's not null, otherwise price
-    )
-    
-    if sort == 'newly_added':
-        products = products.order_by('-date_added')
-    elif sort == 'price_low_high':
-        products = products.order_by('effective_price')
-    elif sort == 'price_high_low':
-        products = products.order_by('-effective_price')
-    elif sort == 'name_a_z':
-        products = products.order_by('title')
-    elif sort == 'name_z_a':
-        products = products.order_by('-title')
-    elif sort == 'most_discounted':
-        products = products.filter(sale_price__isnull=False, sale_price__lt=F('price'))
-        products = products.order_by('-discount_percentage')
-    
+    products, sort, per_page = apply_sort_and_pagination(request, models.product.objects.all())
     context = {
-        'products': products,
+        'products': products,  # This now contains the paginated and sorted products
         'current_sort': sort,
-        'per_page': per_page  # Pass 'per_page' to the template
+        'per_page': per_page
     }
+
     return render(request, 'products.html', context)
 
 def about_us(request):
@@ -94,13 +109,18 @@ def category_search(request, category_name):
 
     # Fetch products that belong to the main category or any of its subcategories
     products = models.product.objects.filter(
-        Q(category=category_name) | Q(category__in=subcategory_names),
+        Q(category=main_category) | Q(category__name__in=subcategory_names),
         enabled=True
-    ).order_by('-date_added')
+    )
+
+    # Apply sorting and pagination
+    products_page, sort, per_page = apply_sort_and_pagination(request, products)
 
     context = {
         'category': main_category,
-        'products': products,
+        'products': products_page,  # Paginated and sorted products
+        'current_sort': sort,       # Current sorting method
+        'per_page': per_page,       # Number of products per page
         'query': True,
     }
 
