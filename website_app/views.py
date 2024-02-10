@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from django.db.models import Q
+from django.db.models import Q, F, FloatField, ExpressionWrapper, Case, When
+from django.db.models.functions import Coalesce
+
 from . import models
 from . import forms
 from django.shortcuts import render, redirect
@@ -32,7 +34,40 @@ def categories(request):
     return render(request, 'categories.html')
 
 def all_products(request):
-    return render(request, 'products.html')
+    sort = request.GET.get('sort', 'newly_added')  # Default sorting is by 'newly_added'
+    
+    products = models.product.objects.annotate(
+        discount_percentage=Case(
+            When(
+                sale_price__isnull=False,
+                sale_price__lt=F('price'),
+                then=ExpressionWrapper(
+                    (F('price') - F('sale_price')) * 100.0 / F('price'),
+                    output_field=FloatField()
+                )
+            ),
+            default=None,
+            output_field=FloatField()
+        ),
+        effective_price=Coalesce('sale_price', 'price')  # Coalesce will return sale_price if it's not null, otherwise price
+    )
+    
+    if sort == 'newly_added':
+        products = products.order_by('-date_added')
+    elif sort == 'price_low_high':
+        products = products.order_by('effective_price')
+    elif sort == 'price_high_low':
+        products = products.order_by('-effective_price')
+    elif sort == 'name_a_z':
+        products = products.order_by('title')
+    elif sort == 'name_z_a':
+        products = products.order_by('-title')
+    elif sort == 'most_discounted':
+        products = products.filter(sale_price__isnull=False, sale_price__lt=F('price'))
+        products = products.order_by('-discount_percentage')
+    
+    context = {'products': products, 'current_sort': sort}
+    return render(request, 'products.html', context)
 
 def about_us(request):
     return render(request, 'about_us.html')

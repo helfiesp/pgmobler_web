@@ -1,10 +1,42 @@
+.top-bar-products {
+  margin-top:50px;
+  width: 80%;
+  margin: auto;
+}
+.filter-bar {
+    padding: 10px 20px; /* Padding to give some space inside the bar */
+    border-bottom: 1px solid #e1e1e1; /* A subtle border to separate from the product list */
+    display: flex; /* Use flexbox to align child elements */
+    justify-content: flex-end; /* Align the select box to the end (right side) */
+    align-items: center; /* Center items vertically */
+}
+
+.filter-select {
+    font-size: 1rem; /* Match the font size from the dropdown image */
+    color: #333; /* A dark grey for text to maintain readability */
+    background-color: #ffffff; /* White background for the dropdown */
+    border: 1px solid #ccc; /* A subtle border for the select box */
+    border-radius: 5px; /* Rounded corners to match the modern design */
+    padding: 5px 10px 5px 10px; /* Padding inside the select box */
+    padding-right: 35px; /* Additional right padding to make room for the arrow */
+    cursor: pointer; /* Change the cursor to indicate this is a dropdown */
+    appearance: none; /* Remove default styling to apply custom styles */
+    margin-left: auto; /* Push the select box to the right */
+    position: relative; /* Positioning context for the background image */
+    
+    /* Use a background image for the dropdown arrow */
+    background-image: url('/media/icons/icons8-arrow-down-50.png');    
+    background-position: right 10px center; /* Position the arrow inside the right padding area */
+    background-size: 14px; /* Size of the arrow */
+    background-repeat: no-repeat; /* Do not repeat the background image */
+}
+
 /* Include this in your products.css file */
 .page-container-products {
   width: 80%;
   margin: auto;
   display: flex;
   align-items: flex-start; /* Align items to the start of the cross axis */
-  margin-top:50px;
 }
 
 .products-container {
