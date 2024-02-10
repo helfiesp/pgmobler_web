@@ -71,9 +71,9 @@
 }
 
 .per-page-selector a.active {
-  background-color: #007bff; /* Active item background color */
+  background-color: #346482; /* Active item background color */
   color: white; /* Active item number color */
-  border-color: #007bff; /* Active item border color */
+  border-color: #346482; /* Active item border color */
 }
 /* Include this in your products.css file */
 .page-container-products {
@@ -91,8 +91,8 @@
 }
 
 .sidebar-container-products {
+  margin-top:0px;
   width: 20%;
-  padding: 20px;
   box-sizing: border-box;
 }
 
