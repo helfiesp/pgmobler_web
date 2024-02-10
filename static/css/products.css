@@ -162,7 +162,7 @@
     .product-image-container:hover .second-image {
         opacity: 1; /* Make sure images are visible */
     }
-    .page-layout-section {
+    .per-page-selector{
         display: none;
     }
 }
