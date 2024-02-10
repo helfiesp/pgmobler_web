@@ -157,6 +157,10 @@
         justify-content: center; /* Center the product cards */
         gap: 10px; /* Smaller gap between products for mobile */
         margin-top:20px;
+        width:100%;
+    }
+    .page-container-products {
+        width:90%;
     }
     .product-card {
         width: 90%; /* Make product card take up 90% of the screen width */
@@ -172,8 +176,11 @@
         opacity: 1; /* Make sure images are visible */
     }
     .product-card.per-page-2 {
-    width: 40% !important;
-}
+    width: 42% !important;
+    }
+    .price-overlay {
+        display: none;
+    }
 }
 
 /* This is to ensure that the image container does not become too tall on mobile */
