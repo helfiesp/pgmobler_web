@@ -162,9 +162,7 @@
     .product-image-container:hover .second-image {
         opacity: 1; /* Make sure images are visible */
     }
-    .filter-select {
-        margin-right:50px;
-    }
+
 }
 
 /* This is to ensure that the image container does not become too tall on mobile */

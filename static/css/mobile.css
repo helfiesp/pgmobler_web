@@ -8,7 +8,9 @@ body, h1, a, button {
   max-width: 100%;
   overflow-x: hidden; 
 }
-
+.filter-select {
+    margin-right:0%;
+}
 
 /* Main container */
 .main-container {
