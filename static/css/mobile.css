@@ -16,6 +16,8 @@ body, h1, a, button {
   .per-page-selector li:nth-child(4) {
       display: none;
   }
+
+  
 /* Main container */
 .main-container {
   width: 100%;

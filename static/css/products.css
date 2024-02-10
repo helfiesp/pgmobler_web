@@ -24,6 +24,16 @@
     margin: 10px; /* Margin around the card */
     box-sizing: border-box; /* Include padding and border in the width calculation */
 }
+.product-card.per-page-1 {
+    width: 100% !important;
+}
+.product-card.per-page-2 {
+    width: 46% !important;
+}
+.product-card.per-page-3 {
+    width: 29% !important;
+}
+
 
 .product-link {
     text-decoration: none;
@@ -148,7 +158,6 @@
         gap: 10px; /* Smaller gap between products for mobile */
         margin-top:20px;
     }
-
     .product-card {
         width: 90%; /* Make product card take up 90% of the screen width */
         max-height: none; /* Remove max-height restriction */
@@ -162,7 +171,9 @@
     .product-image-container:hover .second-image {
         opacity: 1; /* Make sure images are visible */
     }
-
+    .product-card.per-page-2 {
+    width: 40% !important;
+}
 }
 
 /* This is to ensure that the image container does not become too tall on mobile */
