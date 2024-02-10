@@ -227,7 +227,11 @@ h1 {
     transition: opacity 0.6s ease-in-out;
 }
 
-
+@media screen and (min-width: 2550px) and (min-height: 1200px) {
+      .product-image-section {
+        margin-left:120px;
+    }   
+}
 
 
 @media screen and (max-width: 768px) {
