@@ -10,11 +10,11 @@
         {% if per_page == 1 %}
             <div class="product-card" style="width:100%">
         {% elif per_page == 2 %}
-            <div class="product-card" style="width:48%">
+            <div class="product-card" style="width:46%">
         {% elif per_page == 3 %}
-            <div class="product-card" style="width:31%">
+            <div class="product-card" style="width:30%">
         {% else %}
-            <div class="product-card" style="width:23%">
+            <div class="product-card" style="width:22%">
         {% endif %}
 
             <a href="{% url 'product_page' product.id %}" class="product-link">
