@@ -12,7 +12,7 @@ class product(models.Model):
     price = models.IntegerField(null=True, blank=True)
     sale_price = models.IntegerField(null=True, blank=True)
     material = models.CharField(max_length=200, null=True, blank=True)
-    color = models.CharField(max_length=200, null=True, blank=True)
+    color = models.CharField(max_length=200, default="Mange varianter tilgjengelige, flere hundre kombinasjoner ")
     height = models.CharField(max_length=200, null=True, blank=True)
     width = models.CharField(max_length=200, null=True, blank=True)
     depth = models.CharField(max_length=200, null=True, blank=True)
