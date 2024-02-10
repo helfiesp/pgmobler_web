@@ -102,7 +102,7 @@
                     </select>
                 </div>
                 {% endif %}
-                
+
                 <p>Pris</p>
                 {{ form.price }}
                 <p>Salgspris</p>
@@ -121,8 +121,16 @@
                 {{ form.length }}
                 <p>Mer informasjon</p>
                 {{ form.more_information }}
-                <p>Leverandør</p>
-                {{ form.supplier }}
+                {% if suppliers %}
+                <div class="form-section">
+                    <label for="name">Velg leverandør</label>
+                    <select name="supplier" id="supplier">
+                        {% for supplier in suppliers %}
+                            <option value="{{ supplier.name }}">{{ supplier.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                {% endif %}
            
             </div>
 

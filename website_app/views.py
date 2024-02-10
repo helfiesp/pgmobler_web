@@ -103,6 +103,7 @@ def product_page(request, product_id):
 @login_required(login_url='/admin')
 def add_product(request):
     categories = models.category.objects.all()
+    suppliers = models.supplier.objects.all()
     if request.method == 'POST':
         form = forms.product_form(request.POST, request.FILES)
         formset = forms.product_image_formset(request.POST, request.FILES)
@@ -154,7 +155,7 @@ def add_product(request):
             'form': form,
             'formset': formset,
             'categories':categories,
-            #'suppliers': suppliers,
+            'suppliers': suppliers,
         }
         return render(request, 'admin/add_product.html', context)
 
