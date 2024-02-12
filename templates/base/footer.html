@@ -7,7 +7,7 @@
       <h3>{{ footer_textareas.footer_header_1}}</h3>
       <address>
         {{ business_information.street_address }}<br>
-        {{ business_information.zip_code }}<br>
+        {{ business_information.zip_code }} {{ business_information.zip_code_area }} <br>
       </address>
       <a href="{% url 'contact' %}" class="contact-link">{{ footer_textareas.footer_header_1_subtitle}}</a>
     </div>
