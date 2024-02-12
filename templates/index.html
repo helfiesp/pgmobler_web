@@ -64,15 +64,25 @@
         {% endif %}
       {% endfor %}
     </div>
+
     <div class="recent-products-section">
       <h2>{{ text_areas.recent_product_header }}</h2>
       <p>{{ text_areas.recent_product_text }}</p>
     </div>
-  <div class="product-cards-section" style="justify-content: center;">
+    <div class="product-cards-section" style="justify-content: center;">
         {% for product in recent_products %}
           {% include 'product/single_product_code.html' %}
         {% endfor %}
-      </div>
+    </div>
+    
+    <div class="recent-products-section">
+      <h2>{{ text_areas.bestseller_header }}</h2>
+      <p>{{ text_areas.bestseller_text }}</p>
+    </div>
+    <div class="product-cards-section" style="justify-content: center;">
+        {% for product in bestsellers %}
+          {% include 'product/single_product_code.html' %}
+        {% endfor %}
     </div>
 </div>
 

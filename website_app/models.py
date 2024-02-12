@@ -47,6 +47,8 @@ class text_areas(models.Model):
     front_page_button_text= models.CharField(max_length=200, null=True, blank=True)
     recent_product_header = models.CharField(max_length=200, null=True, blank=True)
     recent_product_text = models.CharField(max_length=200, null=True, blank=True)
+    bestseller_header = models.CharField(max_length=200, null=True, blank=True)
+    bestseller_text = models.CharField(max_length=200, null=True, blank=True)
     nav_item_1 = models.CharField(max_length=200, null=True, blank=True)
     nav_item_2 = models.CharField(max_length=200, null=True, blank=True)
     nav_item_3 = models.CharField(max_length=200, null=True, blank=True)
