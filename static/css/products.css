@@ -31,9 +31,8 @@
     width: 46% !important;
 }
 .product-card.per-page-3 {
-    width: 31% !important;
+    width: 30% !important;
 }
-
 
 .product-link {
     text-decoration: none;
@@ -177,9 +176,6 @@
     }
     .product-card.per-page-2 {
     width: 42% !important;
-    }
-    .price-overlay {
-        display: none;
     }
 }
 

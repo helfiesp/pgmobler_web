@@ -79,6 +79,7 @@ class business_information(models.Model):
     secondary_email = models.CharField(max_length=300, null=True, blank=True)
     main_phone = models.CharField(max_length=300, null=True, blank=True)
     secondary_phone = models.CharField(max_length=300, null=True, blank=True)
+    about_us_text = models.TextField(null=True, blank=True)
 
 class supplier(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -86,5 +87,3 @@ class supplier(models.Model):
 
     def __str__(self):
         return self.name
-
-
