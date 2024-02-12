@@ -28,6 +28,7 @@
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	font-size: 16px;
 }
 /* Media query for mobile devices */
 @media (max-width: 768px) {
@@ -50,7 +51,7 @@
 	</div>
 	<div class="about-us-text">
 		<h2>Om oss</h2>
-		{{ about_us|safe }}
+		<p>{{ about_us|safe }}</p>
 	</div>
 </div>
 
