@@ -46,9 +46,9 @@
 <link rel="stylesheet" href="{% static 'css/products.css' %}">
 <header class="main-header">
   <div class="header-content">
-    <h1 class="header-title">{{ text_areas.front_page_header }}</h1>
-    <p class="header-subtitle">{{ text_areas.front_page_subtitle }}</p>
-    <a href="#" class="explore-button">{{ text_areas.front_page_button_text }}</a>
+    <h1 class="header-title">{{ text_areas_all.front_page_header }}</h1>
+    <p class="header-subtitle">{{ text_areas_all.front_page_subtitle }}</p>
+    <a href="#" class="explore-button">{{ text_areas_all.front_page_button_text }}</a>
   </div>
 </header>
 
@@ -66,8 +66,8 @@
     </div>
 
     <div class="recent-products-section">
-      <h2>{{ text_areas.recent_product_header }}</h2>
-      <p>{{ text_areas.recent_product_text }}</p>
+      <h2>{{ text_areas_all.recent_product_header }}</h2>
+      <p>{{ text_areas_all.recent_product_text }}</p>
     </div>
     <div class="product-cards-section" style="justify-content: center;">
         {% for product in recent_products %}
@@ -77,8 +77,8 @@
     
     {% if bestsellers %}
     <div class="recent-products-section">
-      <h2>{{ text_areas.bestseller_header }}</h2>
-      <p>{{ text_areas.bestseller_text }}</p>
+      <h2>{{ text_areas_all.bestseller_header }}</h2>
+      <p>{{ text_areas_all.bestseller_text }}</p>
     </div>
     <div class="product-cards-section" style="justify-content: center;">
         {% for product in bestsellers %}

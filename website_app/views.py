@@ -370,6 +370,9 @@ def category_list_and_update(request, category_id=None):
 @login_required(login_url='/admin')
 def text_areas_list_and_update(request, text_area_id=None, footer_text_area_id=None, business_info_id=None):
     context = {
+        'text_areas': models.text_areas.objects.all(),
+        'footer_text_areas': models.footer_textareas.objects.all(),
+        'business_information': models.business_information.objects.all(),  # Add this line
         'admin': True
     }
 

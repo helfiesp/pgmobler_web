@@ -12,7 +12,7 @@ def base_info(request):
     return {
         'all_products': products,
         'all_categories': categories,
-        'text_areas': text_areas,
+        'text_areas_all': text_areas,
         'footer_textareas': footer_textareas,
         'business_information': business_information,
         'recent_products': recent_products,
