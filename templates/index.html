@@ -75,6 +75,7 @@
         {% endfor %}
     </div>
     
+    {% if bestsellers %}
     <div class="recent-products-section">
       <h2>{{ text_areas.bestseller_header }}</h2>
       <p>{{ text_areas.bestseller_text }}</p>
@@ -84,6 +85,7 @@
           {% include 'product/single_product_code.html' %}
         {% endfor %}
     </div>
+    {% endif %}
 </div>
 
 
