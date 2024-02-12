@@ -3,10 +3,10 @@ secrets.py
 *.pyc
 *.pyc
 product_images/
+category_images/
 ..gitignore.swp
 static/admin/
 settings.py
-*.jpg
 website_app/migrations/0001_change_int_to_char.py
 website_app/migrations/__init__.py
 website_app/migrations/0001_initial.py
