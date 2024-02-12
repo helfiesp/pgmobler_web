@@ -32,6 +32,7 @@ class text_areas_form(forms.ModelForm):
         fields = [
             'front_page_header', 'front_page_subtitle', 'front_page_button_text',
             'recent_product_header', 'recent_product_text',
+            'bestseller_header', 'bestseller_text',
             'nav_item_1', 'nav_item_2', 'nav_item_3', 'nav_item_4',
             'purchase_button_1', 'purchase_button_2',
             'product_desc_item_1', 'product_desc_item_2', 'product_desc_item_3'
