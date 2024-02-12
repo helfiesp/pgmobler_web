@@ -6,10 +6,10 @@
     <div class="footer-address">
       <h3>{{ footer_textareas.footer_header_1}}</h3>
       <address>
-        Vestre Strandvei 45<br>
-        3482 Tofte<br>
+        {{ business_information.street_address }}<br>
+        {{ business_information.zip_code }}<br>
       </address>
-      <a href="#" class="contact-link">{{ footer_textareas.footer_header_1_subtitle}}</a>
+      <a href="{% url 'contact' %}" class="contact-link">{{ footer_textareas.footer_header_1_subtitle}}</a>
     </div>
     
     <div class="footer-navigation">
