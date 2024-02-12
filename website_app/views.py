@@ -82,6 +82,9 @@ def administration(request):
 def categories(request):
     return render(request, 'categories.html')
 
+def sale_catalogue(request):
+    return render(request, 'sale_catalogue.html')
+
 def all_products(request):
     products, sort, per_page = apply_sort_and_pagination(request, models.product.objects.all())
     context = {
