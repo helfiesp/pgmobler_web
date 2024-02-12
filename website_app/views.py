@@ -95,7 +95,7 @@ def all_products(request):
 def about_us(request):
     about_us_text = models.business_information.objects.values_list('about_us_text', flat=True).first()
     context = {
-        'about_us':about_us_text,
+        'about_us':about_us_text.replace("\n", "<br>"),
     }
     return render(request, 'about_us.html', context)
 
