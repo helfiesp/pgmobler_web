@@ -168,12 +168,12 @@
                 <td><input type="text" name="main_phone" value="{{ business_info.main_phone }}"></td>
                 <td><input type="text" name="secondary_phone" value="{{ business_info.secondary_phone }}"></td>
                 <td colspan="2"><button type="submit">Update Business Info</button></td>
-            </form>
         </tr>
         <tr>
             <td colspan="8"> <!-- Adjust colspan to match total number of columns -->
                 <textarea name="about_us_text" rows="4" style="width: 100%;">{{ business_info.about_us_text }}</textarea>
             </td>
+            </form>
         </tr>
             {% empty %}
             <tr>
