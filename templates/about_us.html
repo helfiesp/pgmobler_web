@@ -1,7 +1,17 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% block content %}
-<div class="main-container">
+
+<style>
+.about-us-container {
+	width:60%;
+	text-align: center;
+	margin: auto;
+}
+</style>
+<div class="about-us-container">
+	<img src="{{ MEDIA_URL }}pgmobler_img.jpg">
+	<h2>Om oss</h2>
 	{{ about_us|safe }}
 </div>
 {% endblock %}
