@@ -55,6 +55,6 @@ class business_information_form(forms.ModelForm):
             'street_address', 'zip_code',
             'zip_code_area',
             'main_email', 'secondary_email', 'main_phone',
-            'secondary_phone',
+            'secondary_phone', 'about_us_text',
         ]
 
