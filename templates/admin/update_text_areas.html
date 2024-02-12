@@ -141,37 +141,40 @@
     </table>
 
     
-    <h2>Business Information</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Street Address</th>
-                <th>Zip Code</th>
-                <th>Zip Code Area</th>
-                <th>Main Email</th>
-                <th>Secondary Email</th>
-                <th>Main Phone</th>
-                <th>Secondary Phone</th>
-                <th>Om oss</th>
-                <th>Update</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for business_info in business_information %}
-            <tr>
-                <form method="post" action="{% url 'update_business_information' business_info.id %}">
-                    {% csrf_token %}
-                    <td><input type="text" name="street_address" value="{{ business_info.street_address }}"></td>
-                    <td><input type="text" name="zip_code" value="{{ business_info.zip_code }}"></td>
-                    <td><input type="text" name="zip_code_area" value="{{ business_info.zip_code_area }}"></td>
-                    <td><input type="email" name="main_email" value="{{ business_info.main_email }}"></td>
-                    <td><input type="email" name="secondary_email" value="{{ business_info.secondary_email }}"></td>
-                    <td><input type="text" name="main_phone" value="{{ business_info.main_phone }}"></td>
-                    <td><input type="text" name="secondary_phone" value="{{ business_info.secondary_phone }}"></td>
-                    <td><input type="text" name="about_us_text" value="{{ business_info.about_us_text }}"></td>
-                    <td><button type="submit">Update Business Info</button></td>
-                </form>
-            </tr>
+<h2>Business Information</h2>
+<table>
+    <thead>
+        <tr>
+            <th>Street Address</th>
+            <th>Zip Code</th>
+            <th>Zip Code Area</th>
+            <th>Main Email</th>
+            <th>Secondary Email</th>
+            <th>Main Phone</th>
+            <th>Secondary Phone</th>
+            <th colspan="2">Update</th> <!-- Adjust colspan according to the number of columns to span -->
+        </tr>
+    </thead>
+    <tbody>
+        {% for business_info in business_information %}
+        <tr>
+            <form method="post" action="{% url 'update_business_information' business_info.id %}">
+                {% csrf_token %}
+                <td><input type="text" name="street_address" value="{{ business_info.street_address }}"></td>
+                <td><input type="text" name="zip_code" value="{{ business_info.zip_code }}"></td>
+                <td><input type="text" name="zip_code_area" value="{{ business_info.zip_code_area }}"></td>
+                <td><input type="email" name="main_email" value="{{ business_info.main_email }}"></td>
+                <td><input type="email" name="secondary_email" value="{{ business_info.secondary_email }}"></td>
+                <td><input type="text" name="main_phone" value="{{ business_info.main_phone }}"></td>
+                <td><input type="text" name="secondary_phone" value="{{ business_info.secondary_phone }}"></td>
+                <td colspan="2"><button type="submit">Update Business Info</button></td>
+            </form>
+        </tr>
+        <tr>
+            <td colspan="8"> <!-- Adjust colspan to match total number of columns -->
+                <textarea name="about_us_text" rows="4" style="width: 100%;">{{ business_info.about_us_text }}</textarea>
+            </td>
+        </tr>
             {% empty %}
             <tr>
                 <form method="post" action="{% url 'create_business_information' %}">
