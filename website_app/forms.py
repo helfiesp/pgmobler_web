@@ -35,7 +35,7 @@ class text_areas_form(forms.ModelForm):
             'bestseller_header', 'bestseller_text',
             'nav_item_1', 'nav_item_2', 'nav_item_3', 'nav_item_4',
             'purchase_button_1', 'purchase_button_2',
-            'product_desc_item_1', 'product_desc_item_2', 'product_desc_item_3'
+            'product_desc_item_1', 'product_desc_item_2', 'product_desc_item_3', 'sale_catalogue'
         ]
 
 class footer_text_areas_form(forms.ModelForm):

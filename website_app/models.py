@@ -58,6 +58,8 @@ class text_areas(models.Model):
     product_desc_item_1 = models.CharField(max_length=200, null=True, blank=True)
     product_desc_item_2 = models.CharField(max_length=200, null=True, blank=True)
     product_desc_item_3 = models.CharField(max_length=200, null=True, blank=True)
+    sale_catalogue = models.TextField(null=True, blank=True)
+
 
 class footer_textareas(models.Model):
     footer_header_1 = models.CharField(max_length=200, null=True, blank=True)
