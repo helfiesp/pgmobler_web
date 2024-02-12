@@ -93,7 +93,7 @@ def all_products(request):
     return render(request, 'products.html', context)
 
 def about_us(request):
-    about_us_text = models.business_information.objects.values_list('about_us_text', flat=True)
+    about_us_text = models.business_information.objects.values_list('about_us_text', flat=True).first()
     context = {
         'about_us':about_us_text,
     }
