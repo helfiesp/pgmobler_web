@@ -93,6 +93,8 @@ def all_products(request):
     return render(request, 'products.html', context)
 
 def about_us(request):
+    about_us_text = models.BusinessInformation.objects.values_list('about_us_text', flat=True)
+    print(about_us_text)
     return render(request, 'about_us.html')
 
 def contact(request):
