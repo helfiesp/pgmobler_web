@@ -10,6 +10,7 @@
 	justify-content: center; /* Centers children horizontally */
 	align-items: center; /* Aligns children vertically */
 	gap: 20px; /* Optional: Adds space between the image and the text */
+	margin-top:50px;
 }
 
 .about-us-img, .about-us-text {
@@ -28,6 +29,20 @@
 	flex-direction: column;
 	justify-content: center;
 }
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+	.about-us-container {
+		flex-direction: column; /* Stacks the image and text vertically */
+		width: 90%; /* Increase the width to use more space on mobile */
+		gap: 10px; /* Reduces gap for mobile */
+	}
+
+	.about-us-img, .about-us-text {
+		width: 100%; /* Image and text take up full width of their container */
+		flex: none; /* Resets the flex property */
+	}
+}
+
 </style>
 <div class="about-us-container">
 	<div class="about-us-img">
