@@ -41,7 +41,13 @@
 
               <div class="recent-product-details">
                 <h5 class="recent-product-title">{{ product.title }}</h5>
-                <p class="recent-product-price">{{ product.price }} kr</p>
+                {% if product.sale_price %}
+                    <p class="product-price">{{ product.sale_price }} kr</p>
+                    <p class="product-price-dashed">{{ product.price }} kr</p>
+                {% else %}
+
+                    <p class="product-price">{{ product.price }} kr</p>
+                {% endif %} 
               </div>
             </div>
           {% endif %}
