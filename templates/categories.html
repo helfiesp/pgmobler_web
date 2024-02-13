@@ -5,27 +5,16 @@
 
 {% endblock %}
 {% block content %}
-<div class="product-categories">
-  <div class="category-item">
-    <img src="{{ MEDIA_URL }}product_images/default.jpeg" alt="Living Room" class="category-image">
-    <span class="product-count">8 products</span>
-    <h3>Living Room</h3>
-  </div>
-  <div class="category-item">
-    <img src="{{ MEDIA_URL }}product_images/default.jpeg" alt="Accessories" class="category-image">
-    <span class="product-count">4 products</span>
-    <h3>Accessories</h3>
-  </div>
-  <div class="category-item">
-    <img src="{{ MEDIA_URL }}product_images/default.jpeg" alt="Bathroom" class="category-image">
-    <span class="product-count">4 products</span>
-    <h3>Bathroom</h3>
-  </div>
-  <div class="category-item">
-    <img src="{{ MEDIA_URL }}product_images/default.jpeg" alt="Kitchen" class="category-image">
-    <span class="product-count">3 products</span>
-    <h3>Kitchen</h3>
-  </div>
+<div class="main-container">
+    <div class="product-categories">
+      {% for category in all_categories %}
+          <div class="category-item">
+            <a style="text-decoration: none" href="{% url 'category_search' category.name %}">
+            <img src="{{ MEDIA_URL }}{{ category.image }}" alt="{{ category.name }}" class="category-image">
+            <h3>{{ category.name }}</h3></a>
+          </div>
+      {% endfor %}
+    </div>
 </div>
 {% include 'base/footer.html' %}
 {% endblock %}
