@@ -196,7 +196,7 @@ function openTab(event, tabName) {
         <span class="tab-item" onclick="openTab(event, 'MerInformasjon')">{{ text_areas_all.product_desc_item_3 }}</span>
     </div>
     <div id="Beskrivelse" class="tab-content">
-        <p>{{ product.description }}</p>
+        <p>{{ product.description|safe }}</p>
     </div>
     <div id="Detaljer" class="tab-content" style="display: none;">
         <div class="description-section">
