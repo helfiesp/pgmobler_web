@@ -187,9 +187,9 @@ function openTab(event, tabName) {
 
 <div class="product-info-section">
     <div class="product-tabs">
-        <span class="tab-item active" onclick="openTab(event, 'Beskrivelse')">{{ text_areas.product_desc_item_1 }}</span>
-        <span class="tab-item" onclick="openTab(event, 'Detaljer')">{{ text_areas.product_desc_item_2 }}</span>
-        <span class="tab-item" onclick="openTab(event, 'MerInformasjon')">{{ text_areas.product_desc_item_3 }}</span>
+        <span class="tab-item active" onclick="openTab(event, 'Beskrivelse')">{{ text_areas_all.product_desc_item_1 }}</span>
+        <span class="tab-item" onclick="openTab(event, 'Detaljer')">{{ text_areas_all.product_desc_item_2 }}</span>
+        <span class="tab-item" onclick="openTab(event, 'MerInformasjon')">{{ text_areas_all.product_desc_item_3 }}</span>
     </div>
     <div id="Beskrivelse" class="tab-content">
         <p>{{ product.description }}</p>
@@ -281,8 +281,8 @@ function openTab(event, tabName) {
 
 <div class="main-container">
     <div class="related-products-header">
-      <h2>{{ text_areas.recent_product_header }}</h2>
-      <p>{{ text_areas.recent_product_text }}</p>
+      <h2>{{ text_areas_all.recent_product_header }}</h2>
+      <p>{{ text_areas_all.recent_product_text }}</p>
     </div>
 
     <div class="product-cards-section" style="justify-content: center;">
