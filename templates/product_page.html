@@ -147,6 +147,10 @@ function openTab(event, tabName) {
 {% endif %}
     
    <div class="product-details-section">
+    <a style="color: black; text-decoration: none" href="{% url 'category_search' product.category %}">
+        <p>{{ product.category|upper }}</p>
+    </a>
+
     <h1>{{ product.title }}</h1>
     
     <!-- Star rating 
