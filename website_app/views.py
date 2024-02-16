@@ -7,6 +7,8 @@ from . import forms
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.utils import timezone
+from datetime import timedelta
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
@@ -75,9 +77,28 @@ def error_500_view(request):
 def index(request):
     return render(request, 'index.html')
 
+def fetch_admin_alerts():
+    # Calculate the date 1 day ago from now
+    alert_interval = 90
+    days_ago = timezone.now() - timedelta(days=alert_interval)
+
+    # Query to find products not updated in the last day and return only their id and title
+    alerts = models.product.objects.filter(date_edited__isnull=True, date_added__lt=days_ago) | \
+             models.product.objects.filter(date_edited__lt=days_ago) \
+             .values('id', 'title')  # Use .values() to specify which fields to include
+
+    return list(alerts), alert_interval
+
+
+
 @login_required(login_url='/admin')
 def administration(request):
-    return render(request, 'admin/admin_base.html')
+    admin_alerts = fetch_admin_alerts()
+    context = {
+        'alerts': admin_alerts[0],
+        'alert_interval': admin_alerts[1],
+    }
+    return render(request, 'admin/admin_base.html', context)
 
 def categories(request):
     return render(request, 'categories.html')
@@ -159,7 +180,7 @@ def supplier_search(request, supplier_name):
 
     # Render the template with the products for the supplier
     return render(request, 'products.html', context)
-    
+
 def general_search(request):
     query = request.GET.get('query', '')
     # Filter products by query
@@ -207,6 +228,19 @@ def add_product(request):
         formset = forms.product_image_formset(request.POST, request.FILES)
 
         if form.is_valid() and formset.is_valid():
+            # Extract title and price from the form to check if the product already exists
+            title = form.cleaned_data['title']
+            price = form.cleaned_data['price']
+
+            # Check if a product with the same title and price already exists
+            existing_products = models.product.objects.filter(title=title, price=price)
+
+            if existing_products.exists():
+                existing_product_id = existing_products.first().id
+                # If the product exists, return a JSON response indicating failure
+                print("EXISTS")
+                return JsonResponse({"success": False, "errors":'ERRORS', "redirect_url": reverse('edit_product', kwargs={'product_id': existing_product_id})})
+
             product_instance = form.save(commit=False) 
             product_instance.enabled = True
             product_instance.save()

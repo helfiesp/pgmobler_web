@@ -129,7 +129,7 @@ function openTab(event, tabName) {
         </div>
     {% else %}
         <!-- Fallback if no images are available -->
-        <img src="{% static 'path/to/default/image.jpg' %}" alt="Default Image" class="main-product-image">
+        <img src="{{ MEDIA_URL }}default_image.png" alt="Default Image" class="main-product-image">
     {% endif %}
 </div>
 

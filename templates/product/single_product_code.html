@@ -12,8 +12,12 @@
         
 <a href="{% url 'product_page' product.id %}" class="product-link">
 <div class="product-image-container">
-    <img src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="product-image">
-    <img src="{{ product.images.all.1.image.url }}" class="product-image second-image"> <!-- This is the second image -->
+    {% if product.images.all.0.image.url %}
+        <img src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="product-image">
+        <img src="{{ product.images.all.1.image.url }}" class="product-image second-image"> <!-- This is the second image -->
+    {% else %}
+        <img src="{{ MEDIA_URL }}default_image.png" alt="{{ product.title }}" class="product-image">
+    {% endif %}
     {% if product.sale_price %}
         {% with difference=product.price|floatformat:"-2"|subtract:product.sale_price|floatformat:"-2" %}
          <div class="price-overlay">Spar {{ difference }}kr</div>

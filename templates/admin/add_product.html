@@ -84,6 +84,9 @@
             {% csrf_token %}
             <div class="form-section">
                 <h2>Nytt produkt</h2>
+                {% if errors %}
+                    {{ errors }}
+                {% endif %}
                 <p>Tittel</p>
                 {{ form.title }}
                 <p>Undertittel</p>

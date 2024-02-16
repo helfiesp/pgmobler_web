@@ -8,9 +8,30 @@
 .category-item {
   max-width:150px;
 }
+.alert-container {
+  background-color: #fa616e;
+  padding:6px;
+  border-radius: 10px;
+  width:50%;
+  text-align: center;
+  margin:auto;
+}
+
 
 </style>
 <div class="main-container">
+  {% if alerts %}
+  <div class="alert-container">
+    <h2>Varslinger</h2>
+      <p>
+        {% for alert in alerts %}
+          Produkt <a href="{% url 'product_page' alert.id %}" style="color: black;">{{ alert }}</a> har ikke vært oppdatert på {{ alert_interval }} dager <br>
+        {% endfor %}
+         </p>
+        
+  </div>
+  {% endif %}
+
   <div class="product-categories">
     <div class="category-item">
       <a style="text-decoration: none; color: black;" href="{% url 'add_product' %}">
