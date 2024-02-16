@@ -257,7 +257,9 @@ function openTab(event, tabName) {
       <h4>Leverandør</h4>
       <p>
         {% if product.supplier %}
-            {{ product.supplier }}
+            <a style="text-decoration: none; color: black;" href="{% url 'supplier_search' product.supplier %}">
+                {{ product.supplier }}
+            </a>
         {% else %}
             Ingen leverandørinfo tilgjengelig
         {% endif %}

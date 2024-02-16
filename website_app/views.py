@@ -135,6 +135,31 @@ def category_search(request, category_name):
     # Render the template with the products for the category and its subcategories
     return render(request, 'products.html', context)
 
+
+def supplier_search(request, supplier_name):
+    # Fetch the supplier
+    supplier = get_object_or_404(models.supplier, name=supplier_name)
+
+    # Fetch products that belong to the supplier
+    products = models.product.objects.filter(
+        supplier=supplier.name,  # Use supplier's name to filter products
+        enabled=True
+    )
+
+    # Apply sorting and pagination
+    products_page, sort, per_page = apply_sort_and_pagination(request, products)
+
+    context = {
+        'supplier': supplier,
+        'products': products_page,
+        'current_sort': sort,
+        'per_page': per_page,
+        'query': True,
+    }
+
+    # Render the template with the products for the supplier
+    return render(request, 'products.html', context)
+    
 def general_search(request):
     query = request.GET.get('query', '')
     # Filter products by query
@@ -356,6 +381,7 @@ def product_list_and_update(request, product_id=None):
     else:
         products = models.product.objects.all().order_by('id')
         return render(request, 'admin/update_products.html', {'products': products, 'admin':True, 'suppliers': models.supplier.objects.all()})
+
 
 @login_required(login_url='/admin')
 def category_list_and_update(request, category_id=None):
