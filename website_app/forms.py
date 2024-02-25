@@ -7,13 +7,13 @@ class product_form(forms.ModelForm):
         model = product
         fields = ['title', 'subtitle', 'category', 'description', 'price', 'sale_price', 'material', 'color', 'height', 'width', 'depth','length', 'more_information', 'supplier', 'enabled', 'bestseller']
 
-
 product_image_formset = inlineformset_factory(
     product, product_image,
     fields=('image',),
     extra=3,
     can_delete=True
 )
+
 
 class category_form(forms.ModelForm):
     class Meta:

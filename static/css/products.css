@@ -45,6 +45,8 @@
     overflow: hidden;
     position: relative;
     transition: opacity 0.8s ease;
+    max-height:700px;
+    max-width:1000px;
 }
 .price-overlay {
     position: absolute;
