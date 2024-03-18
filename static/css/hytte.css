@@ -7,8 +7,8 @@
 
 .div1 { grid-area: 1 / 1 / 2 / 2; }
 .div2 { grid-area: 1 / 2 / 2 / 3; }
-.div3 { grid-area: 1 / 3 / 2 / 5; } /* Adjusted to span two columns */
-.div4 { grid-area: 2 / 1 / 3 / 5; } /* Adjusted to span all columns */
+.div3 { grid-area: 1 / 3 / 3 / 4; }
+.div4 { grid-area: 2 / 1 / 3 / 3; }
 
 .hytte_product_img_small {
   width: 100%; /* Adjust width as necessary */
@@ -18,7 +18,7 @@
 
 .hytte_product_img_big {
   width: 100%; /* Adjust width as necessary */
-  height: auto;
+  height: 100%;
   display: block;
 }
 
