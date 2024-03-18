@@ -1,9 +1,7 @@
 {% load static %}
 {% load form_tags %}
 <link rel="stylesheet" href="{% static 'css/products.css' %}">
-
-
-
+    
     {% for product in products %}
         {% if product.enabled %}
 

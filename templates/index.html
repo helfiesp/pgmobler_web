@@ -1,5 +1,6 @@
 {% extends "base/base.html" %}
 {% load static %}
+{% load form_tags %}
 {% block extra_head %}
 <style>
 @media only screen and (max-width: 768px) {
@@ -55,7 +56,7 @@
 <div class="main-container">
     <div class="product-categories">
       {% for category in all_categories %}
-        {% if not category.parent %}
+        {% if not category.parent and category|tostring != "Hyttemøbler" %}
           <div class="category-item">
             <a style="text-decoration: none" href="{% url 'category_search' category.name %}">
             <img src="{{ MEDIA_URL }}{{ category.image }}" alt="{{ category.name }}" class="category-image">

@@ -32,3 +32,7 @@ def subtract(value, arg):
             return value - arg
         except Exception:
             return ''
+
+@register.filter
+def tostring(text):
+    return str(text)

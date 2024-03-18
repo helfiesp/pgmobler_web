@@ -89,7 +89,13 @@
 </div>
 </form>
 <div class="product-cards-section">
-  {% include 'product/single_product.html' %}
+
+  {% if category|tostring  == "Hyttemøbler" %}
+    {% include 'product/hyttemobler.html' %}
+  {% else %}
+    {% include 'product/single_product.html' %}
+  {% endif %}
+
 </div>
 </div>
 </div>
