@@ -68,6 +68,18 @@ urlpatterns = [
 
     path('suppliers/add/', views.add_supplier, name='add_supplier'),
 
+    path('order/<int:customer_id>/', views.add_order, name='add_order'),
+
+    path('add-customer/', views.add_customer, name='add_customer'),
+    path('customer/<int:customer_id>/', views.customer_detail, name='customer_detail'),
+
+    path('orders/', views.all_orders, name='all_orders'),
+    path('order-detail/<int:order_number>/', views.order_detail, name='order_detail'),
+    path('update-order/<int:order_id>/', views.update_order, name='update_order'),
+
+
+
+
     # END OF ADMIN STUFF
 
     path('about_us', views.about_us, name='about_us'),

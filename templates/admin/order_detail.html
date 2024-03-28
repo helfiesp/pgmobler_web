@@ -1,0 +1,309 @@
+<!-- website_app/templates/website_app/order_detail.html -->
+
+{% extends 'base/base.html' %}  <!-- Adjust this path to your actual base template -->
+
+{% block content %}
+
+<style>
+.order-details {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.order-details h2, .order-details h3 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.order-details label {
+    display: block;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.order-details input[type="text"],
+.order-details input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.order-details .items {
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.order-details .item {
+    background: #f7f7f7;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.order-details .item label {
+    margin-top: 10px;
+}
+
+.order-details .save-button {
+    background-color: #5cb85c;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    display: block;
+    width: 100%;
+}
+
+.order-details .save-button:hover {
+    background-color: #4cae4c;
+}
+.item-navigation {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.item-nav-button {
+    background-color: #f0f0f0;
+    color: #333;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    margin-right: 5px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.item-nav-button:hover,
+.item-nav-button.active {
+    background-color: #e0e0e0;
+}
+.item-nav-button.active {
+background-color: #007bff;
+color: white;
+}
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.print-button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+
+</style>        
+
+
+<form class="order-details" method="post" action="{% url 'update_order' order.order_number %}">
+    {% csrf_token %}
+    <div class="order-header">
+        <h2>Rediger ordre: {{ order.order_number }}</h2>
+        <button onclick="window.print();" class="print-button">Print Ordre</button>
+    </div>
+    <label for="customer_name">Kunde:</label>
+    <input type="text" id="customer_name" name="customer_name" value="{{ order.customer.name }}" />
+
+    <label for="delivery_info">Leveringsinfo:</label>
+    <input type="text" id="delivery_info" name="delivery_info" value="{{ order.delivery_info }}" />
+
+    <label for="delivery_price">Leveringspris:</label>
+    <input type="text" id="delivery_price" name="delivery_price" value="{{ order.delivery_price }}" />
+
+    <label for="extra_info">Ekstra info:</label>
+    <input type="text" id="extra_info" name="extra_info" value="{{ order.extra_info }}" />
+
+    <label for="total_price">Totalpris:</label>
+    <input type="text" id="total_price" name="total_price" value="{{ order.price }}" />
+
+    <label for="paid">Betalt:</label>
+    <input type="text" id="paid" name="paid" value="{{ order.paid }}" />
+
+    <label for="a_paid">A-Konto:</label>
+    <input type="text" id="a_paid" name="a_paid" value="{{ order.a_paid }}" />
+
+    <label for="remaining">Resterende:</label>
+    <input type="text" id="remaining" name="remaining" value="{{ order.remaining }}" disabled />
+
+    <label for="salesman">Selger:</label>
+    <input type="text" id="salesman" name="salesman" value="{{ order.salesman }}" />
+
+    <label for="date_added">Dato lagt til:</label>
+    <input type="text" id="date_added" name="date_added" value="{{ order.date_added }}" disabled />
+
+    <h3>Items</h3>
+    <!-- Item navigation tabs -->
+    <div class="item-navigation">
+        {% for item in items %}
+            <!-- Add type="button" to prevent form submission -->
+            <button type="button" class="item-nav-button" onclick="showItem({{ forloop.counter0 }})" id="nav-button{{ forloop.counter0 }}" data-item-id="item{{ forloop.counter0 }}">{{ forloop.counter }}</button>
+        {% endfor %}
+    </div>
+  
+
+     <div id="itemsContainer">
+    {% for item in items %}
+        <div class="item" id="item{{ forloop.counter0 }}" style="display: none;">
+
+            <label>Produkt:</label>
+            <input type="text" name="product_{{ forloop.counter }}" value="{{ item.product }}" />
+
+            <label>Produktinfo:</label>
+            <input type="text" name="info_{{ forloop.counter }}" value="{{ item.product_info }}" />
+
+            <label>Antall:</label>
+            <input type="number" name="amount_{{ forloop.counter }}" value="{{ item.amount }}" />
+
+            <label>Ben:</label>
+            <input type="text" name="legs_{{ forloop.counter }}" value="{{ item.legs }}" />
+
+            <label>Stoff & farge:</label>
+            <input type="text" name="fabric_{{ forloop.counter }}" value="{{ item.fabric }}" />
+
+            <label>Produktpris:</label>
+            <input type="text" name="price_{{ forloop.counter }}" value="{{ item.price }}" />
+            </div>
+        {% endfor %}
+    </div>
+
+
+    <button type="submit" class="save-button">Lagre endringer</button>
+    <button type="button" id="addNewProduct" class="save-button" style="background-color: #337ab7;">Legg til nytt produkt</button>
+    <button type="button" id="removeCurrentProduct" class="save-button" style="background-color: #d9534f; margin-top: 10px;">Fjern gjeldende produkt</button>
+
+
+</form>
+
+<script>
+document.getElementById('removeCurrentProduct').addEventListener('click', function() {
+    var activeButton = document.querySelector('.item-nav-button.active');
+    if (!activeButton) {
+        alert('Ingen produkt er valgt for fjerning.');
+        return;
+    }
+
+    var itemId = activeButton.getAttribute('data-item-id');
+    var itemToRemove = document.getElementById(itemId);
+
+    if (itemToRemove) {
+        // Remove the item
+        itemToRemove.parentNode.removeChild(itemToRemove);
+        // Remove the button
+        activeButton.parentNode.removeChild(activeButton);
+    } else {
+        console.error('The associated item could not be found.');
+        return;
+    }
+
+    // No need to update IDs or data attributes; focus on what to show next
+    var items = document.getElementsByClassName('item');
+    var buttons = document.getElementsByClassName('item-nav-button');
+    if (items.length > 0) {
+        // Reset active state for buttons
+        Array.from(buttons).forEach(button => button.classList.remove('active'));
+        // Arbitrarily show the first item; adjust based on your UX needs
+        var id_check = parseInt(itemId.replace("item", ""))
+        if (id_check > 1){
+            var next_item = id_check - 1
+            showItem(next_item);
+            buttons[next_item].classList.add('active');
+        } else {
+            showItem(0);
+            buttons[0].classList.add('active');
+        }
+
+    } else {
+        // Handle case where no items are left
+        // Possibly clear or hide the container or show a placeholder
+    }
+});
+
+
+
+document.getElementById('addNewProduct').addEventListener('click', function() {
+    var itemCount = document.getElementsByClassName('item').length;
+
+    // Create new nav button for the item
+    var newNavButton = document.createElement('button');
+    newNavButton.setAttribute('type', 'button');
+    newNavButton.classList.add('item-nav-button');
+    newNavButton.setAttribute('onclick', 'showItem(' + itemCount + ')');
+    newNavButton.id = 'nav-button' + itemCount;
+    newNavButton.textContent = itemCount + 1;
+    document.querySelector('.item-navigation').appendChild(newNavButton);
+
+    // Create new item div
+    var newItem = document.createElement('div');
+    newItem.classList.add('item');
+    newItem.id = 'item' + itemCount;
+    newItem.style.display = 'none';
+    var fields = ['product', 'info', 'amount', 'legs', 'fabric', 'price'];
+    var labels = ['Produkt:', 'Produktinfo:', 'Antall:', 'Ben:', 'Stoff & farge:', 'Produktpris:'];
+    fields.forEach(function(field, index) {
+        var label = document.createElement('label');
+        label.textContent = labels[index];
+        newItem.appendChild(label);
+
+        var input = document.createElement('input');
+        input.type = (field === 'amount') ? 'number' : 'text';
+        input.name = field + '_' + (itemCount + 1);
+        newItem.appendChild(input);
+    });
+    document.getElementById('itemsContainer').appendChild(newItem);
+
+    // Automatically select the new item
+    // This involves showing the new item and updating the active class on buttons
+    showItem(itemCount);
+
+    // Update all buttons to ensure only the new button has the active class
+    var buttons = document.getElementsByClassName('item-nav-button');
+    for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove('active');
+    }
+    newNavButton.setAttribute('data-item-id', 'item' + itemCount); // Associate button with item
+    newNavButton.classList.add('active');
+});
+
+// JavaScript function to show an item and hide others
+function showItem(index) {
+    var items = document.getElementsByClassName('item');
+    var buttons = document.getElementsByClassName('item-nav-button');
+
+    // If no items exist, do nothing
+    if (items.length === 0) {
+        return;
+    }
+for (var i = 0; i < items.length; i++) {
+    items[i].style.display = 'none';
+    buttons[i].classList.remove('active');
+}
+
+// Show the selected item and add active class to the button
+document.getElementById('item' + index).style.display = 'block';
+document.getElementById('nav-button' + index).classList.add('active');
+}
+
+// Initialize the view by showing the first item and marking the first button as active
+document.addEventListener('DOMContentLoaded', function() {
+showItem(0);
+});
+</script>
+
+{% endblock %}

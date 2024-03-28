@@ -7,9 +7,12 @@ from . import forms
 from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+import re
+
 from django.utils import timezone
 from datetime import timedelta
 from django.http import JsonResponse
+from django.template.loader import render_to_string
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.contrib.auth.decorators import login_required
@@ -528,3 +531,167 @@ def login_view(request):
     else:
         form = AuthenticationForm()
         return render(request, 'login.html', {'form': form})
+
+def add_customer(request, customer_id=None):
+
+    all_customers = models.customers.objects.all()  # Fetch all customers
+    customers_dict = {str(customer.id): {
+        'name': customer.name,
+        'zip_code': customer.zip_code,
+        'street_address': customer.street_address,
+        'email': customer.email,
+        'phone_number': customer.phone_number
+    } for customer in all_customers}
+    customers_json = json.dumps(customers_dict)
+
+    if request.method == 'POST':
+        form = forms.customer_form(request.POST)
+        if form.is_valid():
+            new_customer = form.save()
+            # Redirect to the same page with the newly added customer selected
+            return HttpResponseRedirect(reverse('add_customer') + f'?customer={new_customer.id}')
+    else:
+        if customer_id:
+            return HttpResponseRedirect(reverse('add_customer') + f'?customer={customer_id}')
+        form = forms.customer_form()
+
+    selected_customer = request.GET.get('customer', '')
+
+    return render(request, 'admin/customer_form.html', {
+        'form': form,
+        'all_customers': all_customers,
+        'selected_customer': selected_customer,
+        'customers_json': customers_json,
+    })
+
+
+
+def customer_detail(request, customer_id):
+    customer = get_object_or_404(models.customers, id=customer_id)
+    customer_orders = models.orders.objects.filter(customer=customer).order_by('-date_added')
+
+    if request.method == 'POST':
+        form = forms.customer_form(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            return redirect('customer_detail', customer_id=customer.id)
+    else:
+        form = forms.customer_form(instance=customer)
+    context = {
+        'customer': customer,
+        'form': form,
+        'orders': customer_orders  # Pass the orders to the template
+    }
+    return render(request, 'admin/customer_detail.html', context)
+
+
+def add_order(request, customer_id):
+    customer = get_object_or_404(models.customers, id=customer_id)
+    products = models.product.objects.all().order_by('-date_added')
+
+# Manually construct a list of dictionaries for each product
+    products_list = [{
+        'id': product.id,
+        'name': product.title,
+        'price': product.price,
+    } for product in products]
+    
+    # Serialize this list to a JSON string
+    products_json = json.dumps(products_list)
+
+    if request.method == 'POST':
+        form = forms.order_form(request.POST)
+        if form.is_valid():
+            order = form.save(commit=False)
+            order.customer = customer
+
+            # Regular expression to match the pattern 'products[index][field]' in POST keys
+            pattern = re.compile(r'^products\[(\d+)\]\[(\w+)\]$')
+
+            # Dictionary to hold the items details, indexed by item number
+            items_details = {}
+
+            for key, value in request.POST.items():
+                match = pattern.match(key)
+                if match:
+                    index, field = match.groups()
+                    index = int(index)  # Convert index to integer
+                    
+                    if index not in items_details:
+                        items_details[index] = {}
+                    items_details[index][field] = value
+            
+            # Convert the dictionary of items to a list, to maintain order
+            items_list = [item for _, item in sorted(items_details.items())]
+            order.remaining = int(request.POST.get('price')) - int(request.POST.get('paid'))
+            order.a_paid = int(request.POST.get('paid'))
+            order.items = json.dumps(items_list)  # Save serialized items list
+            order.save()
+            return redirect('all_orders')  # Adjust the redirect as needed
+        else:
+            # Form is not valid; render form with validation errors
+            return render(request, 'admin/order_form.html', {'form': form, 'customer': customer, 'products_json':products_json})
+    else:
+        form = forms.order_form()
+
+    return render(request, 'admin/order_form.html', {'form': form, 'customer': customer, 'products_json':products_json})
+
+def all_orders(request):
+    all_orders = models.orders.objects.all().order_by('-date_added')
+    return render(request, 'admin/all_orders.html', {'orders': all_orders})
+
+def order_detail(request, order_number):
+    order = get_object_or_404(models.orders, order_number=order_number)
+    items = json.loads(order.items)
+    return render(request, 'admin/order_detail.html', {'order': order, 'items': items})
+
+def update_order(request, order_number):
+    order = get_object_or_404(models.orders, order_number=order_number)
+    if request.method == 'POST':
+        form = forms.order_form(request.POST, instance=order)
+        if form.is_valid():
+            order = form.save(commit=False)
+            
+            # Process item details just like in add_order, adjusting for any changes in POST structure
+            pattern = re.compile(r'^product_(\d+)$')  # Adjust this regex based on your POST data keys for items
+            items_details = []
+
+            if 'total_price' in request.POST and request.POST['total_price']:
+                order.price = request.POST['total_price']
+
+            # We need to find the highest index to know how many items we're updating
+            max_index = 0
+            for key in request.POST:
+                match = pattern.match(key)
+                if match:
+                    max_index = max(max_index, int(match.group(1)))
+            
+            # Now we create a list of item details
+            for index in range(1, max_index + 1):
+                try:
+                    item = {
+                        'product': request.POST[f'product_{index}'],
+                        'product_info': request.POST[f'info_{index}'],
+                        'amount': int(request.POST[f'amount_{index}']),
+                        'legs': request.POST[f'legs_{index}'],
+                        'fabric': request.POST[f'fabric_{index}'],
+                        'price': request.POST[f'price_{index}']
+                    }
+                    items_details.append(item)
+                except (ValueError, KeyError):
+                    # Handle the case where some item details are missing
+                    # You might want to add some error handling or logging here
+                    continue
+            
+            order.items = json.dumps(items_details)
+            order.save()
+            return redirect('order_detail', order_number=order.order_number)  # Adjust the redirect as needed
+        else:
+            # If the form is not valid, render the same order detail page with validation errors
+            items = json.loads(order.items)
+            return render(request, 'admin/order_detail.html', {'form': form, 'order': order, 'items': items})
+    else:
+        # Pre-populate the form with the order details for GET request
+        form = forms.order_form(instance=order)
+        items = json.loads(order.items)
+        return render(request, 'admin/order_detail.html', {'form': form, 'order': order, 'items': items})

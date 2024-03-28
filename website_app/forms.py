@@ -1,5 +1,5 @@
 from django import forms
-from .models import product, product_image, category, text_areas, footer_textareas, business_information, supplier
+from .models import product, product_image, category, text_areas, footer_textareas, business_information, supplier, orders, customers
 from django.forms import inlineformset_factory
 
 class product_form(forms.ModelForm):
@@ -59,3 +59,20 @@ class business_information_form(forms.ModelForm):
             'secondary_phone', 'about_us_text',
         ]
 
+class customer_form(forms.ModelForm):
+    class Meta:
+        model = customers
+        fields = ['name', 'zip_code', 'street_address', 'email', 'phone_number']
+
+class order_form(forms.ModelForm):
+    # Add custom fields for the product details
+    product = forms.CharField(max_length=255, required=False)
+    product_info = forms.CharField(widget=forms.Textarea(attrs={'cols': 20, 'rows': 2}), required=False)
+    amount = forms.IntegerField(required=False)
+    legs = forms.CharField(max_length=255, required=False)
+    fabric = forms.CharField(max_length=255, required=False)
+    price = forms.DecimalField(max_digits=10, decimal_places=2, required=False)
+
+    class Meta:
+        model = orders
+        fields = ['delivery_info', 'delivery_price', 'extra_info', 'price', 'paid', 'remaining', 'a_paid', 'salesman', 'instock', 'delivered']

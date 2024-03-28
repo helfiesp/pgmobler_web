@@ -1,0 +1,60 @@
+<!-- website_app/templates/website_app/all_orders.html -->
+
+{% extends 'base/base.html' %}  <!-- Adjust the base template as needed -->
+
+{% block content %}
+<style>
+.main-orders-container {
+  width: 80%;
+  margin: auto; /* Centers the container horizontally */
+  display: flex; /* Enables the use of Flexbox */
+  justify-content: center; /* Centers flex items on the main axis */
+  align-items: center; /* Centers flex items on the cross axis */
+}
+
+.orders-container {
+  text-align: center; /* Centers inline content like text and inline-block elements */
+  width: 100%; /* Ensures the container takes the full width of its parent */
+}
+
+/* Additional styling for the table to ensure it's centered in .orders-container */
+table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+</style>
+
+<div class="main-orders-container">
+    <div class="orders-container">
+        <h2>All Orders</h2>
+        <table>
+            <tr>
+                <th>Order Number</th>
+                <th>Customer</th>
+                <th>Delivery Info</th>
+                <th>Price</th>
+                <th>Date Added</th>
+                <th>Details</th>
+            </tr>
+            {% for order in orders %}
+            <tr>
+                <td>{{ order.order_number }}</td>
+                <td><a href="{% url 'customer_detail' order.customer.id %}">{{ order.customer.name }}</a></td>
+                <td>{{ order.delivery_info }}</td>
+                <td>{{ order.price }}</td>
+                <td>{{ order.date_added }}</td>
+                <td>
+                    <!-- Link to a detailed view of an order (if you have or plan to implement it) -->
+                    <a href="{% url 'order_detail' order.order_number %}">View Details</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">No orders found.</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock %}

@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models import IntegerField
+import uuid
 
 # Create your models here.
 
@@ -91,3 +92,44 @@ class supplier(models.Model):
 
     def __str__(self):
         return self.name
+
+class customers(models.Model):
+    name = models.CharField(max_length=255)
+    zip_code = models.CharField(max_length=255)
+    street_address = models.CharField(max_length=255)
+    email = models.CharField(max_length=255, blank=True)
+    phone_number = models.CharField(max_length=255)
+
+    def __str__(self):
+        return self.name
+
+class orders(models.Model):
+    order_number = models.AutoField(primary_key=True, verbose_name="Order Number")
+    customer = models.ForeignKey(customers, on_delete=models.CASCADE)
+    items = models.JSONField()  # This will contain item_info, fabric, legs, amount, and productprice
+    delivery_info = models.CharField(max_length=255, blank=True)
+    delivery_price = models.IntegerField(blank=True, null=True)
+    extra_info = models.CharField(max_length=255, blank=True)
+    price = models.CharField(max_length=255, blank=True)
+    paid = models.CharField(max_length=255, blank=True)
+    remaining = models.CharField(max_length=255, blank=True)
+    a_paid = models.CharField(max_length=255, blank=True)
+    salesman = models.CharField(max_length=255, blank=True)
+    instock = models.CharField(max_length=255, blank=True)
+    delivered = models.CharField(max_length=255, blank=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+        if not self.pk:  # If the record is being created, i.e., it doesn't have a primary key yet
+            last_order_number = orders.objects.all().order_by('order_number').last()
+            if last_order_number:
+                self.order_number = last_order_number.order_number + 1
+            else:
+                self.order_number = 1000  # Start from 1000 if there are no orders
+        super(orders, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f"Order {self.order_number}"
+
+    class Meta:
+        verbose_name_plural = "Orders"
