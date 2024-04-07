@@ -268,6 +268,7 @@ width: 80px; /* Adjust for mobile */
   list-style-type: none; /* Remove bullet points */
   padding: 0; /* Remove default padding */
   margin: 0 0 10px 0; /* Space out the subcategories */
+
   text-decoration: none;
   color: black;
 }
@@ -297,5 +298,10 @@ width: 80px; /* Adjust for mobile */
     margin-left:20px;
 }
 
-
+.item-count {
+  margin-right: 10px;
+}
+.main-product-image {
+  margin: auto;
+}
 }
