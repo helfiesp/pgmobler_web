@@ -3,13 +3,14 @@
 <link rel="stylesheet" href="{% static 'css/products.css' %}">
     
     {% for product in products %}
+
         {% if product.enabled %}
 
-        {% if per_page == 1 %}
+        {% if request.GET.per_page == "1" %}
             <div class="product-card per-page-1">
-        {% elif per_page == 2 %}
+        {% elif request.GET.per_page == "2" %}
             <div class="product-card per-page-2">
-        {% elif per_page == 3 %}
+        {% elif request.GET.per_page == "3" %}
             <div class="product-card per-page-3">
         {% else %}
             <div class="product-card">

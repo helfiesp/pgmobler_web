@@ -45,7 +45,8 @@
     </a>
 
   <div class="nav-search">
-    <form action="{% url 'general_search' %}" method="get">
+    <form method="get" action="{% if request.path == '/search/' %}{% url 'general_search' %}{% else %}{% url 'products' %}{% endif %}">
+
       <input type="text" placeholder="Søk..." name="query">
       <button type="submit">
         <img class="nav-icon" style="width:18px" src="{{ MEDIA_URL }}icons/magnifying-glass.png" alt="Søk">
@@ -88,7 +89,7 @@
 </div>
 <div id="searchModal" class="search-modal">
   <div class="search-content">
-    <form action="{% url 'general_search' %}" method="get">
+    <form method="get" action="{% if request.path == '/search/' %}{% url 'general_search' %}{% else %}{% url 'products' %}{% endif %}">
       <!-- Just the text input, styled to look like the full search bar -->
       <input type="text" placeholder="Søk..." name="query">
       <!-- Hidden submit button -->

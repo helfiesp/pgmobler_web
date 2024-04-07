@@ -23,6 +23,8 @@ import json
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
+from django.db.models import F, Case, When, Value, IntegerField
+from django.db.models.functions import Cast
 import os
 from django.http import FileResponse, Http404
 
@@ -185,22 +187,46 @@ def supplier_search(request, supplier_name):
 
 def general_search(request):
     query = request.GET.get('query', '')
-    # Filter products by query
+    sort = request.GET.get('sort', 'default_sort_option')
+    per_page = request.GET.get('per_page', '4')  # Default to showing 4 items per row
+
     products = models.product.objects.filter(
         Q(title__icontains=query) | 
         Q(subtitle__icontains=query) | 
         Q(description__icontains=query) |
-        Q(category__name__icontains=query),  # Adjusted to search through the linked category name
+        Q(category__name__icontains=query),
         enabled=True
     ).distinct()
 
 
-    # You may also want to search within categories
-    categories = models.category.objects.filter(name__icontains=query)
+    # Your existing logic for sorting
+    sort_options = {
+        'newly_added': 'date_added',
+        'price_low_high': 'price',
+        'price_high_low': '-price',
+        'name_a_z': 'title',
+        'name_z_a': '-title',
+        'most_discounted': 'discount_percentage',
+    }
+
+    # Adjusting the sort logic to handle discount percentage
+    if sort == 'most_discounted':
+        products = products.annotate(
+            discount_percentage=Case(
+                # Ensure division by zero is handled
+                When(price__gt=0, sale_price__isnull=False, then=(
+                    1 - Cast(F('sale_price'), output_field=IntegerField()) / Cast(F('price'), output_field=IntegerField())
+                ) * 100),
+                default=Value(0),
+                output_field=IntegerField()
+            )
+        ).order_by('-discount_percentage')
+    elif sort in sort_options:
+        products = products.order_by(sort_options[sort])
 
     context = {
         'products': products,
-        'categories': categories,
+        'per_page': per_page,
         'query': query,
     }
     

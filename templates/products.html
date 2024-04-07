@@ -55,42 +55,45 @@
   <div class="products-container">
 
 <div class="top-bar-products">
-<form method="get" action="{% url 'products' %}">
-    <!-- Correct the hidden input to maintain the current per_page state -->
+  <form method="get" action="{% if request.path == '/search/' %}{% url 'general_search' %}{% else %}{% url 'products' %}{% endif %}">
+
+    <!-- Maintain the search query across requests -->
+    <input type="hidden" name="query" value="{{ request.GET.query }}">
+    <!-- Preserve the per_page setting when sorting changes -->
+    
     <input type="hidden" name="per_page" value="{{ request.GET.per_page }}">
 
-<div class="page-layout-section">
-      <div class="filter-bar">
-  <ul class="per-page-selector">
-    <!-- HIDDEN FOR NOW 
-      <li>
-        <a href="?per_page=1{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="{% if request.GET.per_page == "1" %}active{% endif %}">1</a>
-      </li>
-    -->
-<li>
-  <a href="?per_page=2{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="{% if request.GET.per_page == "2" %}active{% endif %}">2</a>
-</li>
-<li>
-  <a href="?per_page=3{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="{% if request.GET.per_page == "3" %}active{% endif %}">3</a>
-</li>
-<li>
-  <a href="?per_page=4{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="{% if request.GET.per_page == "4" or request.GET.per_page is none and request.GET.sort is none %}active{% endif %}">4</a>
-</li>
+    <div class="page-layout-section">
+        <div class="filter-bar">
+        <ul class="per-page-selector">
+          <li>
+            <a href="?per_page=2&query={{ request.GET.query }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="{% if request.GET.per_page == "2" %}active{% endif %}">2</a>
+          </li>
+          <li>
+            <a href="?per_page=3&query={{ request.GET.query }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="{% if request.GET.per_page == "3" %}active{% endif %}">3</a>
+          </li>
+          <li>
+<a href="?per_page=4&query={{ request.GET.query }}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}" class="{% if request.GET.per_page == "4" or request.GET.per_page == "" or request.GET.per_page is none %}active{% endif %}">4</a>
 
-  </ul>
-      <!-- Select dropdown for sorting products -->
-      <select class="filter-select" name="sort" id="sort" onchange="this.form.submit()">
-        <option value="newly_added" {% if request.GET.sort == "newly_added" %}selected{% endif %}>Nyheter</option>
-        <option value="price_low_high" {% if request.GET.sort == "price_low_high" %}selected{% endif %}>Pris lav-høy</option>
-        <option value="price_high_low" {% if request.GET.sort == "price_high_low" %}selected{% endif %}>Pris høy-lav</option>
-        <option value="name_a_z" {% if request.GET.sort == "name_a_z" %}selected{% endif %}>Navn A-Z</option>
-        <option value="name_z_a" {% if request.GET.sort == "name_z_a" %}selected{% endif %}>Navn Z-A</option>
-        <option value="most_discounted" {% if request.GET.sort == "most_discounted" %}selected{% endif %}>Tilbud</option>
-      </select>
+          </li>
+        </ul>
+
+
+
+        <!-- Dropdown for sorting products, ensuring the form submission includes query and per_page -->
+        <select class="filter-select" name="sort" id="sort" onchange="this.form.submit()">
+          <option value="newly_added" {% if request.GET.sort == "newly_added" %}selected{% endif %}>Nyheter</option>
+          <option value="price_low_high" {% if request.GET.sort == "price_low_high" %}selected{% endif %}>Pris lav-høy</option>
+          <option value="price_high_low" {% if request.GET.sort == "price_high_low" %}selected{% endif %}>Pris høy-lav</option>
+          <option value="name_a_z" {% if request.GET.sort == "name_a_z" %}selected{% endif %}>Navn A-Z</option>
+          <option value="name_z_a" {% if request.GET.sort == "name_z_a" %}selected{% endif %}>Navn Z-A</option>
+          <option value="most_discounted" {% if request.GET.sort == "most_discounted" %}selected{% endif %}>Tilbud</option>
+        </select>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
-</form>
+
 <div class="product-cards-section">
 
   {% if category|tostring  == "hyttemøbler" %}
