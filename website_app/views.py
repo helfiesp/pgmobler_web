@@ -8,8 +8,9 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import re
-
+from weasyprint import HTML
 from django.utils import timezone
+from django.http import HttpResponse
 from datetime import timedelta
 from django.http import JsonResponse
 from django.template.loader import render_to_string
@@ -20,7 +21,12 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, get_user_model
 import json
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
+import os
+from django.http import FileResponse, Http404
+
+from django.conf import settings
 
 
 def apply_sort_and_pagination(request, base_queryset, default_sort='newly_added'):
@@ -640,10 +646,30 @@ def all_orders(request):
     all_orders = models.orders.objects.all().order_by('-date_added')
     return render(request, 'admin/all_orders.html', {'orders': all_orders})
 
+
+def pdf_exists_for_order(order_number):
+    # Define the path to the 'orders' directory within 'files' in your BASE_DIR
+    orders_dir = os.path.join(settings.BASE_DIR, 'files', 'orders')
+    
+    # Define the full file path where the PDF should be saved
+    file_path = os.path.join(orders_dir, f'order_{order_number}.pdf')
+    
+    # Return True if the PDF file exists, False otherwise
+    return os.path.exists(file_path)
+
 def order_detail(request, order_number):
     order = get_object_or_404(models.orders, order_number=order_number)
     items = json.loads(order.items)
-    return render(request, 'admin/order_detail.html', {'order': order, 'items': items})
+
+    # Call the helper function to check if the PDF exists for this order
+    pdf_file_exists = pdf_exists_for_order(order_number)
+
+    # Pass the result to the template context
+    return render(request, 'admin/order_detail.html', {
+        'order': order,
+        'items': items,
+        'pdf_exists': pdf_file_exists,
+    })
 
 def update_order(request, order_number):
     order = get_object_or_404(models.orders, order_number=order_number)
@@ -682,7 +708,8 @@ def update_order(request, order_number):
                     # Handle the case where some item details are missing
                     # You might want to add some error handling or logging here
                     continue
-            
+ 
+            order.remaining = int(request.POST.get('total_price')) - int(request.POST.get('paid'))
             order.items = json.dumps(items_details)
             order.save()
             return redirect('order_detail', order_number=order.order_number)  # Adjust the redirect as needed
@@ -695,3 +722,93 @@ def update_order(request, order_number):
         form = forms.order_form(instance=order)
         items = json.loads(order.items)
         return render(request, 'admin/order_detail.html', {'form': form, 'order': order, 'items': items})
+
+@login_required
+@require_POST
+def remove_order(request, order_number):
+    try:
+        order = models.orders.objects.get(order_number=order_number)
+        order.deleted = not order.deleted  # Toggle the deleted status
+        order.save()
+        return JsonResponse({'deleted': order.deleted})
+    except models.orders.DoesNotExist:
+        return JsonResponse({'success': False}, status=404)
+
+
+@login_required
+@require_POST
+def complete_order(request, order_number):
+    try:
+        order = models.orders.objects.get(order_number=order_number)
+        order.completed = not order.completed  # Toggle the completion status
+        order.save()
+        return JsonResponse({'completed': order.completed})
+    except models.orders.DoesNotExist:  # Ensure this matches your model import
+        return JsonResponse({'success': False}, status=404)
+
+
+def show_order_pdf(request, order_number):
+    # Define the path to the 'orders' directory within 'files' in your BASE_DIR
+    orders_dir = os.path.join(settings.BASE_DIR, 'files', 'orders')
+    
+    # Define the full file path where the PDF should be saved
+    file_path = os.path.join(orders_dir, f'order_{order_number}.pdf')
+    
+    # Check if the PDF file exists
+    if os.path.exists(file_path):
+        # Open the PDF file and return it in the response
+        pdf_file = open(file_path, 'rb')
+        response = FileResponse(pdf_file, content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="order_{order_number}_confirmation.pdf"'
+        return response
+    else:
+        # If the PDF does not exist, raise 404 not found
+        raise Http404("PDF file does not exist")
+
+def order_confirmation(request, order_number):
+    # Fetch the order and customer from the database using order ID
+    order = get_object_or_404(models.orders, pk=order_number)
+    customer = get_object_or_404(models.customers, id=order.customer.id)
+    
+    # Assuming order.items is a JSON string; parse it into a Python dictionary
+    item_details = json.loads(order.items) if order.items else []
+    product_total = sum(int(item["price"]) * int(item["amount"]) for item in item_details)
+    if order.delivery_price:
+        product_total += int(order.delivery_price)
+
+    # Fetch the business information
+    business_info = models.business_information.objects.first()
+    
+    # Prepare the context for rendering
+    context = {
+        'order': order,
+        'customer': customer,
+        'item_details': item_details,
+        'product_total': product_total,
+        'business_information': business_info,
+    }
+
+    # Render the HTML template to a string
+    html_string = render_to_string('admin/order_confirmation.html', context)
+
+    # Generate PDF from the rendered HTML string
+    html = HTML(string=html_string)
+    pdf = html.write_pdf()
+
+    # Define the path to the 'orders' directory within 'files' in your PROJECT_ROOT
+    orders_dir = os.path.join(settings.BASE_DIR, 'files', 'orders')
+    os.makedirs(orders_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
+    # Define the full file path where the PDF will be saved
+    file_path = os.path.join(orders_dir, f'order_{order_number}.pdf')
+
+    # Write the PDF data to the file
+    with open(file_path, 'wb') as pdf_file:
+        pdf_file.write(pdf)
+
+    # Open the PDF file and return it in the response
+    pdf_file = open(file_path, 'rb')
+    response = FileResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = f'inline; filename="order_{order_number}_confirmation.pdf"'
+
+    return response

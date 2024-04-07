@@ -1,0 +1,246 @@
+<title>Ordrebekreftelse: {{ order.order_number }}</title>
+
+<style>
+body, h1, a {
+  padding: 0;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+/* Base styles for the invoice box */
+.invoice-box {
+  max-width: 800px;
+  margin: auto;
+  padding: 30px;
+  font-size: 14px;
+  line-height: 21px;
+  color: #555;
+  border: 1px solid;
+  box-sizing: border-box; /* Makes sure padding is included in the width */
+}
+
+/* Styles for tables within the invoice box */
+.invoice-box table {
+  width: 100%;
+  line-height: inherit;
+  text-align: left;
+  border-spacing: 0;
+  border-collapse: collapse; /* Ensures no spacing between table cells */
+}
+
+/* Cell padding and vertical alignment */
+.invoice-box table td {
+  padding: 5px;
+  vertical-align: top;
+}
+
+/* Text alignment for specific table cells */
+.invoice-box table tr td:nth-child(2) {
+  text-align: right;
+}
+
+/* Styling for heading cells */
+.invoice-box table tr.heading td {
+  background: #eee;
+  border-bottom: 1px solid #ddd;
+  font-weight: bold;
+}
+
+/* Spacing below detail cells and for the last item */
+.invoice-box table tr.details td,
+.invoice-box table tr.item.last td,
+.invoice-box table tr.item:last-child td {
+  padding-bottom: 20px;
+  border-bottom: none; /* No bottom border for the last item cell */
+}
+
+/* Top border and bold styling for total cells */
+.invoice-box table tr.total td:nth-child(2) {
+  border-top: 2px solid #eee;
+  font-weight: bold;
+}
+
+/* Centered logo styles */
+.logo-center {
+  display: table;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.logo-center img {
+  display: block;
+  margin: 0 auto;
+  max-width: 300px;
+  height: auto;
+}
+
+/* Two-column layout for additional information */
+.info-table {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.info-table .left {
+  width: 50%;
+  vertical-align: top;
+}
+
+.info-table .right {
+  width: 50%;
+  text-align: right;
+  vertical-align: top;
+}
+
+/* Responsive table adjustments */
+@media only screen and (max-width: 600px) {
+  .invoice-box table tr.top table td,
+  .invoice-box table tr.information table td {
+    width: 100%;
+    display: block;
+    text-align: center;
+  }
+}
+
+/* Print-specific adjustments */
+@media print {
+  @page {
+    margin-top: 0;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+  }
+  body * {
+    visibility: hidden;
+  }
+  .invoice-box, .invoice-box * {
+    visibility: visible;
+  }
+  .invoice-box {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+    padding: 15px;
+    width: 100%;
+    border: none;
+  }
+}
+</style>
+
+
+
+<div class="invoice-box">
+    <div class="logo-center">
+        <img src="http://192.168.1.90:8000/media/pg_mobler_logo.png" alt="PG Møbler Logo">
+    </div>
+    
+    <table class="info-table">
+        <tr>
+            <td class="left">
+                PG Møbler 922 960 569<br>
+                {{ business_information.street_address }}, {{ business_information.zip_code }} {{ business_information.zip_code_area }}<br>
+                {{ business_information.main_phone }}<br>
+                {{ business_information.main_email }}
+            </td>
+            <td class="right">
+                Ordrenummer: {{ order.order_number }}<br>
+                Kundenummer: {{ customer.id }}<br>
+                Bestillingsdato: {{ order.date_added|date:"d/m/Y" }}    
+            </td>
+        </tr>
+    </table>
+        <table cellpadding="0" cellspacing="0">
+            <tr class="heading">
+                <td>Kundeinformasjon</td>
+                <td></td>
+            </tr>
+            <tr class="item">
+                <td>Navn</td>
+                <td>{{ customer.name }}</td>
+            </tr>
+            <tr class="item">
+                <td>Adresse</td>
+                <td>{{ customer.street_address }}, {{ customer.zip_code }}</td>
+            </tr>
+            <tr class="item">
+                <td>Telefon</td>
+                <td>{{ customer.phone }}</td>
+            </tr>
+            <tr class="item">
+                <td>E-post</td>
+                <td>{{ customer.email }}</td>
+            </tr>
+        </table>
+        <table cellpadding="0" cellspacing="0">
+            <tr class="heading">
+                <td>Produkt</td>
+                <td style="text-align:center;">Produktinformasjon</td>
+                <td style="text-align:center;">Stoff/Farge</td>
+                <td style="text-align:center;">Ben</td>
+                <td style="text-align:center;">Antall</td>
+                <td style="text-align:center;">Pris</td>
+            </tr>
+            <!-- Iterate over item_details passed to the template -->
+            {% for item in item_details %}
+            <tr class="item">
+                <td>{{ item.product }}</td>
+                <td style="text-align:center;">{{ item.product_info }}</td>
+                <td style="text-align:center;">{{ item.fabric }}</td>
+                <td style="text-align:center;">{{ item.legs }}</td>
+                <td style="text-align:center;">{{ item.amount }}</td>
+                <td style="text-align:center;">{{ item.price }}</td>
+            </tr>
+            {% endfor %}
+
+            {% if order.delivery_price %}
+            <tr class="item">
+                <td>Levering</td>
+                <td style="text-align:center;">Levering</td>
+                <td colspan="3" style="text-align:center;"></td>
+                <td style="text-align:center;">{{ order.delivery_price }}</td>
+            </tr>
+            {% endif %}
+            <tr class="item">
+                <td>Produkt total</td>
+                <td colspan="4" style="text-align:center;"></td>
+                <td style="text-align:center;"><b>{{ product_total }}</b></td>
+            </tr>
+        </table>
+        <table cellpadding="0" cellspacing="0">
+            <tr class="heading">
+                <td>Annen informasjon</td>
+                <td></td>
+            </tr>
+            <tr class="item">
+                <td>Leveringsinformasjon</td>
+                <td>{{ order.delivery_info }}</td>
+            </tr>
+            <tr class="item">
+                <td>Selger</td>
+                <td>{{ order.salesman }}</td>
+            </tr>
+            <tr class="item">
+                <td>Ekstra info</td>
+                <td>{{ order.extra_info }}</td>
+            </tr>
+        </table>
+        <table cellpadding="0" cellspacing="0">
+            <tr class="heading">
+                <td>Pris etter rabatt</td>
+                <td></td>
+            </tr>
+            <tr class="item">
+                <td>Pris</td>
+                <td><b>{{ order.price }}</b></td>
+            </tr>
+            <tr class="item">
+                <td>Betalt</td>
+                <td><b>{{ order.paid }}</b></td>
+            </tr>
+            <tr class="item">
+                <td>Resterende</td>
+                <td><b>{{ order.remaining }}</b></td>
+            </tr>
+        </table>
+    </div>

@@ -13,3 +13,4 @@ website_app/migrations/0001_initial.py
 website_app/migrations/0002_alter_product_image_image.py
 website_app/migrations/0003_suadasdpplier.py
 migrations/
+/files

@@ -1,12 +1,10 @@
-<!-- website_app/templates/website_app/order_detail.html -->
-
 {% extends 'base/base.html' %}  <!-- Adjust this path to your actual base template -->
 
 {% block content %}
 
 <style>
 .order-details {
-    max-width: 600px;
+    max-width: 800px;
     margin: 40px auto;
     padding: 20px;
     background: #fff;
@@ -26,7 +24,7 @@
 
 .order-details input[type="text"],
 .order-details input[type="number"] {
-    width: 100%;
+    width: 97%;
     padding: 8px;
     margin-bottom: 20px;
     border: 1px solid #ccc;
@@ -90,36 +88,98 @@ color: white;
 }
 .order-header {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column; /* Changed to column to stack elements */
     align-items: center;
+    margin-bottom: 15px;
+}
+
+.button-row {
+    display: flex;
+    justify-content: center; /* Center the buttons horizontally */
+    gap: 10px; /* Add space between buttons */
+    width: 100%; /* Ensure the row takes full width */
+    flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+    margin-bottom: 20px; /* Space below the button row */
 }
 
 .print-button {
     background-color: #4CAF50; /* Green */
     border: none;
     color: white;
-    padding: 10px 20px;
+    padding: 5px 10px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
+    font-size: 14px;
+    margin: 2px 1px;
     cursor: pointer;
     border-radius: 4px;
 }
 
+.status-menu {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #ccc;
+}
+
+.status-tag {
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    border-radius: 15px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    width: auto;
+}
+
+.deleted {
+    background-color: #d9534f; /* Red */
+}
+
+.completed {
+    background-color: #5cb85c; /* Green */
+}
 
 </style>        
 
-
-<form class="order-details" method="post" action="{% url 'update_order' order.order_number %}">
+<form class="order-details" method="post">
     {% csrf_token %}
     <div class="order-header">
         <h2>Rediger ordre: {{ order.order_number }}</h2>
-        <button onclick="window.print();" class="print-button">Print Ordre</button>
+        <div class="button-row">
+
+        <!-- Button to complete the order -->
+        <button onclick="completeOrder({{ order.order_number }});" class="print-button" style="background-color: #5bc0de; border:none;">Ferdigstill ordre</button>
+
+        <!-- Button to delete the order -->
+        <button onclick="removeOrder({{ order.order_number }}, this);" class="print-button" style="background-color: #d9534f;">Slett ordre</button>
+        
+        {% if pdf_exists %}
+            <button type="button" onclick="window.location.href='{% url 'show_order_pdf' order.order_number %}'" class="print-button">Vis ordrebekreftelse</button>
+        {% endif %}
+
+        <!-- Button to generate the PDF -->
+        <button type="button" onclick="window.location.href='{% url 'order_confirmation' order.order_number %}'" class="print-button" style="background-color: #337ab7;">{% if pdf_exists %}Generer ny ordrebekreftelse{% else %}Generer ordrebekreftelse{% endif %}</button>
     </div>
+    </div>
+    <!-- Status Menu -->
+    <div class="status-menu">
+        <!-- Completed Status Tag -->
+        <span id="status-tag-completed-{{ order.order_number }}" class="status-tag {% if order.completed %}completed{% else %}not-completed{% endif %}">
+            {% if order.completed %}Completed{% else %}Not Completed{% endif %}
+        </span>
+        <!-- Deleted Status Tag -->
+        <span id="status-tag-deleted-{{ order.order_number }}" class="status-tag {% if order.deleted %}deleted{% else %}not-deleted{% endif %}">
+            {% if order.deleted %}Deleted{% else %}Active{% endif %}
+        </span>
+    </div>
+
     <label for="customer_name">Kunde:</label>
-    <input type="text" id="customer_name" name="customer_name" value="{{ order.customer.name }}" />
+    <p><a href="{% url 'customer_detail' order.customer.id %}">{{ order.customer.name }}</a></p>
 
     <label for="delivery_info">Leveringsinfo:</label>
     <input type="text" id="delivery_info" name="delivery_info" value="{{ order.delivery_info }}" />
@@ -182,11 +242,12 @@ color: white;
             </div>
         {% endfor %}
     </div>
+<div class="product-button-container" style="display: flex;">
+    <button type="button" id="addNewProduct" class="save-button" style="background-color: #337ab7; margin-right:3px">Legg til nytt produkt</button>
+    <button type="button" id="removeCurrentProduct" class="save-button" style="background-color: #d9534f; margin-left:3px">Fjern gjeldende produkt</button>
+</div>
 
-
-    <button type="submit" class="save-button">Lagre endringer</button>
-    <button type="button" id="addNewProduct" class="save-button" style="background-color: #337ab7;">Legg til nytt produkt</button>
-    <button type="button" id="removeCurrentProduct" class="save-button" style="background-color: #d9534f; margin-top: 10px;">Fjern gjeldende produkt</button>
+<button type="submit" formaction="{% url 'update_order' order.order_number %}" class="save-button" style="background-color: #4cae4c; border:none; margin-top:6px">Oppdater ordre</button>
 
 
 </form>
@@ -264,7 +325,17 @@ document.getElementById('addNewProduct').addEventListener('click', function() {
         var input = document.createElement('input');
         input.type = (field === 'amount') ? 'number' : 'text';
         input.name = field + '_' + (itemCount + 1);
+
+        // Set the default values for amount and price
+        if (field === 'amount') {
+            input.defaultValue = '1';
+        } else if (field === 'price') {
+            input.defaultValue = '0';
+        }
+
         newItem.appendChild(input);
+
+
     });
     document.getElementById('itemsContainer').appendChild(newItem);
 
@@ -304,6 +375,84 @@ document.getElementById('nav-button' + index).classList.add('active');
 document.addEventListener('DOMContentLoaded', function() {
 showItem(0);
 });
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+const csrftoken = getCookie('csrftoken');
+
+
+function removeOrder(orderNumber, button) {
+    fetch('/remove-order/' + orderNumber, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken') // Retrieve CSRF token
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Assuming 'data.deleted' is a boolean reflecting the new state of the order.
+        const statusTag = document.querySelector(`#status-tag-${orderNumber}`);
+        if (statusTag) {  // Check if the element exists to avoid null errors
+            if (data.deleted) {
+                statusTag.classList.add('deleted');
+                statusTag.classList.remove('not-deleted'); // Add this class if you need it
+                statusTag.textContent = 'Deleted'; // Change the text if needed
+            } else {
+                statusTag.classList.add('not-deleted'); // Add this class if you need it
+                statusTag.classList.remove('deleted');
+                statusTag.textContent = 'Active'; // Change the text if not deleted
+            }
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
+
+function completeOrder(orderNumber) {
+    fetch('/complete-order/' + orderNumber, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')  // Ensure this function is defined and retrieves the CSRF token
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Assuming 'data.completed' is a boolean reflecting the new state of the order.
+        const statusTag = document.querySelector(`#status-tag-${orderNumber}`);
+        if (statusTag) {  // Check if the element exists to avoid null errors
+            if (data.completed) {
+                statusTag.classList.add('completed');
+                statusTag.classList.remove('not-completed');
+                statusTag.textContent = 'Completed'; // Change the text if needed
+            } else {
+                statusTag.classList.add('not-completed');
+                statusTag.classList.remove('completed');
+                statusTag.textContent = 'Not Completed'; // Change the text if needed
+            }
+        }
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}
+
 </script>
 
 {% endblock %}

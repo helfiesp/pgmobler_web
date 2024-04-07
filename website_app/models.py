@@ -118,6 +118,8 @@ class orders(models.Model):
     instock = models.CharField(max_length=255, blank=True)
     delivered = models.CharField(max_length=255, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
+    deleted = models.BooleanField(default=False)
+    completed = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.pk:  # If the record is being created, i.e., it doesn't have a primary key yet
