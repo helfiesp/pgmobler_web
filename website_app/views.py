@@ -214,7 +214,8 @@ def general_search(request):
 
 def product_page(request, product_id):
     product = get_object_or_404(models.product, pk=product_id)
-    
+    print(product.category)
+    print(product.category_link)
     # Filter out images with empty values
     product_images = product.images.exclude(image__isnull=True).exclude(image__exact='')
 

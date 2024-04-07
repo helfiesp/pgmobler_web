@@ -8,6 +8,7 @@ class product(models.Model):
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=200, blank=True)
     category = models.CharField(max_length=200, null=True, blank=True)
+    category_link = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='product_images/', null=True, blank=True)
     price = models.IntegerField(null=True, blank=True)
