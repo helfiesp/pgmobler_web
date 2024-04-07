@@ -6,20 +6,22 @@ register = template.Library()
 
 @register.filter
 def get_category_count(category_name):
-	# Checks how many items are in a specific category
-    if not category_name:
-        return 0
-    return product.objects.filter(category=category_name, enabled=True).count()
-
-@register.filter
-def fetch_category_id(category_name):
-    category_results = category.objects.get(name=category_name)  # Assuming the model name is Category
     if not category_name:
         return 0
     try:
-        category_results = category.objects.get(name=category_name)  # Assuming the model name is Category
-        return category_results.id
-    except category_results.DoesNotExist:
+        category_obj = category.objects.get(name__iexact=category_name)  # Case-insensitive match
+        return product.objects.filter(category=category_obj, enabled=True).count()
+    except category.DoesNotExist:
+        return 0
+
+@register.filter
+def fetch_category_id(category_name):
+    if not category_name:
+        return 0
+    try:
+        category_obj = category.objects.get(name__iexact=category_name)  # Case-insensitive match
+        return category_obj.id
+    except category.DoesNotExist:
         return 0
 
 @register.filter

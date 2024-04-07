@@ -4,11 +4,19 @@ import uuid
 
 # Create your models here.
 
+
+class category(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='subcategories')
+    image = models.ImageField(upload_to='category_images/', null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
 class product(models.Model):
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=200, blank=True)
-    category = models.CharField(max_length=200, null=True, blank=True)
-    category_link = models.ForeignKey('Category', on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
+    category = models.ForeignKey('category', on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='product_images/', null=True, blank=True)
     price = models.IntegerField(null=True, blank=True)
@@ -34,13 +42,6 @@ class product_image(models.Model):
     image = models.ImageField(upload_to='product_images/', null=True, blank=True)
 
 
-class category(models.Model):
-    name = models.CharField(max_length=255, unique=True)
-    parent = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='subcategories')
-    image = models.ImageField(upload_to='category_images/', null=True, blank=True)
-
-    def __str__(self):
-        return self.name
 
  
 class text_areas(models.Model):

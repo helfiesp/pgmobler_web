@@ -137,19 +137,13 @@ def contact(request):
 
 def category_search(request, category_name):
     # Fetch the main category
-    main_category = get_object_or_404(models.category, name=category_name)
+    main_category = get_object_or_404(models.category, name__iexact=category_name)
 
-    # Fetch the names of all subcategories of the main category
-    subcategory_names = models.category.objects.filter(parent=main_category).values_list('name', flat=True)
+    # Fetch all subcategories of the main category, including the main category itself
+    subcategories = models.category.objects.filter(Q(id=main_category.id) | Q(parent=main_category))
 
-    # Create a list to hold the main category name and all subcategory names
-    category_names = [category_name] + list(subcategory_names)
-
-    # Fetch products that belong to the main category or any of its subcategories by name
-    products = models.product.objects.filter(
-        Q(category__in=category_names),
-        enabled=True
-    )
+    # Fetch products that belong to the main category or any of its subcategories
+    products = models.product.objects.filter(category__in=subcategories, enabled=True)
 
     # Apply sorting and pagination
     products_page, sort, per_page = apply_sort_and_pagination(request, products)
@@ -164,7 +158,6 @@ def category_search(request, category_name):
 
     # Render the template with the products for the category and its subcategories
     return render(request, 'products.html', context)
-
 
 def supplier_search(request, supplier_name):
     # Fetch the supplier
@@ -197,9 +190,10 @@ def general_search(request):
         Q(title__icontains=query) | 
         Q(subtitle__icontains=query) | 
         Q(description__icontains=query) |
-        Q(category__icontains=query),
+        Q(category__name__icontains=query),  # Adjusted to search through the linked category name
         enabled=True
     ).distinct()
+
 
     # You may also want to search within categories
     categories = models.category.objects.filter(name__icontains=query)
@@ -215,7 +209,7 @@ def general_search(request):
 def product_page(request, product_id):
     product = get_object_or_404(models.product, pk=product_id)
     print(product.category)
-    print(product.category_link)
+    print(product.category)
     # Filter out images with empty values
     product_images = product.images.exclude(image__isnull=True).exclude(image__exact='')
 
