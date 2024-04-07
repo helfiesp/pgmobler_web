@@ -56,7 +56,7 @@
 <div class="main-container">
     <div class="product-categories">
       {% for category in all_categories %}
-        {% if not category.parent and category|tostring != "Hyttemøbler" %}
+        {% if not category.parent and category|tostring != "hyttemøbler" %}
           <div class="category-item">
             <a style="text-decoration: none" href="{% url 'category_search' category.name %}">
             <img src="{{ MEDIA_URL }}{{ category.image }}" alt="{{ category.name }}" class="category-image">
