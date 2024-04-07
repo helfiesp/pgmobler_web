@@ -123,6 +123,11 @@ nav {
   marign-bottom:50px;
 
 }
+
+.nav-logo a img {
+    max-width: 200px;
+    height: auto;
+}
 /* Product & categories */
 .products, .product-categories {
 padding: 0; /* Remove padding */
