@@ -60,7 +60,7 @@
           <div class="category-item">
             <a style="text-decoration: none" href="{% url 'category_search' category.name %}">
             <img src="{{ MEDIA_URL }}{{ category.image }}" alt="{{ category.name }}" class="category-image">
-            <h3>{{ category.name }}</h3></a>
+            <h3>{{ category.name|title }}</h3></a>
           </div>
         {% endif %}
       {% endfor %}
