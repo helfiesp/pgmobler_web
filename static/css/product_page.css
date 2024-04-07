@@ -234,12 +234,13 @@ h1 {
 @media screen and (max-width: 768px) {
     .product-page-container {
         flex-direction: column;
-        margin-top:25px;
-        width:100%;
+        margin-top: 25px;
+        width: 100%;
+        align-items: center; /* Center items horizontally */
     }
 
     .product-image-section {
-        width: 100%;    
+        width: 100%;
     }
 
     .product-thumbnails-section {
@@ -249,8 +250,8 @@ h1 {
         transform: none; /* Reset the transform */
         flex-direction: row; /* Change the direction to row */
         margin-top: 20px; /* Add some space between the main image and thumbnails */
-        max-width:500px;
-
+        max-width: 500px;
+        justify-content: center; /* Center items horizontally */
     }
 
     .product-details-section {
@@ -262,11 +263,12 @@ h1 {
     .product-thumbnail {
         cursor: pointer;
         transition: transform 0.3s ease;
-}
-  .product-tabs {
+    }
+
+    .product-tabs {
         display: flex; /* Use flex to allow flex-direction to take effect */
         flex-direction: column; /* Stack the items vertically */
-        align-items: center; /* Center-align the items if needed */
+        align-items: center; /* Center-align the items */
         padding: 0;
         margin-bottom: 20px;
     }
