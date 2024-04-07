@@ -193,7 +193,9 @@ function openTab(event, tabName) {
     <div class="product-tabs">
         <span class="tab-item active" onclick="openTab(event, 'Beskrivelse')">{{ text_areas_all.product_desc_item_1 }}</span>
         <span class="tab-item" onclick="openTab(event, 'Detaljer')">{{ text_areas_all.product_desc_item_2 }}</span>
-        <span class="tab-item" onclick="openTab(event, 'MerInformasjon')">{{ text_areas_all.product_desc_item_3 }}</span>
+        {% if product.more_information %}
+            <span class="tab-item" onclick="openTab(event, 'MerInformasjon')">{{ text_areas_all.product_desc_item_3 }}</span>
+        {% endif %}
     </div>
     <div id="Beskrivelse" class="tab-content">
         <p>{{ product.description|safe }}</p>
