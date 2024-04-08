@@ -76,10 +76,10 @@ urlpatterns = [
     path('order-detail/<int:order_number>/', views.order_detail, name='order_detail'),
     path('order-detail/<int:order_number>/confirmation', views.order_confirmation, name='order_confirmation'),
     path('order-detail/<int:order_number>/show-pdf/', views.show_order_pdf, name='show_order_pdf'),
+    path('order-detail/<int:order_number>/complete', views.complete_order, name='complete_order'),
 
-    path('update-order/<int:order_number>/', views.update_order, name='update_order'),
-    path('remove-order/<int:order_number>', views.remove_order, name='remove-order'),
-    path('complete-order/<int:order_number>', views.complete_order, name='complete-order'),
+    path('order-detail/<int:order_number>/update', views.update_order, name='update_order'),
+
 
 
 

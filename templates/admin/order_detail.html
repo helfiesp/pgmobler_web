@@ -115,48 +115,102 @@ color: white;
     cursor: pointer;
     border-radius: 4px;
 }
-
-.status-menu {
-    margin-top: 10px;
+/* Container for toggle buttons */
+/* Container for toggle buttons */
+.toggle-buttons-container {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #ccc;
+    justify-content: start;
+    align-items: center; /* Vertically align items in the container */
+    gap: 10px;
+    margin-bottom: 20px; /* Space below the toggle buttons */
 }
 
-.status-tag {
-    margin-bottom: 10px;
-    padding: 5px 10px;
-    border-radius: 15px;
-    color: #fff;
-    font-size: 14px;
-    font-weight: bold;
-    text-transform: uppercase;
-    width: auto;
+/* The switch - the box around the slider */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 60px; /* Width of the switch */
+    height: 34px; /* Height of the switch */
 }
 
-.deleted {
-    background-color: #d9534f; /* Red */
+/* Hide default checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
 }
 
-.completed {
-    background-color: #5cb85c; /* Green */
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #2196F3;
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* Label Text Styling */
+.label-text {
+    display: inline-block;
+    margin-left: 10px; /* Space between the slider and text */
+}
+
+/* Making sure the toggle button has space around */
+.toggle-button {
+    display: flex;
+    align-items: center; /* Centering items vertically */
+    gap: 5px; /* Space between the checkbox and the label text */
 }
 
 </style>        
 
+  
+
+
 <form class="order-details" method="post">
     {% csrf_token %}
     <div class="order-header">
+
+
         <h2>Rediger ordre: {{ order.order_number }}</h2>
         <div class="button-row">
-
-        <!-- Button to complete the order -->
-        <button onclick="completeOrder({{ order.order_number }});" class="print-button" style="background-color: #5bc0de; border:none;">Ferdigstill ordre</button>
-
-        <!-- Button to delete the order -->
-        <button onclick="removeOrder({{ order.order_number }}, this);" class="print-button" style="background-color: #d9534f;">Slett ordre</button>
         
         {% if pdf_exists %}
             <button type="button" onclick="window.location.href='{% url 'show_order_pdf' order.order_number %}'" class="print-button">Vis ordrebekreftelse</button>
@@ -166,16 +220,27 @@ color: white;
         <button type="button" onclick="window.location.href='{% url 'order_confirmation' order.order_number %}'" class="print-button" style="background-color: #337ab7;">{% if pdf_exists %}Generer ny ordrebekreftelse{% else %}Generer ordrebekreftelse{% endif %}</button>
     </div>
     </div>
-    <!-- Status Menu -->
-    <div class="status-menu">
-        <!-- Completed Status Tag -->
-        <span id="status-tag-completed-{{ order.order_number }}" class="status-tag {% if order.completed %}completed{% else %}not-completed{% endif %}">
-            {% if order.completed %}Completed{% else %}Not Completed{% endif %}
-        </span>
-        <!-- Deleted Status Tag -->
-        <span id="status-tag-deleted-{{ order.order_number }}" class="status-tag {% if order.deleted %}deleted{% else %}not-deleted{% endif %}">
-            {% if order.deleted %}Deleted{% else %}Active{% endif %}
-        </span>
+
+    <!-- Toggle Buttons Container -->
+    <!-- Toggle Buttons Container -->
+    <div class="toggle-buttons-container">
+        <!-- Delivered Toggle -->
+        <div class="toggle-button">
+            <label class="switch">
+                <input type="checkbox" id="delivered" name="delivered" {% if order.delivered %}checked{% endif %}>
+                <span class="slider round"></span>
+            </label>
+            <span class="label-text">Levert</span>
+        </div>
+
+        <!-- Deleted Toggle -->
+        <div class="toggle-button">
+            <label class="switch">
+                <input type="checkbox" id="deleted" name="deleted" {% if order.deleted %}checked{% endif %}>
+                <span class="slider round"></span>
+            </label>
+            <span class="label-text">Slettet</span>
+        </div>
     </div>
 
     <label for="customer_name">Kunde:</label>
@@ -204,6 +269,8 @@ color: white;
 
     <label for="salesman">Selger:</label>
     <input type="text" id="salesman" name="salesman" value="{{ order.salesman }}" />
+    <div>
+
 
     <label for="date_added">Dato lagt til:</label>
     <input type="text" id="date_added" name="date_added" value="{{ order.date_added }}" disabled />
@@ -393,65 +460,6 @@ function getCookie(name) {
 
 const csrftoken = getCookie('csrftoken');
 
-
-function removeOrder(orderNumber, button) {
-    fetch('/remove-order/' + orderNumber, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken') // Retrieve CSRF token
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Assuming 'data.deleted' is a boolean reflecting the new state of the order.
-        const statusTag = document.querySelector(`#status-tag-${orderNumber}`);
-        if (statusTag) {  // Check if the element exists to avoid null errors
-            if (data.deleted) {
-                statusTag.classList.add('deleted');
-                statusTag.classList.remove('not-deleted'); // Add this class if you need it
-                statusTag.textContent = 'Deleted'; // Change the text if needed
-            } else {
-                statusTag.classList.add('not-deleted'); // Add this class if you need it
-                statusTag.classList.remove('deleted');
-                statusTag.textContent = 'Active'; // Change the text if not deleted
-            }
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-}
-
-
-function completeOrder(orderNumber) {
-    fetch('/complete-order/' + orderNumber, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCookie('csrftoken')  // Ensure this function is defined and retrieves the CSRF token
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        // Assuming 'data.completed' is a boolean reflecting the new state of the order.
-        const statusTag = document.querySelector(`#status-tag-${orderNumber}`);
-        if (statusTag) {  // Check if the element exists to avoid null errors
-            if (data.completed) {
-                statusTag.classList.add('completed');
-                statusTag.classList.remove('not-completed');
-                statusTag.textContent = 'Completed'; // Change the text if needed
-            } else {
-                statusTag.classList.add('not-completed');
-                statusTag.classList.remove('completed');
-                statusTag.textContent = 'Not Completed'; // Change the text if needed
-            }
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-}
 
 </script>
 

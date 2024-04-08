@@ -73,6 +73,7 @@ class order_form(forms.ModelForm):
     fabric = forms.CharField(max_length=255, required=False)
     price = forms.DecimalField(max_digits=10, decimal_places=2, required=False)
 
+
     class Meta:
         model = orders
-        fields = ['delivery_info', 'delivery_price', 'extra_info', 'price', 'paid', 'remaining', 'a_paid', 'salesman', 'instock', 'delivered']
+        fields = ['delivery_info', 'delivery_price', 'extra_info', 'price', 'paid', 'remaining', 'a_paid', 'salesman', 'instock', 'delivered', 'deleted']

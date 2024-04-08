@@ -436,15 +436,20 @@ def product_list_and_update(request, product_id=None):
         product = get_object_or_404(models.product, pk=product_id)
         form = forms.product_form(request.POST, instance=product)
         if form.is_valid():
-            # Set date_edited to now on update
             product_instance = form.save(commit=False)
             product_instance.date_edited = timezone.now()
             product_instance.save()
-            form.save_m2m()  # In case there are many-to-many fields on the form
+            form.save_m2m()
             return redirect('update_products')
     else:
         products = models.product.objects.all().order_by('id')
-        return render(request, 'admin/update_products.html', {'products': products, 'admin':True, 'suppliers': models.supplier.objects.all()})
+        all_categories = models.category.objects.all()
+        return render(request, 'admin/update_products.html', {
+            'products': products,
+            'all_categories': all_categories,  # Add this line
+            'admin': True,
+            'suppliers': models.supplier.objects.all()
+        })
 
 
 @login_required(login_url='/admin')
@@ -681,7 +686,6 @@ def pdf_exists_for_order(order_number):
 def order_detail(request, order_number):
     order = get_object_or_404(models.orders, order_number=order_number)
     items = json.loads(order.items)
-
     # Call the helper function to check if the PDF exists for this order
     pdf_file_exists = pdf_exists_for_order(order_number)
 
@@ -751,7 +755,7 @@ def remove_order(request, order_number):
         order = models.orders.objects.get(order_number=order_number)
         order.deleted = not order.deleted  # Toggle the deleted status
         order.save()
-        return JsonResponse({'deleted': order.deleted})
+        return redirect('order_detail', order_number=order.order_number)
     except models.orders.DoesNotExist:
         return JsonResponse({'success': False}, status=404)
 
@@ -761,11 +765,12 @@ def remove_order(request, order_number):
 def complete_order(request, order_number):
     try:
         order = models.orders.objects.get(order_number=order_number)
-        order.completed = not order.completed  # Toggle the completion status
+        order.completed = not order.completed
         order.save()
-        return JsonResponse({'completed': order.completed})
-    except models.orders.DoesNotExist:  # Ensure this matches your model import
-        return JsonResponse({'success': False}, status=404)
+        return redirect('all_orders')
+    except models.orders.DoesNotExist:
+        # Handle the error or redirect as appropriate
+        return redirect('all_orders')
 
 
 def show_order_pdf(request, order_number):

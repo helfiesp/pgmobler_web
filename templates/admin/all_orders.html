@@ -22,32 +22,57 @@ table {
   margin-left: auto;
   margin-right: auto;
 }
+.buttons-row {
+    margin-top: 25px;
+    border-bottom: 1px solid;
+}
+.order-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 2px 1px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-bottom: 10px;
+}
 
 </style>
 
 <div class="main-orders-container">
     <div class="orders-container">
+        <div class="buttons-row">
+            <!-- Define your buttons here -->
+            <button class="order-button">Button 1</button>
+            <button class="order-button">Button 2</button>
+            <button class="order-button">Button 3</button>
+            <button class="order-button">Button 4</button>
+            <button class="order-button">Button 5</button>
+        </div>
         <h2>All Orders</h2>
         <table>
             <tr>
-                <th>Order Number</th>
-                <th>Customer</th>
-                <th>Delivery Info</th>
-                <th>Price</th>
-                <th>Date Added</th>
-                <th>Details</th>
+                <th>Ordrenummer</th>
+                <th>Kunde</th>
+                <th>Totalpris</th>
+                <th>Selger</th>
+                <th>Leveringsdetaljer</th>
+                <th>Status</th>
+                <th>Dato</th>
             </tr>
             {% for order in orders %}
             <tr>
-                <td>{{ order.order_number }}</td>
+                <td><a href="{% url 'order_detail' order.order_number %}">{{ order.order_number }}</a></td>
                 <td><a href="{% url 'customer_detail' order.customer.id %}">{{ order.customer.name }}</a></td>
                 <td>{{ order.delivery_info }}</td>
                 <td>{{ order.price }}</td>
+                <td>{{ order.salesman }}</td>
+                <td>{% if order.completed %}Levert{% elif order.deleted %}Slettet{% endif %}</td>
                 <td>{{ order.date_added }}</td>
-                <td>
-                    <!-- Link to a detailed view of an order (if you have or plan to implement it) -->
-                    <a href="{% url 'order_detail' order.order_number %}">View Details</a>
-                </td>
             </tr>
             {% empty %}
             <tr>

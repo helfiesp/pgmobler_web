@@ -37,11 +37,12 @@
 
                     <td>
                         <select name="category">
+                            <option value="">--- Choose a Category ---</option>
                             {% for category in all_categories %}
-                                {% if category.id == product.category|fetch_category_id %}
-                                    <option value="{{ category.name }}" selected>{{ category.name }}</option>
+                                {% if category.id == product.category.id %}
+                                    <option value="{{ category.id }}" selected>{{ category.name }}</option>
                                 {% else %}
-                                    <option value="{{ category.name }}">{{ category.name }}</option>
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>
