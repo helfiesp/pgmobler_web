@@ -323,6 +323,40 @@ def add_product(request):
 
 
 
+def handle_custom_image_order(image_order_combined_json, item_instance, uploaded_images,new_entry=None):
+    image_order_combined = json.loads(image_order_combined_json)
+    uploaded_images_dict = {image.name: image for image in uploaded_images}
+
+    # Track which images have been processed to identify any that need to be removed
+    processed_image_ids = []
+
+    model = models.product_image
+    for item in image_order_combined:
+        filename = item.get('filename')
+        order = item.get('order')
+        image_id = item.get('id', None)  # This assumes your JSON includes IDs for existing images
+
+        if image_id:
+            try:
+                img = model.objects.get(id=image_id, product=item_instance)
+                img.order = order
+                img.save()
+                processed_image_ids.append(img.id)
+            except product_image.DoesNotExist:
+                pass  # Handle case where image doesn't exist if necessary
+        else:
+            # Create new images for those uploaded
+            image_file = uploaded_images_dict.get(filename)
+            if image_file:
+                new_img = model.objects.create(
+                        product=item_instance, 
+                        image=image_file, 
+                        order=order)
+                processed_image_ids.append(new_img.id)
+
+    # Optionally, remove any images not included in the processed list
+    model.objects.filter(product=item_instance).exclude(id__in=processed_image_ids).delete()
+
 
 @login_required(login_url='/admin')
 def edit_product(request, product_id):
@@ -332,7 +366,6 @@ def edit_product(request, product_id):
     if request.method == 'POST':
         form = forms.product_form(request.POST, request.FILES, instance=product_instance)
         formset = forms.product_image_formset(request.POST, request.FILES, queryset=product_instance.images.all())
-
         if form.is_valid() and formset.is_valid():
             with transaction.atomic():
                 # Save product instance
@@ -340,28 +373,13 @@ def edit_product(request, product_id):
                 product_instance.enabled = True
                 product_instance.save()
 
-                # Delete any images that were marked for deletion
-                for form in formset.deleted_forms:
-                    if form.instance.pk:
-                        form.instance.delete()
-
                 # Update the remaining images
                 formset.save()
 
-                # Handle new images
                 image_order_combined_json = request.POST.get('image_order_combined')
+                print(image_order_combined_json)
                 if image_order_combined_json:
-                    image_order_combined = json.loads(image_order_combined_json)
-                    images = request.FILES.getlist('images')
-                    images_dict = {image.name: image for image in images}
-                    images_with_order = [
-                        (images_dict[item['filename']], item['order'])
-                        for item in image_order_combined
-                        if item['filename'] in images_dict
-                    ]
-                    images_with_order.sort(key=lambda x: int(x[1]))
-                    for image_file, _ in images_with_order:
-                        models.product_image.objects.create(product=product_instance, image=image_file)
+                    handle_custom_image_order(image_order_combined_json, product_instance, request.FILES.getlist('images'))
 
             return JsonResponse({"success": True, "redirect_url": reverse('edit_product', kwargs={'product_id': product_instance.id})})
         else:
