@@ -441,6 +441,8 @@ def product_list_and_update(request, product_id=None):
             product_instance.save()
             form.save_m2m()
             return redirect('update_products')
+        else:
+            print(form.errors)
     else:
         products = models.product.objects.all().order_by('id')
         all_categories = models.category.objects.all()
@@ -450,6 +452,7 @@ def product_list_and_update(request, product_id=None):
             'admin': True,
             'suppliers': models.supplier.objects.all()
         })
+
 
 
 @login_required(login_url='/admin')

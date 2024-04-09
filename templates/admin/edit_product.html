@@ -136,11 +136,15 @@
                 {% if categories %}
                 <div class="form-section">
                     <label for="category">Select Category</label>
-                    <select name="category" id="category">
-                        {% for category in categories %}
-                            <option value="{{ category.name }}" {% if category.name == form.category.value %}selected{% endif %}>{{ category.name }}</option>
-                        {% endfor %}
-                    </select>
+                        <select name="category">
+                            {% for category in all_categories %}
+                                {% if category.id == product.category.id %}
+                                    <option value="{{ category.id }}" selected>{{ category.name }}</option>
+                                {% else %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
                 </div>
                 {% endif %}
                 <p>Pris</p>
