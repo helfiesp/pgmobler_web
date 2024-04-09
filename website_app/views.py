@@ -234,93 +234,12 @@ def general_search(request):
 
 def product_page(request, product_id):
     product = get_object_or_404(models.product, pk=product_id)
-    print(product.category)
-    print(product.category)
+    
     # Filter out images with empty values
     product_images = product.images.exclude(image__isnull=True).exclude(image__exact='')
 
-    # Print information about the images
-    print("Product ID:", product_id)
-    print("Product Title:", product.title)
-    print("Number of images:", product_images.count())
-    for idx, image in enumerate(product_images.all(), start=1):
-        print(f"Image {idx} URL:", image.image.url)
-
     context = {'product': product, 'product_images': product_images}
     return render(request, 'product_page.html', context)
-
-@login_required(login_url='/admin')
-def add_product(request):
-    categories = models.category.objects.all()
-    suppliers = models.supplier.objects.all()
-    if request.method == 'POST':
-        form = forms.product_form(request.POST, request.FILES)
-        formset = forms.product_image_formset(request.POST, request.FILES)
-
-        if form.is_valid() and formset.is_valid():
-            # Extract title and price from the form to check if the product already exists
-            title = form.cleaned_data['title']
-            price = form.cleaned_data['price']
-
-            # Check if a product with the same title and price already exists
-            existing_products = models.product.objects.filter(title=title, price=price)
-
-            if existing_products.exists():
-                existing_product_id = existing_products.first().id
-                # If the product exists, return a JSON response indicating failure
-                print("EXISTS")
-                return JsonResponse({"success": False, "errors":'ERRORS', "redirect_url": reverse('edit_product', kwargs={'product_id': existing_product_id})})
-
-            product_instance = form.save(commit=False) 
-            product_instance.enabled = True
-            product_instance.save()
-
-
-            image_order_combined_json = request.POST.get('image_order_combined')
-            if image_order_combined_json:
-                image_order_combined = json.loads(image_order_combined_json)
-
-                # Retrieve the list of uploaded image files
-                images = request.FILES.getlist('images')
-
-                # Create a dictionary to easily find images by filename
-                images_dict = {image.name: image for image in images}
-
-                # Create a list of tuples (image file, order) based on the image_order_combined
-                images_with_order = []
-                for item in image_order_combined:
-                    filename = item['filename']
-                    order = item['order']
-                    image_file = images_dict.get(filename)
-                    if image_file:
-                        images_with_order.append((image_file, order))
-
-                # Now, sort images_with_order by order
-                images_with_order.sort(key=lambda x: int(x[1]))
-
-                # Save the images using the order provided
-                for image_file, _ in images_with_order:
-                    models.product_image.objects.create(product=product_instance, image=image_file)
-
-
-            formset.instance = product_instance
-            formset.save()
-            return JsonResponse({"success": True, "redirect_url": reverse('products')})
-        else:
-            print("Form errors:", form.errors)
-            print("Formset errors:", formset.errors)
-            return JsonResponse({"success": False, "errors": form.errors})
-    else:
-        form = forms.product_form()
-        formset = forms.product_image_formset()
-        context = {
-            'form': form,
-            'formset': formset,
-            'categories':categories,
-            'suppliers': suppliers,
-        }
-        return render(request, 'admin/add_product.html', context)
-
 
 
 def handle_custom_image_order(image_order_combined_json, item_instance, uploaded_images,new_entry=None):
@@ -358,6 +277,58 @@ def handle_custom_image_order(image_order_combined_json, item_instance, uploaded
     model.objects.filter(product=item_instance).exclude(id__in=processed_image_ids).delete()
 
 
+
+@login_required(login_url='/admin')
+def add_product(request):
+    categories = models.category.objects.all()
+    suppliers = models.supplier.objects.all()
+    if request.method == 'POST':
+        form = forms.product_form(request.POST, request.FILES)
+        formset = forms.product_image_formset(request.POST, request.FILES)
+
+        if form.is_valid() and formset.is_valid():
+            # Extract title and price from the form to check if the product already exists
+            title = form.cleaned_data['title']
+            price = form.cleaned_data['price']
+
+            # Check if a product with the same title and price already exists
+            existing_products = models.product.objects.filter(title=title, price=price)
+
+            if existing_products.exists():
+                existing_product_id = existing_products.first().id
+                # If the product exists, return a JSON response indicating failure
+                print("EXISTS")
+                return JsonResponse({"success": False, "errors":'ERRORS', "redirect_url": reverse('edit_product', kwargs={'product_id': existing_product_id})})
+
+            product_instance = form.save(commit=False) 
+            product_instance.enabled = True
+            product_instance.save()
+
+
+            image_order_combined_json = request.POST.get('image_order_combined')
+            if image_order_combined_json:
+                handle_custom_image_order(image_order_combined_json, product_instance, request.FILES.getlist('images'))
+
+
+            formset.instance = product_instance
+            formset.save()
+            return JsonResponse({"success": True, "redirect_url": reverse('products')})
+        else:
+            print("Form errors:", form.errors)
+            print("Formset errors:", formset.errors)
+            return JsonResponse({"success": False, "errors": form.errors})
+    else:
+        form = forms.product_form()
+        formset = forms.product_image_formset()
+        context = {
+            'form': form,
+            'formset': formset,
+            'categories':categories,
+            'suppliers': suppliers,
+        }
+        return render(request, 'admin/add_product.html', context)
+
+
 @login_required(login_url='/admin')
 def edit_product(request, product_id):
     product_instance = get_object_or_404(models.product, id=product_id)
@@ -377,7 +348,6 @@ def edit_product(request, product_id):
                 formset.save()
 
                 image_order_combined_json = request.POST.get('image_order_combined')
-                print(image_order_combined_json)
                 if image_order_combined_json:
                     handle_custom_image_order(image_order_combined_json, product_instance, request.FILES.getlist('images'))
 

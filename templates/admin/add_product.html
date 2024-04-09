@@ -6,67 +6,7 @@
 {% endblock %}
 
 {% block content %}
-
-<style>
-
-.image-preview {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-}
-
-.image-preview img {
-    max-width: 100px;
-    max-height: 100px;
-    object-fit: cover;
-    border: 1px solid #ddd;
-}
-
-.controls-container {
-    display: flex;
-    align-items: center;
-}
-
-.order-controls {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-right: 10px; /* Space between order controls and the remove button */
-}
-
-.move-image-up,
-.move-image-down {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin: 2px 0; /* Space between buttons */
-}
-
-.move-image-up:before {
-    content: '▲'; /* Up arrow */
-}
-
-.move-image-down:before {
-    content: '▼'; /* Down arrow */
-}
-
-.order-display {
-    margin: 5px 0; /* Space above and below the order number */
-}
-
-.remove-image {
-    background-color: #ff0000;
-    color: #ffffff;
-    border-radius: 50%;
-    padding: 2px 6px;
-    cursor: pointer;
-    border: none;
-}
-.image-upload-section {
-    display: inline-block;
-}
-</style>
+<link rel="stylesheet" href="{% static 'css/image_preview.css' %}">
 <script type="text/javascript">
     // This script will add the 'multiple' attribute to all image input fields
     document.addEventListener('DOMContentLoaded', function() {
@@ -77,7 +17,10 @@
         });
     });
 
+
 </script>
+
+<script src="{% static 'js/image_preview.js' %}"></script>
 
 <div class="add-item-container">
     <form id="product-form" action="{% url 'add_product' %}" method="POST" enctype="multipart/form-data" class="form-style">
@@ -98,11 +41,15 @@
                 {% if categories %}
                 <div class="form-section">
                     <label for="name">Velg kategori</label>
-                    <select name="category" id="category">
-                        {% for category in categories %}
-                            <option value="{{ category.name }}">{{ category.name }}</option>
-                        {% endfor %}
-                    </select>
+                        <select name="category">
+                            {% for category in all_categories %}
+                                {% if category.id == product.category.id %}
+                                    <option value="{{ category.id }}" selected>{{ category.name }}</option>
+                                {% else %}
+                                    <option value="{{ category.id }}">{{ category.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
                 </div>
                 {% endif %}
 
@@ -138,22 +85,28 @@
             </div>
 
 
-    <div class="form-section image-upload-section">
-        <h3>Last opp bilder</h3>
-        <p>Bildene må være i størrelsen 1000x700px (B/H).<br>
-            Ikke last opp fler enn 5 bilder per produkt.<br>
-            Det øverste bildet i tabellen er det bildet som blir på forsiden av produktet.</p>
+    <div class="form-section image-upload-section" style="margin-top:20px">
+        <h3>Bilder</h3>
+        <p>Legg til bilder til annonsen din, flere bilder kan gjøre at du får mer interesse</p>
         <div style="display: flex; align-items: center;">
-            <label for="id_images" class="custom-file-upload"><img src="{{ MEDIA_URL }}/icons/image_upload.png"></label> <!-- Custom upload label -->
-            <p style="margin-left: 10px;">
-                Trykk på ikonet for å legge til bilder.<br>
-                Obs: Du må velge alle bildene du vil ha med en gang, bruk CTRL knappen for å velge flere samtidig.
-            </p>
+            <!-- The label here is styled to look like a button and when clicked will open the file dialog -->
+            <label for="id_images" class="custom-file-upload" style="color:white">
+                Legg til bilder
+            </label>
         </div>
-                <input type="file" name="images" multiple id="id_images" style="display: none;"> <!-- Hide the original input -->
-        {{ formset.management_form }}
-        <div id="image-preview-container"></div> <!-- Container for image previews -->
-    </div>
+            
+            <input type="file" name="images" multiple id="id_images" style="display: none;"> <!-- Hide the original input -->
+
+            {{ formset.management_form }}
+
+            <div id="image-preview-container" style="justify-content: center; align-items: center; display: flex; flex-wrap: wrap;">
+            {% for image in product.images.all %}
+                <div class="image-preview" data-image-id="{{ image.id }}">
+                    <img src="{{ image.image.url }}" data-filename="{{ image.image.name }}">
+                </div>
+            {% endfor %}
+            </div> <!-- Container for image previews -->
+        </div>
 
 
 
@@ -163,176 +116,4 @@
 
 </form>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const previewContainer = document.getElementById('image-preview-container');
-    const fileInput = document.getElementById('id_images');
-
-    function updateImageOrder() {
-        const imagePreviews = previewContainer.querySelectorAll('.image-preview');
-        imagePreviews.forEach((preview, index) => {
-            let orderInput = preview.querySelector('.image-order');
-
-            if (!orderInput) {
-                orderInput = document.createElement('input');
-                orderInput.type = 'hidden';
-                orderInput.classList.add('image-order');
-                orderInput.name = 'image_order';
-                preview.appendChild(orderInput);
-            }
-            orderInput.value = index;
-
-        });
-    }
-
-   fileInput.addEventListener('change', function() {
-        previewContainer.innerHTML = '';
-        Array.from(this.files).forEach((file, index) => {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-
-                const previewWrapper = document.createElement('div');
-                previewWrapper.classList.add('image-preview');
-
-                // Create the image element
-                const img = document.createElement('img');
-                img.src = e.target.result;
-                img.setAttribute('data-filename', file.name);
-
-                const orderInput = document.createElement('input');
-                orderInput.type = 'hidden';
-                orderInput.classList.add('image-order');
-                orderInput.name = 'image_order';
-                orderInput.value = index;
-
-
-                const upButton = document.createElement('button');
-                upButton.textContent = 'Opp';
-                upButton.classList.add('move-image-up');
-                upButton.type = 'button';
-                upButton.onclick = function() {
-                    const prev = previewWrapper.previousElementSibling;
-                    if (prev) {
-                        previewContainer.insertBefore(previewWrapper, prev);
-                        updateImageOrder();
-                    }
-                };
-
-                const downButton = document.createElement('button');
-                downButton.textContent = 'Ned';
-                downButton.classList.add('move-image-down');
-                downButton.type = 'button';
-                downButton.onclick = function() {
-                    const next = previewWrapper.nextElementSibling;
-                    if (next) {
-                        previewContainer.insertBefore(next, previewWrapper);
-                        updateImageOrder();
-                    }
-                };
-
-                const removeButton = document.createElement('button');
-                removeButton.textContent = 'X';
-                removeButton.classList.add('remove-image');
-                removeButton.type = 'button';
-                removeButton.onclick = function() {
-                    previewWrapper.remove();
-                    updateFileList(fileInput, file);
-                    updateImageOrder();
-                };
-
-                // Create and append your removeButton, upButton, and downButton here
-
-                // Append children to the previewWrapper
-                previewWrapper.appendChild(img);
-                previewWrapper.appendChild(orderInput);
-                previewWrapper.appendChild(upButton);
-                previewWrapper.appendChild(downButton);
-                previewWrapper.appendChild(removeButton);
-                previewContainer.appendChild(previewWrapper);
-
-                updateImageOrder();
-            };
-            reader.readAsDataURL(file);
-        });
-        // After all images are added, update their order
-    });
-
-    const form = document.getElementById('product-form');
-    form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const formData = new FormData(form);
-
-        // Append other non-file form inputs first.
-        Array.from(form.elements).forEach(element => {
-            if (element.name && element.type !== 'file') {
-                formData.append(element.name, element.value);
-            }
-        });
-
-        // Prepare the image_order_combined JSON string
-        let imageOrderCombined = [];
-        document.querySelectorAll('.image-preview img').forEach((img, index) => {
-            const file = Array.from(fileInput.files).find(f => f.name === img.getAttribute('data-filename'));
-            if (file) {
-                // Append each image file as before
-                formData.append('images[]', file, file.name);
-                // Collect data for image_order_combined
-                imageOrderCombined.push({ filename: file.name, order: index });
-            }
-        });
-
-        // Append the image_order_combined as a JSON string
-        formData.append('image_order_combined', JSON.stringify(imageOrderCombined));
-
-        // Log formData for debugging
-        for (let [name, value] of formData.entries()) {
-            console.log(`${name}: ${value}`);
-        }
-
-        fetch(form.action, {
-            method: 'POST',
-            body: formData,
-            headers: {
-                'X-CSRFToken': getCookie('csrftoken')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                window.location.href = data.redirect_url;
-            } else {
-                console.error('Form errors:', data.errors);
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
-    });
-
-    function updateFileList(fileInput, fileToRemove) {
-        const dt = new DataTransfer();
-        Array.from(fileInput.files).forEach(file => {
-            if (file !== fileToRemove) {
-                dt.items.add(file);
-            }
-        });
-        fileInput.files = dt.files;
-    }
-
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-});
-</script>
 {% endblock %}
