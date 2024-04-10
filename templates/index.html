@@ -66,17 +66,7 @@
       {% endfor %}
     </div>
 
-    <div class="recent-products-section">
-      <h2>{{ text_areas_all.recent_product_header }}</h2>
-      <p>{{ text_areas_all.recent_product_text }}</p>
-    </div>
-    <div class="product-cards-section" style="justify-content: center;">
-        {% for product in recent_products %}
-          {% include 'product/single_product_code.html' %}
-        {% endfor %}
-    </div>
-    
-    {% if bestsellers %}
+      {% if bestsellers %}
     <div class="recent-products-section">
       <h2>{{ text_areas_all.bestseller_header }}</h2>
       <p>{{ text_areas_all.bestseller_text }}</p>
@@ -87,6 +77,19 @@
         {% endfor %}
     </div>
     {% endif %}
+
+
+    <div class="recent-products-section">
+      <h2>{{ text_areas_all.recent_product_header }}</h2>
+      <p>{{ text_areas_all.recent_product_text }}</p>
+    </div>
+    <div class="product-cards-section" style="justify-content: center;">
+        {% for product in recent_products %}
+          {% include 'product/single_product_code.html' %}
+        {% endfor %}
+    </div>
+    
+
 </div>
 
 
