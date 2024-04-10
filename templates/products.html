@@ -106,5 +106,43 @@
 </div>
 </div>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    let done = false;
+    let nextPage = 2;  // Start from the second page
+
+    function loadMoreProducts() {
+        if (done) return;
+        done = true;
+
+        fetch(`/products/?page=${nextPage}`)
+            .then(response => response.text())
+            .then(html => {
+                const container = document.createElement('div');
+                container.innerHTML = html;
+                
+                // Assuming products are listed within a container with id 'products-list'
+                document.getElementById('products-list').appendChild(container);
+                
+                nextPage++;
+                done = false;  // Ready to load more
+            })
+            .catch(error => {
+                console.error('Error loading more products:', error);
+                done = false;  // Attempt to load more products in case of error
+            });
+    }
+
+    window.addEventListener('scroll', function() {
+        const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+
+        if (clientHeight + scrollTop >= scrollHeight - 500 && !done) {  // Adjust threshold as needed
+            loadMoreProducts();
+        }
+    });
+});
+</script>
+
+
 {% include 'base/footer.html' %}
 {% endblock %}

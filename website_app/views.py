@@ -27,7 +27,7 @@ from django.db.models import F, Case, When, Value, IntegerField
 from django.db.models.functions import Cast
 import os
 from django.http import FileResponse, Http404
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
 
 
@@ -73,10 +73,17 @@ def apply_sort_and_pagination(request, base_queryset, default_sort='newly_added'
         queryset = queryset.order_by('-date_added')
 
 
+    paginator = Paginator(queryset, 20)
     page_number = request.GET.get('page', 1)
 
-    # Return the paginated products, the sort, and the per_page values
-    return queryset, sort, per_page
+    try:
+        paginated_queryset = paginator.page(page_number)
+    except PageNotAnInteger:
+        paginated_queryset = paginator.page(1)
+    except EmptyPage:
+        paginated_queryset = paginator.page(paginator.num_pages)
+
+    return paginated_queryset, sort, per_page
 
 
 def error_404_view(request, exception):
