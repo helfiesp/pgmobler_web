@@ -74,7 +74,6 @@
 
                  <!-- Custom styled checkbox for Enabled -->
                 <div class="checkbox-section" style="margin-top: 10px;">
-                    <label for="id_enabled">Aktivert</label>
                     <p>Vil du at produktet skal vises på nettsiden?</p>
                     <label class="switch">
                         {{ form.enabled }}
@@ -84,14 +83,13 @@
 
                 <!-- Custom styled checkbox for Bestseller -->
                 <div class="checkbox-section" style="margin-top: 10px;">
-                    <label for="id_bestseller">Bestselger</label>
                     <p>Vil du markere produktet som en bestselger?</p>
                     <label class="switch">
                         {{ form.bestseller }}
                         <span class="slider round"></span>
                     </label>
                 </div>
-                
+
                 {% if suppliers %}
                 <div class="form-section">
                     <label for="name">Velg leverandør</label>
