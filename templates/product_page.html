@@ -108,201 +108,211 @@ function openTab(event, tabName) {
 }
 
 </script>
-<div class="product-page-container">
+{% if product.enabled %}
+    <div class="product-page-container">
 
 
 
-<div class="product-image-section">
-    <!-- Check if the product has images and display the first one as the main image -->
-    {% if product.images.count > 0 %}
-        <a href="{{ product.images.all.0.image.url }}" data-lightbox="product-gallery" data-title="{{ product.title }}" id="main-image-link">
-            <img id="main-image" src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="main-product-image">
-        </a>
+    <div class="product-image-section">
+        <!-- Check if the product has images and display the first one as the main image -->
+        {% if product.images.count > 0 %}
+            <a href="{{ product.images.all.0.image.url }}" data-lightbox="product-gallery" data-title="{{ product.title }}" id="main-image-link">
+                <img id="main-image" src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="main-product-image">
+            </a>
 
-        <!-- Hidden links for lightbox -->
-        <div style="display: none;">
+            <!-- Hidden links for lightbox -->
+            <div style="display: none;">
+                {% for image in product.images.all %}
+                    {% if image and image.image %}
+                        <a href="{{ image.image.url }}" data-lightbox="product-gallery" data-title="Image {{ forloop.counter }}"></a>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% else %}
+            <!-- Fallback if no images are available -->
+            <img src="{{ MEDIA_URL }}default_image.png" alt="Default Image" class="main-product-image">
+        {% endif %}
+    </div>
+
+    {% if product.images.count > 1 %}
+        <div class="product-thumbnails-section">
+            <!-- Thumbnails -->
             {% for image in product.images.all %}
                 {% if image and image.image %}
-                    <a href="{{ image.image.url }}" data-lightbox="product-gallery" data-title="Image {{ forloop.counter }}"></a>
+                    <a href="{{ image.image.url }}">
+                        <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail">
+                    </a>
                 {% endif %}
             {% endfor %}
         </div>
-    {% else %}
-        <!-- Fallback if no images are available -->
-        <img src="{{ MEDIA_URL }}default_image.png" alt="Default Image" class="main-product-image">
     {% endif %}
-</div>
+        
+       <div class="product-details-section">
+        <a style="color: black; text-decoration: none" href="{% url 'category_search' product.category %}">
+            <p>{{ product.category|upper }}</p>
+        </a>
 
-{% if product.images.count > 1 %}
-    <div class="product-thumbnails-section">
-        <!-- Thumbnails -->
-        {% for image in product.images.all %}
-            {% if image and image.image %}
-                <a href="{{ image.image.url }}">
-                    <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail">
-                </a>
-            {% endif %}
-        {% endfor %}
-    </div>
-{% endif %}
-    
-   <div class="product-details-section">
-    <a style="color: black; text-decoration: none" href="{% url 'category_search' product.category %}">
-        <p>{{ product.category|upper }}</p>
-    </a>
+        <h1>{{ product.title }}</h1>
+        
+        <!-- Star rating 
+        <div class="star-rating">
+            <span class="star">&#9733;</span>
+            <span class="star">&#9733;</span>
+            <span class="star">&#9733;</span>
+            <span class="star">&#9733;</span>
+            <span class="star">&#9733;</span>
+            <span class="reviews-count">4 reviews</span>
+        </div>
+        -->
 
-    <h1>{{ product.title }}</h1>
-    
-    <!-- Star rating 
-    <div class="star-rating">
-        <span class="star">&#9733;</span>
-        <span class="star">&#9733;</span>
-        <span class="star">&#9733;</span>
-        <span class="star">&#9733;</span>
-        <span class="star">&#9733;</span>
-        <span class="reviews-count">4 reviews</span>
-    </div>
-    -->
-
-    <!-- Product description -->
-    <p class="product-description">{{ product.subtitle }}</p>
-    <div class="product-price-section">
-    <!-- Product price -->
-    {% if product.sale_price %}
-        <p class="product-price">{{ product.sale_price }} kr</p>
-        <p class="product-price-dashed">{{ product.price }} kr</p>
-    {% else %}
-
-        <p class="product-price">{{ product.price }} kr</p>
-    {% endif %} 
-</div>  
-
-    <!-- Purchase buttons and options -->
-    <!--
-    <div class="purchase-options">
-        <button class="add-to-cart-btn">{{ text_areas.purchase_button_1 }}</button>
-            <button class="buy-now-btn">{{ text_areas.purchase_button_2 }}</button>
-    </div>
-    -->
-
-</div>
-
-</div>
-
-<div class="product-info-section">
-    <div class="product-tabs">
-        <span class="tab-item active" onclick="openTab(event, 'Beskrivelse')">{{ text_areas_all.product_desc_item_1 }}</span>
-        <span class="tab-item" onclick="openTab(event, 'Detaljer')">{{ text_areas_all.product_desc_item_2 }}</span>
-        {% if product.more_information %}
-            <span class="tab-item" onclick="openTab(event, 'MerInformasjon')">{{ text_areas_all.product_desc_item_3 }}</span>
-        {% endif %}
-    </div>
-    <div id="Beskrivelse" class="tab-content">
-        <p>{{ product.description|safe }}</p>
-    </div>
-    <div id="Detaljer" class="tab-content" style="display: none;">
-        <div class="description-section">
-
-  <div class="description-row">
-    <div class="description-column">
-      <h4>Farge</h4>
-      <p>
-        {% if product.color %}
-            {{ product.color }}
+        <!-- Product description -->
+        <p class="product-description">{{ product.subtitle }}</p>
+        <div class="product-price-section">
+        <!-- Product price -->
+        {% if product.sale_price %}
+            <p class="product-price">{{ product.sale_price }} kr</p>
+            <p class="product-price-dashed">{{ product.price }} kr</p>
         {% else %}
-            Ingen fargeinformasjon tilgjengelig
-        {% endif %}
-    </p>
+
+            <p class="product-price">{{ product.price }} kr</p>
+        {% endif %} 
+    </div>  
+
+        <!-- Purchase buttons and options -->
+        <!--
+        <div class="purchase-options">
+            <button class="add-to-cart-btn">{{ text_areas.purchase_button_1 }}</button>
+                <button class="buy-now-btn">{{ text_areas.purchase_button_2 }}</button>
+        </div>
+        -->
+
     </div>
-    <div class="description-column">
-      <h4>Materiale</h4>
-      <p>
-        {% if product.material %}
-            {{ product.material }}
-        {% else %}
-            Ingen materialeinformasjon tilgjengelig
-        {% endif %}
-    </p>
+
     </div>
-<div class="description-column">
-    <h4>Dimensjoner</h4>
-    <p>
-        {% if product.height is not None or product.width is not None or product.depth is not None or product.length is not None %}
-            {% if product.height is not None %}
-                Høyde: {{ product.height }}cm
+
+    <div class="product-info-section">
+        <div class="product-tabs">
+            <span class="tab-item active" onclick="openTab(event, 'Beskrivelse')">{{ text_areas_all.product_desc_item_1 }}</span>
+            <span class="tab-item" onclick="openTab(event, 'Detaljer')">{{ text_areas_all.product_desc_item_2 }}</span>
+            {% if product.more_information %}
+                <span class="tab-item" onclick="openTab(event, 'MerInformasjon')">{{ text_areas_all.product_desc_item_3 }}</span>
             {% endif %}
-            {% if product.width is not None %}
-                Bredde: {{ product.width }}cm
+        </div>
+        <div id="Beskrivelse" class="tab-content">
+            <p>{{ product.description|safe }}</p>
+        </div>
+        <div id="Detaljer" class="tab-content" style="display: none;">
+            <div class="description-section">
+
+      <div class="description-row">
+        <div class="description-column">
+          <h4>Farge</h4>
+          <p>
+            {% if product.color %}
+                {{ product.color }}
+            {% else %}
+                Ingen fargeinformasjon tilgjengelig
             {% endif %}
-            {% if product.depth is not None %}
-                Dybde: {{ product.depth }}cm
+        </p>
+        </div>
+        <div class="description-column">
+          <h4>Materiale</h4>
+          <p>
+            {% if product.material %}
+                {{ product.material }}
+            {% else %}
+                Ingen materialeinformasjon tilgjengelig
             {% endif %}
-            {% if product.length is not None %}
-                Lengde: {{ product.length }}cm
-            {% endif %}
-        {% else %}
-            Ingen mål tilgjengelig
-        {% endif %}
-    </p>
-</div>
-  </div>
-  <div class="description-row">
-    <!--
-    Mangler hva som skal stå her
+        </p>
+        </div>
     <div class="description-column">
-      <h4>Tomt felt</h4>
-      <p>Legg inn info her</p>
-    </div>
-    <div class="description-column">
-      <h4>Tomt felt</h4>
-      <p>Legg inn info her</p>
-    </div>
-    -->
-    <div class="description-column">
-      <h4>Leverandør</h4>
-      <p>
-        {% if product.supplier %}
-            <a style="text-decoration: none; color: black;" href="{% url 'supplier_search' product.supplier %}">
-                {{ product.supplier }}
-            </a>
-        {% else %}
-            Ingen leverandørinfo tilgjengelig
-        {% endif %}
-    </p>
-    </div>
-  </div>
-</div>
-    </div>
-    <div id="MerInformasjon" class="tab-content" style="display: none;">
+        <h4>Dimensjoner</h4>
         <p>
-        {% if product.more_information %}
-            {{ product.more_information}}
-        {% else %}
-            Ingen ekstra informasjon tilgjengelig
-        {% endif %}
-    </p>
+            {% if product.height is not None or product.width is not None or product.depth is not None or product.length is not None %}
+                {% if product.height is not None %}
+                    Høyde: {{ product.height }}cm
+                {% endif %}
+                {% if product.width is not None %}
+                    Bredde: {{ product.width }}cm
+                {% endif %}
+                {% if product.depth is not None %}
+                    Dybde: {{ product.depth }}cm
+                {% endif %}
+                {% if product.length is not None %}
+                    Lengde: {{ product.length }}cm
+                {% endif %}
+            {% else %}
+                Ingen mål tilgjengelig
+            {% endif %}
+        </p>
     </div>
-    {% if user.is_authenticated %}
-        <br>
-        <p>Du er logget inn som admin, vil du <a style="color: black;" href="{% url 'edit_product' product.id %}">redigere produktet?</a></p>
-    {% endif %}
-</div>
-
-
-
-<div class="main-container">
-    <div class="related-products-header">
-      <h2>{{ text_areas_all.recent_product_header }}</h2>
-      <p>{{ text_areas_all.recent_product_text }}</p>
-    </div>
-
-    <div class="product-cards-section" style="justify-content: center;">
-        {% for product in recent_products %}
-          {% include 'product/single_product_code.html' %}
-        {% endfor %}
       </div>
-
+      <div class="description-row">
+        <!--
+        Mangler hva som skal stå her
+        <div class="description-column">
+          <h4>Tomt felt</h4>
+          <p>Legg inn info her</p>
+        </div>
+        <div class="description-column">
+          <h4>Tomt felt</h4>
+          <p>Legg inn info her</p>
+        </div>
+        -->
+        <div class="description-column">
+          <h4>Leverandør</h4>
+          <p>
+            {% if product.supplier %}
+                <a style="text-decoration: none; color: black;" href="{% url 'supplier_search' product.supplier %}">
+                    {{ product.supplier }}
+                </a>
+            {% else %}
+                Ingen leverandørinfo tilgjengelig
+            {% endif %}
+        </p>
+        </div>
+      </div>
     </div>
+        </div>
+        <div id="MerInformasjon" class="tab-content" style="display: none;">
+            <p>
+            {% if product.more_information %}
+                {{ product.more_information}}
+            {% else %}
+                Ingen ekstra informasjon tilgjengelig
+            {% endif %}
+        </p>
+        </div>
+        {% if user.is_authenticated %}
+            <br>
+            <p>Du er logget inn som admin, vil du <a style="color: black;" href="{% url 'edit_product' product.id %}">redigere produktet?</a></p>
+        {% endif %}
+    </div>
+
+
+
+    <div class="main-container">
+        <div class="related-products-header">
+          <h2>{{ text_areas_all.recent_product_header }}</h2>
+          <p>{{ text_areas_all.recent_product_text }}</p>
+        </div>
+
+        <div class="product-cards-section" style="justify-content: center;">
+            {% for product in recent_products %}
+              {% include 'product/single_product_code.html' %}
+            {% endfor %}
+          </div>
+
+        </div>
+    </div>
+{% else %}
+<div style="text-align: center;">
+<p>Dette produktet er dessverre deaktivert.</p>
+{% if user.is_authenticated %}
+    <br>
+    <p>Du er logget inn som admin, vil du <a style="color: black;" href="{% url 'edit_product' product.id %}">redigere produktet?</a></p>
 </div>
+{% endif %}
+{% endif %}
 {% include 'base/footer.html' %}
 {% endblock %}

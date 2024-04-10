@@ -234,7 +234,7 @@ def general_search(request):
 
 def product_page(request, product_id):
     product = get_object_or_404(models.product, pk=product_id)
-    
+
     # Filter out images with empty values
     product_images = product.images.exclude(image__isnull=True).exclude(image__exact='')
 
@@ -301,7 +301,12 @@ def add_product(request):
                 return JsonResponse({"success": False, "errors":'ERRORS', "redirect_url": reverse('edit_product', kwargs={'product_id': existing_product_id})})
 
             product_instance = form.save(commit=False) 
-            product_instance.enabled = True
+            enabled = request.POST.get('enabled')
+            if enabled:
+                product_instance.enabled = True
+            bestseller = request.POST.get('bestseller')
+            if bestseller:
+                product_instance.bestseller = True
             product_instance.save()
 
 
@@ -335,13 +340,19 @@ def edit_product(request, product_id):
     categories = models.category.objects.all()
     suppliers = models.supplier.objects.all()
     if request.method == 'POST':
+        print(request.POST)
         form = forms.product_form(request.POST, request.FILES, instance=product_instance)
         formset = forms.product_image_formset(request.POST, request.FILES, queryset=product_instance.images.all())
         if form.is_valid() and formset.is_valid():
             with transaction.atomic():
                 # Save product instance
-                product_instance = form.save(commit=False) 
-                product_instance.enabled = True
+                product_instance = form.save(commit=False)
+                enabled = request.POST.get('enabled')
+                if enabled:
+                    product_instance.enabled = True
+                bestseller = request.POST.get('bestseller')
+                if bestseller:
+                    product_instance.bestseller = True
                 product_instance.save()
 
                 # Update the remaining images
