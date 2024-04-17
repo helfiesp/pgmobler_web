@@ -7,7 +7,6 @@
 <style>
 /* You can reuse the same styles as in the order detail page or adjust as needed */
 .customer-details {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     max-width: 600px;
     margin: 40px auto;
     padding: 20px;
@@ -152,7 +151,10 @@
         {% endfor %}
     </div>
 {% else %}
-    <p>No orders found for this customer.</p>
+    <p style="text-align: center;">
+        Ingen ordre funnet for denne kunden.<br><br>
+        <a href="{% url 'add_order' customer.id %}" class="btn-new-order">Ny ordre</a>
+    </p>
 {% endif %}
 </div>
 

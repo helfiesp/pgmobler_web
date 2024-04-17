@@ -63,6 +63,13 @@ class customer_form(forms.ModelForm):
     class Meta:
         model = customers
         fields = ['name', 'zip_code', 'street_address', 'email', 'phone_number']
+        labels = {
+            'name': 'Navn',
+            'zip_code': 'Postkode',
+            'street_address': 'Gateadresse',
+            'email': 'E-post',
+            'phone_number': 'Telefonnummer'
+        }
 
 class order_form(forms.ModelForm):
     # Add custom fields for the product details
