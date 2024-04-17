@@ -48,7 +48,9 @@ table {
         <div class="buttons-row">
             <a href="{% url 'add_customer' %}">
                 <button class="order-button">Ny ordre</button>
-            </a>        </div>
+            </a>        
+        </div>
+        {% if orders %}
         <h2>Alle ordre</h2>
         <table>
             <tr>
@@ -76,6 +78,7 @@ table {
             </tr>
             {% endfor %}
         </table>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
