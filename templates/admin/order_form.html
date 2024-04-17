@@ -259,10 +259,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const newItem = document.createElement('div');
         newItem.className = "item-group";
 
-        // Generate options for all products
+        // Get all products and parse them into an array
         const allProducts = JSON.parse('{{ products_json|safe }}');
+        
+        // Sort products by name
+        allProducts.sort((a, b) => a.name.localeCompare(b.name));
+
+        // Generate options for sorted products
         let productOptions = allProducts.map(product => `<option value="${product.id}">${product.name}</option>`).join('');
-        productOptions += '<option value="Custom">Custom</option>'; // Add the "Custom" option
+        productOptions += '<option value="Custom">Skriv inn produktnavn</option>'; // Add the "Custom" option
 
         // Include a custom product input that is initially hidden
         newItem.innerHTML = `
@@ -273,6 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 </select>
                 <input type="text" id="custom_product_${index}" name="products[${index}][product]" style="display: none;" placeholder="Enter custom product name">
             </div>
+            
             <div class="form-group">
                 <label for="product_info_${index}">Produkt Info:</label>
                 <textarea id="product_info_${index}" name="products[${index}][product_info]" rows="2" cols="20" required></textarea>
