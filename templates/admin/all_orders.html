@@ -76,6 +76,8 @@ tr:hover {
                 <th>Dato</th>
             </tr>
             {% for order in orders %}
+            {{ order.completed }}
+            {{ order }}
             <tr>
                 <td><a href="{% url 'order_detail' order.order_number %}">{{ order.order_number }}</a></td>
                 <td><a href="{% url 'customer_detail' order.customer.id %}">{{ order.customer.name }}</a></td>
