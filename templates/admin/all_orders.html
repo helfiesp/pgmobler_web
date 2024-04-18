@@ -55,85 +55,7 @@ tr:hover {
 .order-button:hover {
   background-color: #45a049; /* A slightly darker green on hover for feedback */
 }
-.filter-bar {
-  margin-bottom: 20px;
-  text-align: center;
-}
 
-.toggle-buttons-container {
-    display: flex;
-    justify-content: start;
-    align-items: center; /* Vertically align items in the container */
-    gap: 10px;
-    margin-bottom: 20px; /* Space below the toggle buttons */
-}
-
-/* The switch - the box around the slider */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 60px; /* Width of the switch */
-    height: 34px; /* Height of the switch */
-}
-
-/* Hide default checkbox */
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
-
-/* The slider */
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: #ccc;
-    transition: .4s;
-    border-radius: 34px;
-}
-
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 26px;
-    width: 26px;
-    left: 4px;
-    bottom: 4px;
-    background-color: white;
-    transition: .4s;
-    border-radius: 50%;
-}
-
-input:checked + .slider {
-    background-color: #2196F3;
-}
-
-input:focus + .slider {
-    box-shadow: 0 0 1px #2196F3;
-}
-
-input:checked + .slider:before {
-    transform: translateX(26px);
-}
-
-/* Rounded sliders */
-.slider.round {
-    border-radius: 34px;
-}
-
-.slider.round:before {
-    border-radius: 50%;
-}
-
-/* Label Text Styling */
-.label-text {
-    display: inline-block;
-    margin-left: 10px; /* Space between the slider and text */
-}
 
 </style>
 
@@ -146,39 +68,9 @@ input:checked + .slider:before {
 
 
         {% if orders %}
-        <div class="filter-bar">
-          <div class="toggle-buttons-container">
-            <!-- Active Toggle -->
-            <div class="toggle-button">
-              <label class="switch">
-                <input type="checkbox" id="filter-active" checked>
-                <span class="slider round"></span>
-              </label>
-              <span class="label-text">Active</span>
-            </div>
-
-            <!-- Delivered Toggle -->
-            <div class="toggle-button">
-              <label class="switch">
-                <input type="checkbox" id="filter-delivered">
-                <span class="slider round"></span>
-              </label>
-              <span class="label-text">Levert</span>
-            </div>
-
-            <!-- Deleted Toggle -->
-            <div class="toggle-button">
-              <label class="switch">
-                <input type="checkbox" id="filter-deleted">
-                <span class="slider round"></span>
-              </label>
-              <span class="label-text">Slettet</span>
-            </div>
-          </div>
-        </div>
         <h2>Alle ordre</h2>
         <table>
-        <tr class="order-row" data-delivered="{{ order.delivered }}" data-deleted="{{ order.deleted }}">
+        <tr>
                 <th>Ordrenummer</th>
                 <th>Kunde</th>
                 <th>Totalpris</th>
@@ -212,43 +104,5 @@ input:checked + .slider:before {
 </div>
 
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var filterActive = document.getElementById('filter-active');
-    var filterDelivered = document.getElementById('filter-delivered');
-    var filterDeleted = document.getElementById('filter-deleted');
-    var orderRows = document.querySelectorAll('table tr.order-row'); // Corrected the selector
-
-    function applyFilters() {
-        orderRows.forEach(function(row) {
-            var isDelivered = row.dataset.delivered === 'true';
-            var isDeleted = row.dataset.deleted === 'true';
-
-            // Default to hiding rows
-            var showRow = false;
-
-            // Show rows based on the specific filter checked
-            if (filterActive.checked && !isDelivered && !isDeleted) {
-                showRow = true; // Show only active orders
-            } else if (filterDelivered.checked && isDelivered) {
-                showRow = true; // Show only delivered orders
-            } else if (filterDeleted.checked && isDeleted) {
-                showRow = true; // Show only deleted orders
-            }
-
-            // Toggle the display of the row
-            row.style.display = showRow ? '' : 'none';
-        });
-    }
-
-    // Event listeners for changes on the toggles
-    filterActive.addEventListener('change', applyFilters);
-    filterDelivered.addEventListener('change', applyFilters);
-    filterDeleted.addEventListener('change', applyFilters);
-
-    // Apply filters initially
-    applyFilters();
-});
-</script>
 
 {% endblock %}
