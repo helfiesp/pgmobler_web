@@ -1,6 +1,7 @@
 from django import forms
 from .models import product, product_image, category, text_areas, footer_textareas, business_information, supplier, orders, customers
 from django.forms import inlineformset_factory
+from django.core.exceptions import ValidationError
 
 class product_form(forms.ModelForm):
     class Meta:
@@ -65,7 +66,7 @@ class customer_form(forms.ModelForm):
         fields = ['name', 'zip_code', 'street_address', 'email', 'phone_number']
         labels = {
             'name': 'Navn',
-            'zip_code': 'Postnummer',
+            'zip_code': 'Postkode',
             'street_address': 'Gateadresse',
             'email': 'E-post',
             'phone_number': 'Telefonnummer'
@@ -76,7 +77,10 @@ class customer_form(forms.ModelForm):
         name = cleaned_data.get('name')
         phone_number = cleaned_data.get('phone_number')
 
-        if customers.objects.filter(name=name, phone_number=phone_number).exists():
+        # Check for existing customers with the same name and phone number, excluding the current instance if it exists
+        existing_customer = customers.objects.filter(name=name, phone_number=phone_number).exclude(pk=self.instance.pk if self.instance else None)
+
+        if existing_customer.exists():
             raise ValidationError("A customer with this name and phone number already exists.")
 
         return cleaned_data
