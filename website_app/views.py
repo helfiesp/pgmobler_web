@@ -668,7 +668,8 @@ def add_order(request, customer_id):
             order.a_paid = int(request.POST.get('paid'))
             order.items = json.dumps(items_list)  # Save serialized items list
             order.save()
-            return redirect('all_orders')  # Adjust the redirect as needed
+            return redirect(reverse('order_confirmation', args=[order.order_number]))
+
         else:
             # Form is not valid; render form with validation errors
             return render(request, 'admin/order_form.html', {'form': form, 'customer': customer, 'products_json':products_json})
