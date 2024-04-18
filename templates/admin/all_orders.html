@@ -5,40 +5,55 @@
 {% block content %}
 <style>
 .main-orders-container {
-  width: 80%;
-  margin: auto; /* Centers the container horizontally */
-  display: flex; /* Enables the use of Flexbox */
-  justify-content: center; /* Centers flex items on the main axis */
-  align-items: center; /* Centers flex items on the cross axis */
+  max-width: 960px; /* A max-width helps readability on very large screens */
+  margin: 20px auto; /* Centers the container with some top and bottom margin */
+  padding: 20px;
+  background-color: #fff; /* A light background */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* A subtle shadow to lift the container off the page */
 }
 
 .orders-container {
-  text-align: center; /* Centers inline content like text and inline-block elements */
-  width: 100%; /* Ensures the container takes the full width of its parent */
+  text-align: center;
 }
 
-/* Additional styling for the table to ensure it's centered in .orders-container */
 table {
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
+  margin-top: 20px; /* Adds a little space above the table */
+  border-collapse: collapse; /* Collapses the border to make it look like a single, continuous line */
 }
+
+th, td {
+  padding: 12px 15px; /* Adds space around content in table cells for readability */
+  text-align: left; /* Aligns text to the left for a clean look */
+  border-bottom: 1px solid #ddd; /* Adds a light line between rows */
+}
+
+th {
+  background-color: #f8f8f8; /* A light background on the table headers for contrast */
+  font-weight: normal; /* No bold on headers to keep it light and modern */
+}
+
+tr:hover {
+  background-color: #f1f1f1; /* Adds a hover effect on rows */
+}
+
 .buttons-row {
-    margin-top: 25px;
-    border-bottom: 1px solid;
+  text-align: right; /* Aligns buttons to the right */
+  padding-bottom: 10px;
 }
+
 .order-button {
-    background-color: #4CAF50;
-    border: none;
-    color: white;
-    padding: 5px 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-    margin: 2px 1px;
-    cursor: pointer;
-    border-radius: 4px;
-    margin-bottom: 10px;
+  background-color: #4CAF50; /* Consider using a less saturated color for elegance */
+  color: white;
+  padding: 8px 16px;
+  font-size: 16px; /* A larger font size for better clickability */
+  border-radius: 5px; /* Rounded corners */
+  text-decoration: none; /* No underline */
+  transition: background-color 0.3s ease; /* Transition for button interaction */
+}
+
+.order-button:hover {
+  background-color: #45a049; /* A slightly darker green on hover for feedback */
 }
 
 </style>
@@ -46,9 +61,7 @@ table {
 <div class="main-orders-container">
     <div class="orders-container">
         <div class="buttons-row">
-            <a href="{% url 'add_customer' %}">
-                <button class="order-button">Ny ordre</button>
-            </a>        
+            <a href="{% url 'add_customer' %}" class="order-button">Ny ordre</a>        
         </div>
         {% if orders %}
         <h2>Alle ordre</h2>
