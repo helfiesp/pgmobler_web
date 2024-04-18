@@ -586,10 +586,13 @@ def add_customer(request, customer_id=None):
     customers_json = json.dumps(customers_dict)
 
     if request.method == 'POST':
+
         form = forms.customer_form(request.POST)
         if form.is_valid():
             new_customer = form.save()
             # Redirect to the same page with the newly added customer selected
+            return HttpResponseRedirect(reverse('add_customer') + f'?customer={new_customer.id}')
+        else:
             return HttpResponseRedirect(reverse('add_customer') + f'?customer={new_customer.id}')
     else:
         if customer_id:
