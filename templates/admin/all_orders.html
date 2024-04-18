@@ -223,17 +223,17 @@ document.addEventListener('DOMContentLoaded', function() {
         orderRows.forEach(function(row) {
             var isDelivered = row.dataset.delivered === 'true';
             var isDeleted = row.dataset.deleted === 'true';
-            var showRow = true; // Default to showing rows
+            
+            // Start by hiding all rows
+            var showRow = false;
 
-            // Adjust logic to handle multiple checkbox states
+            // Only show rows based on the specific filter checked
             if (filterActive.checked && !isDelivered && !isDeleted) {
-                showRow = true;
-            } else if (filterDelivered.checked && isDelivered) {
-                showRow = true;
-            } else if (filterDeleted.checked && isDeleted) {
-                showRow = true;
-            } else {
-                showRow = false; // Hide row if none of the conditions match
+                showRow = true; // Show only active orders
+            } else if (filterDelivered.checked && isDelivered && !isDeleted) {
+                showRow = true; // Show only delivered orders
+            } else if (filterDeleted.checked && !isDelivered && isDeleted) {
+                showRow = true; // Show only deleted orders
             }
 
             // Toggle the display of the row
@@ -242,9 +242,24 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Event listeners for changes on the toggles
-    filterActive.addEventListener('change', applyFilters);
-    filterDelivered.addEventListener('change', applyFilters);
-    filterDeleted.addEventListener('change', applyFilters);
+    filterActive.addEventListener('change', function() {
+        // When active is toggled, ensure other filters are off
+        filterDelivered.checked = false;
+        filterDeleted.checked = false;
+        applyFilters();
+    });
+    filterDelivered.addEventListener('change', function() {
+        // When delivered is toggled, ensure other filters are off
+        filterActive.checked = false;
+        filterDeleted.checked = false;
+        applyFilters();
+    });
+    filterDeleted.addEventListener('change', function() {
+        // When deleted is toggled, ensure other filters are off
+        filterActive.checked = false;
+        filterDelivered.checked = false;
+        applyFilters();
+    });
 
     // Apply filters initially
     applyFilters();
