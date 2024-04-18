@@ -592,8 +592,6 @@ def add_customer(request, customer_id=None):
             new_customer = form.save()
             # Redirect to the same page with the newly added customer selected
             return HttpResponseRedirect(reverse('add_customer') + f'?customer={new_customer.id}')
-        else:
-            return HttpResponseRedirect(reverse('add_customer') + f'?customer={new_customer.id}')
     else:
         if customer_id:
             return HttpResponseRedirect(reverse('add_customer') + f'?customer={customer_id}')
