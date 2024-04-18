@@ -226,7 +226,7 @@ input:checked + .slider:before {
 <form class="order-details" method="post" action="{% url 'update_order' order.order_number %}">
     {% csrf_token %}
     <div class="back-button-container">
-        <a href="{% url 'all_orders' %}" class="back-button">Tilbake</a>
+        <button type="button" id="backButton" class="back-button">Tilbake</button>
     </div>
     <div class="order-header">
 
