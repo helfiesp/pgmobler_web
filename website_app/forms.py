@@ -65,11 +65,21 @@ class customer_form(forms.ModelForm):
         fields = ['name', 'zip_code', 'street_address', 'email', 'phone_number']
         labels = {
             'name': 'Navn',
-            'zip_code': 'Postkode',
+            'zip_code': 'Postnummer',
             'street_address': 'Gateadresse',
             'email': 'E-post',
             'phone_number': 'Telefonnummer'
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        phone_number = cleaned_data.get('phone_number')
+
+        if customers.objects.filter(name=name, phone_number=phone_number).exists():
+            raise ValidationError("A customer with this name and phone number already exists.")
+
+        return cleaned_data
 
 class order_form(forms.ModelForm):
     # Add custom fields for the product details

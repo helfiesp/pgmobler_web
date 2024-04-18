@@ -102,6 +102,9 @@ class customers(models.Model):
     email = models.CharField(max_length=255, blank=True)
     phone_number = models.CharField(max_length=255)
 
+    class Meta:
+        unique_together = ['name', 'phone_number']
+
     def __str__(self):
         return self.name
 
