@@ -214,33 +214,42 @@ input:checked + .slider:before {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Get all the toggle inputs
     var filterActive = document.getElementById('filter-active');
     var filterDelivered = document.getElementById('filter-delivered');
     var filterDeleted = document.getElementById('filter-deleted');
-    var orderRows = document.querySelectorAll('.order-row');
+    var orderRows = document.querySelectorAll('table tr:not(:first-child)'); // Skip the header row
 
     function applyFilters() {
         orderRows.forEach(function(row) {
-            var isDelivered = row.getAttribute('data-delivered') === 'true';
-            var isDeleted = row.getAttribute('data-deleted') === 'true';
+            var isDelivered = row.dataset.delivered === 'true';
+            var isDeleted = row.dataset.deleted === 'true';
+            var showRow = false;
 
-            // Logic to determine if the row should be shown
-            var showRow = (filterActive.checked && !isDelivered && !isDeleted) ||
-                           (filterDelivered.checked && isDelivered) ||
-                           (filterDeleted.checked && isDeleted);
+            // Determine if the row should be shown
+            if (filterActive.checked && !isDelivered && !isDeleted) {
+                // Show active orders
+                showRow = true;
+            }
+            if (filterDelivered.checked && isDelivered) {
+                // Show delivered orders
+                showRow = true;
+            }
+            if (filterDeleted.checked && isDeleted) {
+                // Show deleted orders
+                showRow = true;
+            }
 
-            // Toggle display of row
+            // Toggle the display of the row
             row.style.display = showRow ? '' : 'none';
         });
     }
 
-    // Event listeners for the toggle changes
+    // Event listeners for changes on the toggles
     filterActive.addEventListener('change', applyFilters);
     filterDelivered.addEventListener('change', applyFilters);
     filterDeleted.addEventListener('change', applyFilters);
 
-    // Initial application of filters
+    // Apply filters initially
     applyFilters();
 });
 </script>
