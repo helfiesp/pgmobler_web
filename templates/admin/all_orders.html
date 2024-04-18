@@ -178,7 +178,7 @@ input:checked + .slider:before {
         </div>
         <h2>Alle ordre</h2>
         <table>
-            <tr data-delivered="{% if order.delivered %}true{% else %}false{% endif %}" data-deleted="{% if order.deleted %}true{% else %}false{% endif %}">
+        <tr class="order-row" data-delivered="{{ order.delivered }}" data-deleted="{{ order.deleted }}">
                 <th>Ordrenummer</th>
                 <th>Kunde</th>
                 <th>Totalpris</th>
@@ -217,22 +217,22 @@ document.addEventListener('DOMContentLoaded', function() {
     var filterActive = document.getElementById('filter-active');
     var filterDelivered = document.getElementById('filter-delivered');
     var filterDeleted = document.getElementById('filter-deleted');
-    var orderRows = document.querySelectorAll('table tr:not(:first-child)'); // Skip the header row
+    var orderRows = document.querySelectorAll('table tr.order-row'); // Corrected the selector
 
     function applyFilters() {
         orderRows.forEach(function(row) {
             var isDelivered = row.dataset.delivered === 'true';
             var isDeleted = row.dataset.deleted === 'true';
-            
-            // Start by hiding all rows
+
+            // Default to hiding rows
             var showRow = false;
 
-            // Only show rows based on the specific filter checked
+            // Show rows based on the specific filter checked
             if (filterActive.checked && !isDelivered && !isDeleted) {
                 showRow = true; // Show only active orders
-            } else if (filterDelivered.checked && isDelivered && !isDeleted) {
+            } else if (filterDelivered.checked && isDelivered) {
                 showRow = true; // Show only delivered orders
-            } else if (filterDeleted.checked && !isDelivered && isDeleted) {
+            } else if (filterDeleted.checked && isDeleted) {
                 showRow = true; // Show only deleted orders
             }
 
@@ -242,24 +242,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Event listeners for changes on the toggles
-    filterActive.addEventListener('change', function() {
-        // When active is toggled, ensure other filters are off
-        filterDelivered.checked = false;
-        filterDeleted.checked = false;
-        applyFilters();
-    });
-    filterDelivered.addEventListener('change', function() {
-        // When delivered is toggled, ensure other filters are off
-        filterActive.checked = false;
-        filterDeleted.checked = false;
-        applyFilters();
-    });
-    filterDeleted.addEventListener('change', function() {
-        // When deleted is toggled, ensure other filters are off
-        filterActive.checked = false;
-        filterDelivered.checked = false;
-        applyFilters();
-    });
+    filterActive.addEventListener('change', applyFilters);
+    filterDelivered.addEventListener('change', applyFilters);
+    filterDeleted.addEventListener('change', applyFilters);
 
     // Apply filters initially
     applyFilters();
