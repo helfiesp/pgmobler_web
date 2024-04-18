@@ -178,7 +178,7 @@ input:checked + .slider:before {
         </div>
         <h2>Alle ordre</h2>
         <table>
-            <tr class="order-row" data-delivered="{{ order.delivered }}" data-deleted="{{ order.deleted }}">
+            <tr data-delivered="{% if order.delivered %}true{% else %}false{% endif %}" data-deleted="{% if order.deleted %}true{% else %}false{% endif %}">
                 <th>Ordrenummer</th>
                 <th>Kunde</th>
                 <th>Totalpris</th>
