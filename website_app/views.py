@@ -574,7 +574,8 @@ def login_view(request):
         return render(request, 'login.html', {'form': form})
 
 def add_customer(request, customer_id=None):
-    all_customers = models.customers.objects.all() 
+
+    all_customers = models.customers.objects.all()  # Fetch all customers
     customers_dict = {str(customer.id): {
         'name': customer.name,
         'zip_code': customer.zip_code,
@@ -585,14 +586,15 @@ def add_customer(request, customer_id=None):
     customers_json = json.dumps(customers_dict)
 
     if request.method == 'POST':
-        form = CustomerForm(request.POST)  # Use the custom form
+        form = forms.customer_form(request.POST)
         if form.is_valid():
             new_customer = form.save()
+            # Redirect to the same page with the newly added customer selected
             return HttpResponseRedirect(reverse('add_customer') + f'?customer={new_customer.id}')
     else:
         if customer_id:
             return HttpResponseRedirect(reverse('add_customer') + f'?customer={customer_id}')
-        form = CustomerForm()  # Use the custom form
+        form = forms.customer_form()
 
     selected_customer = request.GET.get('customer', '')
 
@@ -602,6 +604,7 @@ def add_customer(request, customer_id=None):
         'selected_customer': selected_customer,
         'customers_json': customers_json,
     })
+
 
 
 def customer_detail(request, customer_id):
