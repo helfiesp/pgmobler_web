@@ -482,7 +482,32 @@ function getCookie(name) {
 
 const csrftoken = getCookie('csrftoken');
 
+// Event listener for the back button
+document.getElementById('backButton').addEventListener('click', function() {
+    var form = document.querySelector('.order-details'); // Get the form
+    var formData = new FormData(form); // Create a FormData object from the form
+    var actionUrl = form.getAttribute('action'); // Get the action URL of the form
 
+    // AJAX request to submit the form data
+    fetch(actionUrl, {
+        method: 'POST',
+        body: formData,
+        headers: {'X-CSRFToken': csrftoken}, // Pass the CSRF token in the header
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.text();
+    })
+    .then(data => {
+        // Handle success - navigate back to the orders list
+        window.location.href = "{% url 'all_orders' %}";
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+    });
+});
 </script>
 
 {% endblock %}
