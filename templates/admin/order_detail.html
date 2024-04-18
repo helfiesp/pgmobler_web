@@ -205,18 +205,24 @@ input:checked + .slider:before {
 
 .back-button {
     display: inline-block; /* Allows margins to be applied */
-    padding: 5px 10px; /* Padding for the button */
-    background-color: #d3d3d3; /* A neutral color for the button */
-    color: #333; /* Text color */
-    text-decoration: none; /* Removes underline from the link */
+    padding: 10px 20px; /* Adjust padding to match the size of other buttons */
+    background-color: #5cb85c; /* Use the green color to match the 'save' button */
+    color: white; /* Text color set to white for better contrast */
+    text-align: center; /* Center the text inside the button */
+    vertical-align: middle; /* Aligns the text vertically in the middle */
+    border: none; /* No border */
     border-radius: 4px; /* Rounded corners */
-    font-size: 14px; /* Font size similar to other buttons */
-    margin-top: -20px; /* Adjusts position to align with the top of the form */
+    font-size: 16px; /* Font size to match other buttons */
+    cursor: pointer; /* Changes the cursor to signify this is a clickable element */
     transition: background-color 0.3s; /* Smooth background color transition on hover */
+    text-decoration: none; /* Removes underline from the link */
+    margin-top: 0; /* Adjust the top margin if needed */
+    margin-bottom: 10px; /* Consistent spacing below the button */
+    outline: none; /* Remove the outline to maintain style consistency */
 }
 
 .back-button:hover {
-    background-color: #bbb; /* A slightly darker color on hover */
+    background-color: #4cae4c; /* A slightly darker green on hover for feedback */
 }
 </style>        
 

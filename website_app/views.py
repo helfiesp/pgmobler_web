@@ -680,7 +680,7 @@ def add_order(request, customer_id):
     return render(request, 'admin/order_form.html', {'form': form, 'customer': customer, 'products_json':products_json})
 
 def all_orders(request):
-    all_orders = models.orders.objects.filter(deleted=False).order_by('-date_added')
+    all_orders = models.orders.objects.all().order_by('-date_added')
     return render(request, 'admin/all_orders.html', {'orders': all_orders})
 
 
