@@ -266,7 +266,7 @@ document.addEventListener('DOMContentLoaded', function() {
         allProducts.sort((a, b) => a.name.localeCompare(b.name));
 
         // Generate options for sorted products
-        let productOptions = allProducts.map(product => `<option value="${product.id}">${product.name}</option>`).join('');
+        let productOptions = allProducts.map(product => `<option value="${product.id}" data-price="${product.price}">${product.name}</option>`).join('');
         productOptions += '<option value="Custom">Skriv inn produktnavn</option>'; // Add the "Custom" option
 
         // Include a custom product input that is initially hidden
@@ -309,9 +309,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Attach event listeners to the new item's price and amount fields to trigger total price calculation
         const newItemPriceInput = document.getElementById(`price_${index}`);
         const newItemAmountInput = document.getElementById(`amount_${index}`);
+        const productSelect = document.getElementById(`product_${index}`);
 
         newItemPriceInput.addEventListener('input', calculateTotalPrice);
         newItemAmountInput.addEventListener('input', calculateTotalPrice);
+        productSelect.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            const price = selectedOption.getAttribute('data-price') || 0;
+            newItemPriceInput.value = price;
+            calculateTotalPrice(); // Update total price after changing the product price
+        });
 
         updateMenu();
         setActiveButton(index);
