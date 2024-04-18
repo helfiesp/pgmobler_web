@@ -191,10 +191,10 @@ input:checked + .slider:before {
             <tr>
                 <td><a href="{% url 'order_detail' order.order_number %}">{{ order.order_number }}</a></td>
                 <td><a href="{% url 'customer_detail' order.customer.id %}">{{ order.customer.name }}</a></td>
-                <td>{{ order.delivery_info }}</td>
-                <td>{{ order.price }}</td>
+                <td>{{ order.price }}</td> <!-- Corrected position for price -->
                 <td>{{ order.salesman }}</td>
-                <td>{% if order.delivered %}Levert{% elif order.deleted %}Slettet{% endif %}</td>
+                <td>{{ order.delivery_info }}</td> <!-- Corrected position for delivery details -->
+                <td>{% if order.delivered %}Levert{% elif order.deleted %}Slettet{% else %}Aktiv{% endif %}</td>
                 <td>{{ order.date_added }}</td>
             </tr>
             {% empty %}
@@ -223,20 +223,17 @@ document.addEventListener('DOMContentLoaded', function() {
         orderRows.forEach(function(row) {
             var isDelivered = row.dataset.delivered === 'true';
             var isDeleted = row.dataset.deleted === 'true';
-            var showRow = false;
+            var showRow = true; // Default to showing rows
 
-            // Determine if the row should be shown
+            // Adjust logic to handle multiple checkbox states
             if (filterActive.checked && !isDelivered && !isDeleted) {
-                // Show active orders
                 showRow = true;
-            }
-            if (filterDelivered.checked && isDelivered) {
-                // Show delivered orders
+            } else if (filterDelivered.checked && isDelivered) {
                 showRow = true;
-            }
-            if (filterDeleted.checked && isDeleted) {
-                // Show deleted orders
+            } else if (filterDeleted.checked && isDeleted) {
                 showRow = true;
+            } else {
+                showRow = false; // Hide row if none of the conditions match
             }
 
             // Toggle the display of the row
