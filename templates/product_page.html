@@ -33,7 +33,7 @@
     "offers": {
         "@type": "Offer",
         "priceCurrency": "NOK",
-        "price": "{{ product.sale_price if product.sale_price else product.price }}",
+        "price": "{{ product.sale_price|default:product.price }}",
         "itemCondition": "http://schema.org/NewCondition",
         "availability": "{{ 'http://schema.org/InStock' if product.enabled else 'http://schema.org/OutOfStock' }}"
     }
