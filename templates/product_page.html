@@ -39,14 +39,7 @@
     }
 }
 </script>
-{% endblock %}
 
-<style>
-.featured-product-item {
-    width:350px;
-}
-
-</style>
 <script>
 // Wait for the DOM to load
 document.addEventListener('DOMContentLoaded', function() {
@@ -143,6 +136,16 @@ function openTab(event, tabName) {
 }
 
 </script>
+<style>
+.featured-product-item {
+    width:350px;
+}
+
+</style>
+
+{% endblock %}
+
+
 {% block content %}
 {% if product.enabled %}
     <div class="product-page-container">
