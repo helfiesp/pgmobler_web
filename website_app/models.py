@@ -37,7 +37,7 @@ class product(models.Model):
                 new_string_id = f"{base_string_id}-{increment}"
                 increment += 1
             self.string_id = new_string_id
-        super(Product, self).save(*args, **kwargs)
+        super(product, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
