@@ -35,7 +35,7 @@
         "priceCurrency": "NOK",
         "price": "{{ product.sale_price|default:product.price }}",
         "itemCondition": "http://schema.org/NewCondition",
-        "availability": "{{ 'http://schema.org/InStock' if product.enabled else 'http://schema.org/OutOfStock' }}"
+        "availability": "http://schema.org/InStock"
     }
 }
 </script>
