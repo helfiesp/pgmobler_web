@@ -10,7 +10,7 @@
             <div class="product-card">
         {% endif %}
         
-<a href="{% url 'product_page' product.id %}" class="product-link">
+<a href="{% url 'product_page' product.string_id %}" class="product-link">
 <div class="product-image-container">
     {% if product.images.all.0.image.url %}
         <img src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="product-image">

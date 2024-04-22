@@ -239,8 +239,8 @@ def general_search(request):
     
     return render(request, 'products.html', context)
 
-def product_page(request, product_id):
-    product = get_object_or_404(models.product, pk=product_id)
+def product_page(request, string_id):
+    product = get_object_or_404(models.product, string_id=string_id)
 
     # Filter out images with empty values
     product_images = product.images.exclude(image__isnull=True).exclude(image__exact='')
@@ -680,7 +680,7 @@ def add_order(request, customer_id):
     return render(request, 'admin/order_form.html', {'form': form, 'customer': customer, 'products_json':products_json})
 
 def all_orders(request):
-    all_orders = models.orders.objects.all().order_by('-date_added')
+    all_orders = models.orders.objects.filter(deleted=False).order_by('-date_added')
     return render(request, 'admin/all_orders.html', {'orders': all_orders})
 
 
