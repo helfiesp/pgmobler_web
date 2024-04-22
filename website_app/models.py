@@ -26,12 +26,13 @@ class product(models.Model):
     more_information = models.TextField(null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
     date_edited = models.DateTimeField(null=True, blank=True)  
-
+    
     def save(self, *args, **kwargs):
-        # This checks if string_id is not already set. If not, it generates it from the title.
         if not self.string_id:
-            self.string_id = slugify(self.title)
-        super(product, self).save(*args, **kwargs)
+            # Combining title and subtitle with a hyphen separator if subtitle is not empty
+            full_title = f"{self.title} - {self.subtitle}" if self.subtitle else self.title
+            self.string_id = slugify(full_title)
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return self.title
