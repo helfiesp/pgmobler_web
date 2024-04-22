@@ -15,7 +15,15 @@
     "@context": "http://schema.org/",
     "@type": "Product",
     "name": "{{ product.title }}",
-    "image": "{{ product.image.url if product.image else MEDIA_URL ~ 'default_image.png' }}",
+    "image": [
+        {% if product.images.all %}
+            {% for image in product.images.all %}
+                "{{ image.image.url }}"{% if not forloop.last %},{% endif %}
+            {% endfor %}
+        {% else %}
+            "{{ MEDIA_URL }}default_image.png"
+        {% endif %}
+    ],
     "description": "{{ product.subtitle|safe }}",
     "sku": "{{ product.string_id }}",
     "brand": {
