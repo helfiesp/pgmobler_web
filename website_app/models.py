@@ -33,7 +33,7 @@ class product(models.Model):
             new_string_id = base_string_id
             increment = 1
             # Check if the string_id already exists and increment until a unique one is found
-            while Product.objects.filter(string_id=new_string_id).exists():
+            while product.objects.filter(string_id=new_string_id).exists():
                 new_string_id = f"{base_string_id}-{increment}"
                 increment += 1
             self.string_id = new_string_id
