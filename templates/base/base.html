@@ -6,12 +6,14 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
   
-  <title>PG Møbler</title>
+  <title>{% block title %}PG Møbler{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'css/main.css' %}">
   <link rel="stylesheet" href="{% static 'css/bottom_nav.css' %}">
   <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
+  <meta name="description" content="{% block meta_description %}PG Møbler er en liten familiedrevet møbelbutikk, opprinnelig bestående av Petter og Guro, men som nå drives mest av Andreas. Butikken vår er en litt annerledes møbelbutikk, hvor vi ønsker å ha stor vekt på service, og det å gi kundene en god opplevelse i alle ledd.{% endblock %}">
   <link rel="icon" type="image/x-icon" href="{{ MEDIA_URL }}favicon/favicon-32x32.png">
-
+{% block extra_head %}
+{% endblock %}
 </head>
 <body>
   <header>
