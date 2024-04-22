@@ -5,10 +5,7 @@
 
 {% block meta_description %}{{ product.description|slice:":155" }}{% endblock %}
 {% block extra_head %}
-<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.min.js"></script>
-<link rel="stylesheet" href="{% static 'css/product_page.css' %}">
-<link rel="stylesheet" href="{% static 'css/products.css' %}">
+
 <!-- Additional scripts and links specific to the product page can be added here -->
 <script type="application/ld+json">
 {
@@ -40,6 +37,13 @@
 }
 </script>
 {% endblock %}
+
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.min.js"></script>
+<link rel="stylesheet" href="{% static 'css/product_page.css' %}">
+<link rel="stylesheet" href="{% static 'css/products.css' %}">
+
 
 <style>
 .featured-product-item {
