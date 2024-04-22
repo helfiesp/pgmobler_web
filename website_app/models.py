@@ -28,20 +28,10 @@ class product(models.Model):
     date_edited = models.DateTimeField(null=True, blank=True)  
 
     def save(self, *args, **kwargs):
+        # This checks if string_id is not already set. If not, it generates it from the title.
         if not self.string_id:
-            base_string_id = slugify(self.title)
-            unique_string_id = self.generate_unique_string_id(base_string_id)
-            self.string_id = unique_string_id
-        super().save(*args, **kwargs)
-
-    @staticmethod
-    def generate_unique_string_id(base_id):
-        original_id = base_id
-        count = 1
-        while product.objects.filter(string_id=base_id).exists():
-            base_id = f"{original_id}-{count}"
-            count += 1
-        return base_id
+            self.string_id = slugify(self.title)
+        super(product, self).save(*args, **kwargs)
 
     def __str__(self):
         return self.title
