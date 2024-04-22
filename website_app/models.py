@@ -1,10 +1,12 @@
 from django.db import models
 from django.db.models import IntegerField
 import uuid
+from django.utils.text import slugify
 
 # Create your models here.
 
 class product(models.Model):
+    string_id = models.CharField(max_length=200, unique=True, blank=True, null=True)
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=200, blank=True)
     category = models.ForeignKey('category', on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
@@ -27,6 +29,12 @@ class product(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def save(self, *args, **kwargs):
+        # This checks if string_id is not already set. If not, it generates it from the title.
+        if not self.string_id:
+            self.string_id = slugify(self.title)
+        super(Product, self).save(*args, **kwargs)
 
 class product_image(models.Model):
     product = models.ForeignKey(product, related_name='images', on_delete=models.CASCADE)
