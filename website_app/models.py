@@ -30,11 +30,6 @@ class product(models.Model):
     def __str__(self):
         return self.title
     
-    def save(self, *args, **kwargs):
-        # This checks if string_id is not already set. If not, it generates it from the title.
-        if not self.string_id:
-            self.string_id = slugify(self.title)
-        super(product, self).save(*args, **kwargs)
 
 class product_image(models.Model):
     product = models.ForeignKey(product, related_name='images', on_delete=models.CASCADE)
