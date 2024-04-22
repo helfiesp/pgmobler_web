@@ -38,14 +38,14 @@ class product(models.Model):
     def generate_unique_string_id(base_id):
         original_id = base_id
         count = 1
-        while Product.objects.filter(string_id=base_id).exists():
+        while product.objects.filter(string_id=base_id).exists():
             base_id = f"{original_id}-{count}"
             count += 1
         return base_id
 
     def __str__(self):
         return self.title
-        
+
 class product_image(models.Model):
     product = models.ForeignKey(product, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='product_images/', null=True, blank=True)
