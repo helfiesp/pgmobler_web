@@ -16,11 +16,12 @@
             <div class="product-card">
         {% endif %}
 
-            <a href="{% url 'product_page' product.string_id %}" class="product-link">
+            <a href="{% url 'product_page' product.string_id %}" title="Se detaljer for {{ product.title }}" class="product-link">
+
             <div class="product-image-container">
                 {% if product.images.all.0.image.url %}
-                    <img src="{{ product.images.all.0.image.url }}" alt="{{ product.title }}" class="product-image">
-                    <img src="{{ product.images.all.1.image.url }}" class="product-image second-image"> <!-- This is the second image -->
+                    <img src="{{ product.images.all.0.image.url }}" alt="Primary image of {{ product.title }}" class="product-image">
+                    <img src="{{ product.images.all.1.image.url }}" alt="Secondary image of {{ product.title }}" class="product-image second-image">
                 {% else %}
                     <img src="{{ MEDIA_URL }}default_image.png" alt="{{ product.title }}" class="product-image">
                 {% endif %}

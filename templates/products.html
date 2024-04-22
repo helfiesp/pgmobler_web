@@ -1,10 +1,17 @@
 {% extends 'base/base.html' %}
 {% load static %}
 {% load form_tags %}
+
+{% block extra_head %}
+    <link rel="stylesheet" href="{% static 'css/products_mainpage.css' %}">
+    <link rel="stylesheet" href="{% static 'css/mobile.css' %}">
+    <title>{% if category %}{{ category.name|title }} Produkter{% else %}Alle produkter {% endif %} - PG Møbler</title>
+    <meta name="description" content="{% if category %}Se vårt utvalg av {{ category.name|title }}{% else %}Se alle produkter{% endif %} Tilgjengelig hos PG Møbler">
+{% endblock %}
+
+
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'css/products_mainpage.css' %}">
-<link rel="stylesheet" href="{% static 'css/mobile.css' %}">
 
 
 <div class="page-container-products">
