@@ -415,3 +415,17 @@ body.modal-open {
     font-size: 1.5em;
 }
 }
+
+
+.price-tag-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+    position: absolute; 
+    top: 25px; 
+    right: 25px;
+}
