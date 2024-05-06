@@ -24,6 +24,8 @@
 <script src="{% static 'js/image_preview.js' %}"></script>
 
 <div class="add-item-container">
+                <a href="{% url 'show_price_tag_pdf' product.id %}"><button style=" top: 0; right: 0; margin: 10px;">Save Changes</button></a>
+
     <form id="product-form" action="{% url 'edit_product' product.id %}" method="POST" enctype="multipart/form-data" class="form-style">
             {% csrf_token %}
             <div class="form-section">

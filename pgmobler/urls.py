@@ -38,6 +38,8 @@ urlpatterns = [
 
     path('product/<str:string_id>/', views.product_page, name='product_page'),
     path('product/<int:product_id>/edit/', views.edit_product, name='edit_product'),
+    path('product/<int:product_id>/price_tag', views.show_price_tag_pdf, name='show_price_tag_pdf'),
+
     path('product/edit/image/delete/<int:image_id>/', views.delete_product_image, name='delete_product_image'),
     path('product/<int:product_id>/edit/delete/', views.delete_product, name='delete_product'),
 

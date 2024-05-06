@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  .price-tag {
+    width: 380px; /* 10cm */
+    height: 570px; /* 15cm */
+    border: 1px solid black;
+    position: relative;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    padding: 20px;
+  }
+
+  .product-name {
+    font-size: 50px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .product-dimensions {
+    font-size: 30px;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+
+  .product-price-div {
+    text-align: center;
+    font-size: 26px;
+  }
+  .product-price-old {
+    font-size: 50px;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  .product-price-new {
+    font-size: 75px;
+    font-weight: bold;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+
+  .product-details {
+    margin-top: 20px;
+    font-size: 30px;
+    text-align: center;
+  }
+
+.store-name {
+  position: absolute; /* Updated position */
+  left: 0px;
+  right: 0px;
+  bottom: -10px; /* Distance from the bottom */
+  width: 100%; /* Ensure it spans the width of the .price-tag */
+  text-align: center; /* Centers the image */
+}
+  .store-name img {
+    width: 350px;
+  }
+</style>
+</head>
+<body>
+
+<div class="price-tag">
+  <div class="product-name">{{ product_title|title }}</div>
+  <div class="product-dimensions">{{ product_subtitle|title }}</div>
+  <div class="product-price-div">FØR <span class="product-price-old">{{ product_price }},-</span></div>
+  <div class="product-price-div">FRA <span class="product-price-new">{{ product_discounted_price }},-</span></div>
+  <div class="product-details">{{ product_more_details|title }}</div>
+  <div class="store-name"><img src="https://pgmobler.no/media/pg_mobler_logo.png"></div>
+</div>
+
+</body>
+</html>

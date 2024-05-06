@@ -9,9 +9,11 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 import re
 from weasyprint import HTML
+import weasyprint
 from django.utils import timezone
 from django.http import HttpResponse
 from datetime import timedelta
+import io
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.shortcuts import render, get_object_or_404
@@ -847,5 +849,35 @@ def order_confirmation(request, order_number):
     pdf_file = open(file_path, 'rb')
     response = FileResponse(pdf_file, content_type='application/pdf')
     response['Content-Disposition'] = f'inline; filename="order_{order_number}_confirmation.pdf"'
+
+    return response
+
+def show_price_tag_pdf(request, product_id):
+    # Fetch the product data from the database using product ID
+    product = get_object_or_404(models.product, pk=product_id)
+
+    # Prepare the context for rendering
+    context = {
+        'product_title': product.title,
+        'product_subtitle': product.subtitle,
+        'product_price': product.price,
+        'product_discounted_price': product.sale_price,
+        'more_details': product.more_information
+    }
+
+    # Render the HTML template to a string
+    html_string = render_to_string('misc/price_tag.html', context)
+
+    # Generate PDF from the rendered HTML string
+    html = HTML(string=html_string)
+    # Define the size of the PDF: 10cm x 15cm
+    pdf = html.write_pdf(stylesheets=[weasyprint.CSS(string='@page { size: 10.5cm 15.5cm; margin: 0cm }')])
+
+    # Instead of saving the PDF, create an in-memory file
+    pdf_file = io.BytesIO(pdf)
+
+    # Return the PDF file in the response as an inline PDF
+    response = FileResponse(pdf_file, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="price_tag.pdf"'
 
     return response
