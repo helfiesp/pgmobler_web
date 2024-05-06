@@ -67,8 +67,12 @@
 <div class="price-tag">
   <div class="product-name">{{ product_title|title }}</div>
   <div class="product-dimensions">{{ product_subtitle|title }}</div>
-  <div class="product-price-div">FØR <span class="product-price-old">{{ product_price }},-</span></div>
-  <div class="product-price-div">FRA <span class="product-price-new">{{ product_discounted_price }},-</span></div>
+  {% if product_discounted_price %}
+    <div class="product-price-div">FØR <span class="product-price-old">{{ product_price }},-</span></div>
+    <div class="product-price-div">FRA <span class="product-price-new">{{ product_discounted_price }},-</span></div>
+  {% else %}
+      <div class="product-price-div">FRA <span class="product-price-new">{{ product_price }},-</span></div>
+  {% endif %}
   <div class="product-details">{{ product_more_details|title }}</div>
   <div class="store-name"><img src="https://pgmobler.no/media/pg_mobler_logo.png"></div>
 </div>
