@@ -67,7 +67,11 @@
 
 <div class="price-tag">
   <div class="product-name">{{ product_title|title }}</div>
-  <div class="product-dimensions">{{ product_subtitle }}</div>
+  {% if product_subtitle %}
+    <div class="product-dimensions">{{ product_subtitle }}</div>
+  {% else %}
+
+  {% endif %}
   {% if product_discounted_price %}
     <div class="product-price-div">FØR <span class="product-price-old">{{ product_price }},-</span></div>
       {% if product_price <= 9999 %}
