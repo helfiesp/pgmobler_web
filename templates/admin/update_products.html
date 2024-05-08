@@ -33,7 +33,7 @@
                 <form method="post" action="{% url 'update_products_id' product.id %}" enctype="multipart/form-data">
                     {% csrf_token %}
                     <td><input type="text" name="title" value="{{ product.title }}"></td>
-                    <td><a href="https://www.pgmobler.no/product/{{ product.id }}/edit/" target="_blank">Rediger produkt</a></td>
+                    <td><a href="{% url 'show_price_tag_pdf' product.id %}"></td> target="_blank">Prislapp</a></td>
                     <td><input type="text" name="subtitle" value="{{ product.subtitle }}"></td>
 
 
