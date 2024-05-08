@@ -331,7 +331,7 @@ function openTab(event, tabName) {
         {% if user.is_authenticated %}
             <br>
             <p>Du er logget inn som admin, vil du <a style="color: black;" href="{% url 'edit_product' product.id %}">redigere produktet?</a><br>
-            Eller vil du <a href="{% url 'show_price_tag_pdf' product.id %}" target="_blank">lage prislapp</a</p>
+            Eller vil du <a href="{% url 'show_price_tag_pdf' product.id %}" target="_blank">lage prislapp</a>?</p>
         {% endif %}
     </div>
 
