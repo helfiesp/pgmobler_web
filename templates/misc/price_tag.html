@@ -71,9 +71,9 @@
   {% if product_discounted_price %}
     <div class="product-price-div">FØR <span class="product-price-old">{{ product_price }},-</span></div>
       {% if product_price <= 9999 %}
-        <div class="product-price-div">FRA <span class="product-price-new" style="font-size:75px;">{{ product_price }},-</span></div>
+        <div class="product-price-div">FRA <span class="product-price-new" style="font-size:75px;">{{ product_discounted_price }},-</span></div>
       {% else %}
-        <div class="product-price-div">FRA <span class="product-price-new">{{ product_price }},-</span></div>
+        <div class="product-price-div">FRA <span class="product-price-new">{{ product_discounted_price }},-</span></div>
       {% endif %}
   {% else %}
       {% if product_price <= 9999 %}
