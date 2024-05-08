@@ -859,6 +859,7 @@ def show_price_tag_pdf(request, product_id):
     # Prepare the context for rendering
     context = {
         'product_title': product.title,
+        'product_category': product.category,
         'product_subtitle': product.subtitle,
         'product_price': product.price,
         'product_discounted_price': product.sale_price,
