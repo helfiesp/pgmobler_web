@@ -633,7 +633,7 @@ def add_order(request, customer_id):
     customer = get_object_or_404(models.customers, id=customer_id)
     products = models.product.objects.all().order_by('-date_added')
 
-# Manually construct a list of dictionaries for each product
+    # Manually construct a list of dictionaries for each product
     products_list = [{
         'id': product.id,
         'name': product.title,
@@ -644,6 +644,7 @@ def add_order(request, customer_id):
     products_json = json.dumps(products_list)
 
     if request.method == 'POST':
+        print(request.POST)
         form = forms.order_form(request.POST)
         if form.is_valid():
             order = form.save(commit=False)
