@@ -630,60 +630,58 @@ def customer_detail(request, customer_id):
     }
     return render(request, 'admin/customer_detail.html', context)
 
+
+# Helper function to clean POST data
 def clean_post_data(request):
-    # Make a mutable copy of the POST data
     post_copy = request.POST.copy()
+    pattern = re.compile(r'^products\[(\d+)\]\[(\w+)\]$')
 
-    # Iterate over the items
-    for key, value in post_copy.lists():
-        # Filter out empty strings and update the QueryDict
-        if isinstance(value, list):
-            cleaned_list = [item for item in value if item.strip()]
-            if cleaned_list:
-                post_copy.setlist(key, cleaned_list)
+    for key, values in post_copy.lists():
+        match = pattern.match(key)
+        if match:
+            cleaned_values = [value for value in values if value.strip()]
+            if cleaned_values:
+                post_copy.setlist(key, cleaned_values)
             else:
-                post_copy.pop(key)  # Remove key if the list is empty after cleaning
-
-    # Example of usage within a view
-    # Now `post_copy` contains cleaned data that you can use
+                post_copy.pop(key)
+    
     return post_copy
 
 def add_order(request, customer_id):
     customer = get_object_or_404(models.customers, id=customer_id)
     products = models.product.objects.all().order_by('-date_added')
 
-    # Manually construct a list of dictionaries for each product
     products_list = [{
         'id': product.id,
         'name': product.title,
         'price': product.price,
     } for product in products]
-    
-    # Serialize this list to a JSON string
+
     products_json = json.dumps(products_list)
 
     if request.method == 'POST':
-        form = forms.order_form(request.POST)
+        cleaned_post = clean_post_data(request)
+        form = forms.order_form(cleaned_post)
+
         if form.is_valid():
             order = form.save(commit=False)
             order.customer = customer
 
-            # Regular expression to match the pattern 'products[index][field]' in POST keys
             pattern = re.compile(r'^products\[(\d+)\]\[(\w+)\]$')
-
-            # Dictionary to hold the items details, indexed by item number
             items_details = {}
 
-            for key, value in clean_post_data(request):
-                print(key, value)
+            # Use cleaned_post instead of request.POST
+            for key, value in cleaned_post.items():
+                print(key, value)  # This will show the cleaned data
                 match = pattern.match(key)
                 if match:
                     index, field = match.groups()
-                    index = int(index)  # Convert index to integer
-                    
+                    index = int(index)
+
                     if index not in items_details:
                         items_details[index] = {}
-                    items_details[index][field] = value
+                    items_details[index][field] = value.strip()  # strip any extra whitespace
+
             
             # Convert the dictionary of items to a list, to maintain order
             items_list = [item for _, item in sorted(items_details.items())]
