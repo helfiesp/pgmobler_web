@@ -282,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
         newItem.innerHTML = `
         <div class="form-group">
             <label for="product_${index}">Produkt:</label>
-            <select id="product_${index}" class="select2-product" name="products[${index}][product]" required>
+            <select id="product_${index}" class="select-product" name="products[${index}][product]" required>
                 ${productOptions}
             </select>
             <input type="text" id="custom_product_${index}" name="products[${index}][product]" style="display: none;" placeholder="Enter custom product name">
@@ -399,19 +399,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Make sure to call calculateTotalPrice after loading the first item or when the form is initially displayed
     calculateTotalPrice();
 
-    $(document).ready(function() {
-    // Activate Select2
-    $('.select2-product').select2({
-        placeholder: "Select a product",
-        allowClear: true
-    });
 
-    // Listen to product select change
-    $('.select2-product').on('change', function() {
-        // You can integrate your existing change handler or any additional logic here
-    });
-});
-    
 });
 
 </script>
