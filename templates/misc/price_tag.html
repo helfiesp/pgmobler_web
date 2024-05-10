@@ -92,7 +92,9 @@
         <div class="product-price-div" style="margin-top: 90px;">FRA<span class="product-price-new">{{ product_price }},-</span></div>
       {% endif %}
   {% endif %}
-  <div class="product-details">{{ more_details }}</div>
+  {% if more_details %}
+    <div class="product-details">{{ more_details }}</div>'
+  {% endif %}
   <div class="store-name"><img src="https://pgmobler.no/media/pg_mobler_logo.png"></div>
 </div>
 
