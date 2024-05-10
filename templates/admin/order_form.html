@@ -1,14 +1,5 @@
 {% extends "base/base.html" %}
 
-
-{% block extra_head %}
-<!-- Select2 CSS -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.2.0/dist/css/select2.min.css" rel="stylesheet" />
-
-<!-- Select2 JS -->
-<script src="https://cdn.jsdelivr.net/npm/select2@4.2.0/dist/js/select2.min.js"></script>
-
-{% endblock %}
 {% block content %}
 
 <style>
@@ -275,18 +266,18 @@ document.addEventListener('DOMContentLoaded', function() {
         allProducts.sort((a, b) => a.name.localeCompare(b.name));
 
         // Generate options for sorted products
-        let productOptions = allProducts.map(product => `<option value="${product.name}-${product.id}"data-price="${product.price}">${product.name}</option>`).join('');
+        let productOptions = allProducts.map(product => `<option value="${product.id}" data-price="${product.price}">${product.name}</option>`).join('');
         productOptions += '<option value="Custom">Skriv inn produktnavn</option>'; // Add the "Custom" option
 
         // Include a custom product input that is initially hidden
         newItem.innerHTML = `
-        <div class="form-group">
-            <label for="product_${index}">Produkt:</label>
-            <select id="product_${index}" class="select-product" name="products[${index}][product]" required>
-                ${productOptions}
-            </select>
-            <input type="text" id="custom_product_${index}" name="products[${index}][product]" style="display: none;" placeholder="Enter custom product name">
-        </div>
+            <div class="form-group">
+                <label for="product_${index}">Produkt:</label>
+                <select id="product_${index}" name="products[${index}][product]" required onchange="toggleCustomProductInput(this, ${index})">
+                    ${productOptions}
+                </select>
+                <input type="text" id="custom_product_${index}" name="products[${index}][product]" style="display: none;" placeholder="Enter custom product name">
+            </div>
             
             <div class="form-group">
                 <label for="product_info_${index}">Produkt Info:</label>
@@ -398,10 +389,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Make sure to call calculateTotalPrice after loading the first item or when the form is initially displayed
     calculateTotalPrice();
-
-
 });
-
 </script>
 
 
