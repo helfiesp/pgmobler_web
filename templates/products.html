@@ -21,6 +21,7 @@
     <div class="filter-group">
     {% for category in all_categories %}
         {% if not category.parent %}
+            {% if category|tostring  != "hyttemøbler" %}
             <a style="text-decoration: none" href="{% url 'category_search' category.name %}">
             <h4 class="filter-title">{{ category.name|title }}</h4></a>
             {% if category.subcategories.all %}
@@ -31,6 +32,7 @@
                         </li>
                     {% endfor %}
                 </ul>
+            {% endif %}
             {% endif %}
         {% endif %}
     {% endfor %}
