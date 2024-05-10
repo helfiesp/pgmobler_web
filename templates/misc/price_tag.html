@@ -79,7 +79,7 @@
     <div class="product-dimensions">{{ product_category|title }}</div>
   {% endif %}
   {% if product_discounted_price %}
-    <div class="product-price-div">FØR <span class="product-price-old">{{ product_price }},-</span></div>
+    <div class="product-price-div">{% if tag_type %}VEIL.{% else %}FØR{%endif %}<span class="product-price-old">{{ product_price }},-</span></div>
       {% if product_price <= 9999 %}
         <div class="product-price-div">{% if tag_type %}FRA{% else %}NÅ{% endif %}<span class="product-price-new" style="font-size:75px;">{{ product_discounted_price }},-</span></div>
       {% else %}
