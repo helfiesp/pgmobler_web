@@ -5,6 +5,11 @@
 
 <link rel="stylesheet" href="{% static 'css/update_products.css' %}">
     <h1>Produktoversikt</h1>
+    <div>
+        <label><input type="checkbox" id="filter-active" checked>Show Active</label>
+        <label><input type="checkbox" id="filter-inactive" checked>Show Inactive</label>
+    </div>
+
     <table>
         <thead>
             <tr>
@@ -83,8 +88,31 @@
             {% endfor %}
         </tbody>
     </table>
-     <script>
-        // Function to resize textareas based on their content
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = {
+                active: document.getElementById('filter-active'),
+                inactive: document.getElementById('filter-inactive')
+            };
+
+            function filterRows() {
+                const showActive = checkboxes.active.checked;
+                const showInactive = checkboxes.inactive.checked;
+
+                document.querySelectorAll('#product-table tr').forEach(row => {
+                    const isActive = row.classList.contains('active');
+                    row.style.display = 
+                        (isActive && showActive) || (!isActive && showInactive) ? '' : 'none';
+                });
+            }
+
+            checkboxes.active.addEventListener('change', filterRows);
+            checkboxes.inactive.addEventListener('change', filterRows);
+
+            filterRows(); // Initial filter on page load
+        });
+
+        // Existing script for resizing textareas
         function resizeTextarea() {
             const textareas = document.querySelectorAll('textarea');
             textareas.forEach(textarea => {
@@ -93,13 +121,14 @@
             });
         }
 
-        // Resize textareas on page load
-        window.onload = resizeTextarea;
-
-        // Resize textareas on input
-        document.addEventListener('input', function (event) {
-            if (event.target.tagName.toLowerCase() !== 'textarea') return;
+        window.onload = function() {
             resizeTextarea();
+        };
+
+        document.addEventListener('input', function(event) {
+            if (event.target.tagName.toLowerCase() === 'textarea') {
+                resizeTextarea();
+            }
         }, false);
     </script>
 
