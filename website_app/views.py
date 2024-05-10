@@ -5,6 +5,8 @@ from django.core.paginator import Paginator
 from . import models
 from . import forms
 from django.shortcuts import render, redirect
+from django.http import QueryDict
+
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 import re
@@ -628,6 +630,23 @@ def customer_detail(request, customer_id):
     }
     return render(request, 'admin/customer_detail.html', context)
 
+def clean_post_data(request):
+    # Make a mutable copy of the POST data
+    post_copy = request.POST.copy()
+
+    # Iterate over the items
+    for key, value in post_copy.lists():
+        # Filter out empty strings and update the QueryDict
+        if isinstance(value, list):
+            cleaned_list = [item for item in value if item.strip()]
+            if cleaned_list:
+                post_copy.setlist(key, cleaned_list)
+            else:
+                post_copy.pop(key)  # Remove key if the list is empty after cleaning
+
+    # Example of usage within a view
+    # Now `post_copy` contains cleaned data that you can use
+    return post_copy
 
 def add_order(request, customer_id):
     customer = get_object_or_404(models.customers, id=customer_id)
@@ -644,7 +663,6 @@ def add_order(request, customer_id):
     products_json = json.dumps(products_list)
 
     if request.method == 'POST':
-        print(request.POST)
         form = forms.order_form(request.POST)
         if form.is_valid():
             order = form.save(commit=False)
@@ -656,7 +674,8 @@ def add_order(request, customer_id):
             # Dictionary to hold the items details, indexed by item number
             items_details = {}
 
-            for key, value in request.POST.items():
+            for key, value in clean_post_data(request):
+                print(key, value)
                 match = pattern.match(key)
                 if match:
                     index, field = match.groups()
