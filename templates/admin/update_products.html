@@ -88,31 +88,10 @@
             {% endfor %}
         </tbody>
     </table>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const checkboxes = {
-                active: document.getElementById('filter-active'),
-                inactive: document.getElementById('filter-inactive')
-            };
+     <script>
 
-            function filterRows() {
-                const showActive = checkboxes.active.checked;
-                const showInactive = checkboxes.inactive.checked;
-
-                document.querySelectorAll('#product-table tr').forEach(row => {
-                    const isActive = row.classList.contains('active');
-                    row.style.display = 
-                        (isActive && showActive) || (!isActive && showInactive) ? '' : 'none';
-                });
-            }
-
-            checkboxes.active.addEventListener('change', filterRows);
-            checkboxes.inactive.addEventListener('change', filterRows);
-
-            filterRows(); // Initial filter on page load
-        });
-
-        // Existing script for resizing textareas
+        
+        // Function to resize textareas based on their content
         function resizeTextarea() {
             const textareas = document.querySelectorAll('textarea');
             textareas.forEach(textarea => {
@@ -121,14 +100,13 @@
             });
         }
 
-        window.onload = function() {
-            resizeTextarea();
-        };
+        // Resize textareas on page load
+        window.onload = resizeTextarea;
 
-        document.addEventListener('input', function(event) {
-            if (event.target.tagName.toLowerCase() === 'textarea') {
-                resizeTextarea();
-            }
+        // Resize textareas on input
+        document.addEventListener('input', function (event) {
+            if (event.target.tagName.toLowerCase() !== 'textarea') return;
+            resizeTextarea();
         }, false);
     </script>
 
