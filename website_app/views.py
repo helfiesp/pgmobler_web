@@ -672,7 +672,7 @@ def add_order(request, customer_id):
 
             # Use cleaned_post instead of request.POST
             for key, value in cleaned_post.items():
-                print(key, value)  # This will show the cleaned data
+                print(key, value)
                 match = pattern.match(key)
                 if match:
                     index, field = match.groups()
