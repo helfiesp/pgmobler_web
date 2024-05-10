@@ -673,6 +673,7 @@ def add_order(request, customer_id):
             # Use cleaned_post instead of request.POST
             for key, value in cleaned_post.items():
                 if "product" in key and "product_info" not in key:
+                    print("YES")
                     if isinstance(value, int):
                         value = models.product.objects.filter(pk=value).title
                 match = pattern.match(key)
