@@ -863,7 +863,8 @@ def show_price_tag_pdf(request, product_id):
         'product_subtitle': product.subtitle,
         'product_price': product.price,
         'product_discounted_price': product.sale_price,
-        'more_details': product.price_tag_info
+        'more_details': product.price_tag_info,
+        'tag_type': product.price_tag_type,
     }
 
     # Render the HTML template to a string

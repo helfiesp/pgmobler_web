@@ -71,8 +71,17 @@
                 {{ form.length }}
                 <p>Mer informasjon</p>
                 {{ form.more_information }}
+                <h2>Prislapp info</h2>
                 <p>Prislapp ekstra info</p>
                 {{ form.price_tag_info }}
+                <!-- Custom styled checkbox for Enabled -->
+                <div class="checkbox-section" style="margin-top: 10px;">
+                    <p>Salgsprodukter: Vis "NÅ" eller "FRA" default er nå.</p>
+                    <label class="switch">
+                        {{ form.enabled }}
+                        <span class="slider round"></span>
+                    </label>
+                </div>
 
                  <!-- Custom styled checkbox for Enabled -->
                 <div class="checkbox-section" style="margin-top: 10px;">

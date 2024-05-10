@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 class product_form(forms.ModelForm):
     class Meta:
         model = product
-        fields = ['title', 'subtitle', 'category', 'description', 'price', 'sale_price', 'material', 'color', 'height', 'width', 'depth','length', 'price_tag_info', 'more_information', 'supplier', 'enabled', 'bestseller']
+        fields = ['title', 'subtitle', 'category', 'description', 'price', 'sale_price', 'material', 'color', 'height', 'width', 'depth','length', 'price_tag_info', 'price_tag_type', 'more_information', 'supplier', 'enabled', 'bestseller']
 
 product_image_formset = inlineformset_factory(
     product, product_image,
