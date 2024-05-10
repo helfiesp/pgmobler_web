@@ -111,8 +111,8 @@ class supplier(models.Model):
 
 class customers(models.Model):
     name = models.CharField(max_length=255)
-    zip_code = models.CharField(max_length=255)
-    street_address = models.CharField(max_length=255)
+    zip_code = models.CharField(max_length=255, blank=True)
+    street_address = models.CharField(max_length=255, blank=True)
     email = models.CharField(max_length=255, blank=True)
     phone_number = models.CharField(max_length=255)
 
