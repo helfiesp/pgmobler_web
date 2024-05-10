@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function() {
         allProducts.sort((a, b) => a.name.localeCompare(b.name));
 
         // Generate options for sorted products
-        let productOptions = allProducts.map(product => `<option value="${product.id}" data-price="${product.price}">${product.name}</option>`).join('');
+        let productOptions = allProducts.map(product => `<option value="${product.name}-${product.id}"data-price="${product.price}">${product.name}</option>`).join('');
         productOptions += '<option value="Custom">Skriv inn produktnavn</option>'; // Add the "Custom" option
 
         // Include a custom product input that is initially hidden
@@ -398,8 +398,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Make sure to call calculateTotalPrice after loading the first item or when the form is initially displayed
     calculateTotalPrice();
-});
-$(document).ready(function() {
+
+    $(document).ready(function() {
     // Activate Select2
     $('.select2-product').select2({
         placeholder: "Select a product",
@@ -411,6 +411,9 @@ $(document).ready(function() {
         // You can integrate your existing change handler or any additional logic here
     });
 });
+    
+});
+
 </script>
 
 
