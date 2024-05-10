@@ -10,7 +10,6 @@ def base_info(request):
     bestsellers = models.product.objects.filter(enabled=True, bestseller=True).order_by('-date_added')[:8]
 
     return {
-        'all_products': products,
         'all_categories': categories,
         'text_areas_all': text_areas,
         'footer_textareas': footer_textareas,

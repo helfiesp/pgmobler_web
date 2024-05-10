@@ -40,7 +40,7 @@
     <!-- Recent Products -->
     <div class="filter-group">
       <h4 class="filter-title">Nye produkter</h4>
-        {% for product in all_products %}
+        {% for product in recent_products %}
             {% if product.enabled %}
               {% if forloop.counter <= 5 %}
                 <div class="recent-product-item">
