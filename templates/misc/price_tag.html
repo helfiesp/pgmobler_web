@@ -67,19 +67,23 @@
 
 <div class="price-tag">
   <div class="product-name">{{ product_title|title }}</div>
-  <div class="product-dimensions">{{ product_subtitle }}</div>
+  {% if product_subtitle %}
+    <div class="product-dimensions">{{ product_subtitle }}</div>
+  {% else %}
+    <div class="product-dimensions">{{ product_category|title }}</div>
+  {% endif %}
   {% if product_discounted_price %}
     <div class="product-price-div">FØR <span class="product-price-old">{{ product_price }},-</span></div>
       {% if product_price <= 9999 %}
-        <div class="product-price-div">FRA <span class="product-price-new" style="font-size:75px;">{{ product_price }},-</span></div>
+        <div class="product-price-div">NÅ <span class="product-price-new" style="font-size:75px;">{{ product_discounted_price }},-</span></div>
       {% else %}
-        <div class="product-price-div">FRA <span class="product-price-new">{{ product_price }},-</span></div>
+        <div class="product-price-div">NÅ <span class="product-price-new">{{ product_discounted_price }},-</span></div>
       {% endif %}
   {% else %}
       {% if product_price <= 9999 %}
-        <div class="product-price-div" style="margin-top: 60px;">FRA <span class="product-price-new" style="font-size:85px;">{{ product_price }},-</span></div>
+        <div class="product-price-div" style="margin-top: 70px;">FRA <span class="product-price-new" style="font-size:75px;">{{ product_price }},-</span></div>
       {% else %}
-        <div class="product-price-div" style="margin-top: 60px;">FRA <span class="product-price-new">{{ product_price }},-</span></div>
+        <div class="product-price-div" style="margin-top: 90px;">FRA <span class="product-price-new">{{ product_price }},-</span></div>
       {% endif %}
   {% endif %}
   <div class="product-details">{{ product_more_details }}</div>
