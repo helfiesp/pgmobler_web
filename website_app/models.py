@@ -24,6 +24,7 @@ class product(models.Model):
     enabled = models.BooleanField(default=True)
     bestseller = models.BooleanField(default=False)
     more_information = models.TextField(null=True, blank=True)
+    price_tag_info = models.CharField(null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
     date_edited = models.DateTimeField(null=True, blank=True)  
 
