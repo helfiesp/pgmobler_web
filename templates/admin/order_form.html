@@ -275,7 +275,7 @@ document.addEventListener('DOMContentLoaded', function() {
         allProducts.sort((a, b) => a.name.localeCompare(b.name));
 
         // Generate options for sorted products
-        let productOptions = allProducts.map(product => `<option value="${product.name}-${product.id}" name="" data-price="${product.price}">${product.name}</option>`).join('');
+        let productOptions = allProducts.map(product => `<option value="${product.id}" data-price="${product.price}">${product.name}</option>`).join('');
         productOptions += '<option value="Custom">Skriv inn produktnavn</option>'; // Add the "Custom" option
 
         // Include a custom product input that is initially hidden
