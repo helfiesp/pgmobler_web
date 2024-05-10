@@ -1,5 +1,14 @@
 {% extends "base/base.html" %}
 
+
+{% block extra_head %}
+<!-- Select2 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/select2@4.2.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<!-- Select2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/select2@4.2.0/dist/js/select2.min.js"></script>
+
+{% endblock %}
 {% block content %}
 
 <style>
@@ -271,13 +280,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Include a custom product input that is initially hidden
         newItem.innerHTML = `
-            <div class="form-group">
-                <label for="product_${index}">Produkt:</label>
-                <select id="product_${index}" name="products[${index}][product]" required onchange="toggleCustomProductInput(this, ${index})">
-                    ${productOptions}
-                </select>
-                <input type="text" id="custom_product_${index}" name="products[${index}][product]" style="display: none;" placeholder="Enter custom product name">
-            </div>
+        <div class="form-group">
+            <label for="product_${index}">Produkt:</label>
+            <select id="product_${index}" class="select2-product" name="products[${index}][product]" required>
+                ${productOptions}
+            </select>
+            <input type="text" id="custom_product_${index}" name="products[${index}][product]" style="display: none;" placeholder="Enter custom product name">
+        </div>
             
             <div class="form-group">
                 <label for="product_info_${index}">Produkt Info:</label>
@@ -389,6 +398,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Make sure to call calculateTotalPrice after loading the first item or when the form is initially displayed
     calculateTotalPrice();
+});
+$(document).ready(function() {
+    // Activate Select2
+    $('.select2-product').select2({
+        placeholder: "Select a product",
+        allowClear: true
+    });
+
+    // Listen to product select change
+    $('.select2-product').on('change', function() {
+        // You can integrate your existing change handler or any additional logic here
+    });
 });
 </script>
 
