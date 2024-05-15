@@ -107,7 +107,7 @@ def fetch_admin_alerts():
     # Query to find products not updated in the last day and return only their id and title
     alerts = models.product.objects.filter(date_edited__isnull=True, date_added__lt=days_ago) | \
              models.product.objects.filter(date_edited__lt=days_ago) \
-             .values('id', 'title')  # Use .values() to specify which fields to include
+             .values('string_id', 'title')  # Use .values() to specify which fields to include
 
     return list(alerts), alert_interval
 
