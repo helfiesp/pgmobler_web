@@ -101,7 +101,7 @@ def index(request):
 
 def fetch_admin_alerts():
     # Calculate the date 1 day ago from now
-    alert_interval = 90
+    alert_interval = 180
     days_ago = timezone.now() - timedelta(days=alert_interval)
 
     # Query to find products not updated in the last day and return only their id and title
