@@ -660,7 +660,6 @@ def add_order(request, customer_id):
     products_json = json.dumps(products_list)
 
     if request.method == 'POST':
-        print(request.POST)
         cleaned_post = clean_post_data(request)
         form = forms.order_form(cleaned_post)
 
@@ -690,8 +689,18 @@ def add_order(request, customer_id):
             
             # Convert the dictionary of items to a list, to maintain order
             items_list = [item for _, item in sorted(items_details.items())]
+
+            # Check for existing orders with the same customer and items
+            existing_orders = models.orders.objects.filter(customer=customer)
+            if existing_orders:
+                for existing_order in existing_orders:
+                    existing_items_list = json.loads(existing_order.items)
+                    if existing_items_list == items_list and existing_order.date_added.date() == datetime.now().date():
+                        # Order with the same customer and items already exists
+                        return redirect(reverse('order_detail', args=[existing_order.order_number]))
+
             order.remaining = int(request.POST.get('price')) - int(request.POST.get('paid'))
-            order.a_paid = int(request.POST.get('paid'))
+            order.a_paid = int(request.POST.get('paid'))    
             order.items = json.dumps(items_list)  # Save serialized items list
             order.save()
             return redirect(reverse('order_confirmation', args=[order.order_number]))
