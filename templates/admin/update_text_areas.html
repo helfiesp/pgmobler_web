@@ -8,116 +8,166 @@
 
 <div class="container mt-4">
     <h1>Tekstoversikt</h1>
-    
-    <!-- Navigation Tabs -->
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="text-areas-tab" data-toggle="tab" href="#text-areas" role="tab" aria-controls="text-areas" aria-selected="true">Text Areas</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="footer-areas-tab" data-toggle="tab" href="#footer-areas" role="tab" aria-controls="footer-areas" aria-selected="false">Footer Areas</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="business-info-tab" data-toggle="tab" href="#business-info" role="tab" aria-controls="business-info" aria-selected="false">Business Information</a>
-        </li>
-    </ul>
 
-    <!-- Tab Content -->
-    <div class="tab-content" id="myTabContent">
-        <!-- Text Areas Tab -->
-        <div class="tab-pane fade show active" id="text-areas" role="tabpanel" aria-labelledby="text-areas-tab">
-            <h2 class="mt-3">Text Areas</h2>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Front Page Header</th>
-                        <th>Front Page Subtitle</th>
-                        <th>Button Text</th>
-                        <th>Recent Product Header</th>
-                        <th>Bestselger Overskrift</th>
-                        <th>Nav Items</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for text_area in text_areas %}
-                    <tr>
-                        <form method="post" action="{% url 'update_text_areas_id' text_area.id %}">
-                            {% csrf_token %}
-                            <td><input type="text" class="form-control" name="front_page_header" value="{{ text_area.front_page_header }}"></td>
-                            <td><input type="text" class="form-control" name="front_page_subtitle" value="{{ text_area.front_page_subtitle }}"></td>
-                            <td><input type="text" class="form-control" name="front_page_button_text" value="{{ text_area.front_page_button_text }}"></td>
-                            <td><input type="text" class="form-control" name="recent_product_header" value="{{ text_area.recent_product_header }}"></td>
-                            <td><input type="text" class="form-control" name="bestseller_header" value="{{ text_area.bestseller_header }}"></td>
-                            <td>
-                                <input type="text" class="form-control" name="nav_item_1" value="{{ text_area.nav_item_1 }}">
-                                <input type="text" class="form-control mt-1" name="nav_item_2" value="{{ text_area.nav_item_2 }}">
-                                <input type="text" class="form-control mt-1" name="nav_item_3" value="{{ text_area.nav_item_3 }}">
-                            </td>
-                            <td><button type="submit" class="btn btn-primary">Update</button></td>
-                        </form>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <!-- Accordion for Text Areas, Footer Areas, and Business Info -->
+    <div id="accordion">
+        <!-- Text Areas Section -->
+        <div class="card">
+            <div class="card-header" id="headingOne">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        Text Areas
+                    </button>
+                </h2>
+            </div>
+
+            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Front Page Header</th>
+                                <th>Front Page Subtitle</th>
+                                <th>Button Text</th>
+                                <th>Recent Product Header</th>
+                                <th>Recent Product Text</th>
+                                <th>Bestseller Header</th>
+                                <th>Bestseller Text</th>
+                                <th>Nav Items</th>
+                                <th>Purchase Buttons</th>
+                                <th>Product Descriptions</th>
+                                <th>Sale Catalogue</th>
+                                <th>Update</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for text_area in text_areas %}
+                            <tr>
+                                <form method="post" action="{% url 'update_text_areas_id' text_area.id %}">
+                                    {% csrf_token %}
+                                    <td><input type="text" class="form-control" name="front_page_header" value="{{ text_area.front_page_header }}"></td>
+                                    <td><input type="text" class="form-control" name="front_page_subtitle" value="{{ text_area.front_page_subtitle }}"></td>
+                                    <td><input type="text" class="form-control" name="front_page_button_text" value="{{ text_area.front_page_button_text }}"></td>
+                                    <td><input type="text" class="form-control" name="recent_product_header" value="{{ text_area.recent_product_header }}"></td>
+                                    <td><input type="text" class="form-control" name="recent_product_text" value="{{ text_area.recent_product_text }}"></td>
+                                    <td><input type="text" class="form-control" name="bestseller_header" value="{{ text_area.bestseller_header }}"></td>
+                                    <td><input type="text" class="form-control" name="bestseller_text" value="{{ text_area.bestseller_text }}"></td>
+                                    <td>
+                                        <input type="text" class="form-control mb-1" name="nav_item_1" value="{{ text_area.nav_item_1 }}">
+                                        <input type="text" class="form-control mb-1" name="nav_item_2" value="{{ text_area.nav_item_2 }}">
+                                        <input type="text" class="form-control mb-1" name="nav_item_3" value="{{ text_area.nav_item_3 }}">
+                                        <input type="text" class="form-control" name="nav_item_4" value="{{ text_area.nav_item_4 }}">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control mb-1" name="purchase_button_1" value="{{ text_area.purchase_button_1 }}">
+                                        <input type="text" class="form-control" name="purchase_button_2" value="{{ text_area.purchase_button_2 }}">
+                                    </td>
+                                    <td>
+                                        <input type="text" class="form-control mb-1" name="product_desc_item_1" value="{{ text_area.product_desc_item_1 }}">
+                                        <input type="text" class="form-control mb-1" name="product_desc_item_2" value="{{ text_area.product_desc_item_2 }}">
+                                        <input type="text" class="form-control" name="product_desc_item_3" value="{{ text_area.product_desc_item_3 }}">
+                                    </td>
+                                    <td><input type="text" class="form-control" name="sale_catalogue" value="{{ text_area.sale_catalogue }}"></td>
+                                    <td><button type="submit" class="btn btn-primary">Update</button></td>
+                                </form>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <!-- Footer Areas Tab -->
-        <div class="tab-pane fade" id="footer-areas" role="tabpanel" aria-labelledby="footer-areas-tab">
-            <h2 class="mt-3">Footer Text Areas</h2>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Footer Header 1</th>
-                        <th>Footer Subtitle 1</th>
-                        <th>Footer Header 2</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for footer_area in footer_text_areas %}
-                    <tr>
-                        <form method="post" action="{% url 'update_footer_textareas_id' footer_area.id %}">
-                            {% csrf_token %}
-                            <td><input type="text" class="form-control" name="footer_header_1" value="{{ footer_area.footer_header_1 }}"></td>
-                            <td><input type="text" class="form-control" name="footer_header_1_subtitle" value="{{ footer_area.footer_header_1_subtitle }}"></td>
-                            <td><input type="text" class="form-control" name="footer_header_2" value="{{ footer_area.footer_header_2 }}"></td>
-                            <td><button type="submit" class="btn btn-primary">Update</button></td>
-                        </form>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- Footer Areas Section -->
+        <div class="card">
+            <div class="card-header" id="headingTwo">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Footer Text Areas
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Footer Header 1</th>
+                                <th>Footer Subtitle 1</th>
+                                <th>Footer Header 2</th>
+                                <th>Footer Header 3</th>
+                                <th>Footer Header 3 Subtitle 1</th>
+                                <th>Footer Header 3 Subtitle 2</th>
+                                <th>Footer Header 4</th>
+                                <th>Update</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for footer_area in footer_text_areas %}
+                            <tr>
+                                <form method="post" action="{% url 'update_footer_textareas_id' footer_area.id %}">
+                                    {% csrf_token %}
+                                    <td><input type="text" class="form-control" name="footer_header_1" value="{{ footer_area.footer_header_1 }}"></td>
+                                    <td><input type="text" class="form-control" name="footer_header_1_subtitle" value="{{ footer_area.footer_header_1_subtitle }}"></td>
+                                    <td><input type="text" class="form-control" name="footer_header_2" value="{{ footer_area.footer_header_2 }}"></td>
+                                    <td><input type="text" class="form-control" name="footer_header_3" value="{{ footer_area.footer_header_3 }}"></td>
+                                    <td><input type="text" class="form-control" name="footer_header_3_subtitle_1" value="{{ footer_area.footer_header_3_subtitle_1 }}"></td>
+                                    <td><input type="text" class="form-control" name="footer_header_3_subtitle_2" value="{{ footer_area.footer_header_3_subtitle_2 }}"></td>
+                                    <td><input type="text" class="form-control" name="footer_header_4" value="{{ footer_area.footer_header_4 }}"></td>
+                                    <td><button type="submit" class="btn btn-primary">Update</button></td>
+                                </form>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
 
-        <!-- Business Information Tab -->
-        <div class="tab-pane fade" id="business-info" role="tabpanel" aria-labelledby="business-info-tab">
-            <h2 class="mt-3">Business Information</h2>
-            <table class="table table-striped">
-                <thead>
-                    <tr>
-                        <th>Street Address</th>
-                        <th>Zip Code</th>
-                        <th>Main Email</th>
-                        <th>Main Phone</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for business_info in business_information %}
-                    <tr>
-                        <form method="post" action="{% url 'update_business_information' business_info.id %}">
-                            {% csrf_token %}
-                            <td><input type="text" class="form-control" name="street_address" value="{{ business_info.street_address }}"></td>
-                            <td><input type="text" class="form-control" name="zip_code" value="{{ business_info.zip_code }}"></td>
-                            <td><input type="email" class="form-control" name="main_email" value="{{ business_info.main_email }}"></td>
-                            <td><input type="text" class="form-control" name="main_phone" value="{{ business_info.main_phone }}"></td>
-                            <td><button type="submit" class="btn btn-primary">Update</button></td>
-                        </form>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <!-- Business Info Section -->
+        <div class="card">
+            <div class="card-header" id="headingThree">
+                <h2 class="mb-0">
+                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        Business Information
+                    </button>
+                </h2>
+            </div>
+            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
+                <div class="card-body">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Street Address</th>
+                                <th>Zip Code</th>
+                                <th>Zip Code Area</th>
+                                <th>Main Email</th>
+                                <th>Secondary Email</th>
+                                <th>Main Phone</th>
+                                <th>Secondary Phone</th>
+                                <th>Update</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for business_info in business_information %}
+                            <tr>
+                                <form method="post" action="{% url 'update_business_information' business_info.id %}">
+                                    {% csrf_token %}
+                                    <td><input type="text" class="form-control" name="street_address" value="{{ business_info.street_address }}"></td>
+                                    <td><input type="text" class="form-control" name="zip_code" value="{{ business_info.zip_code }}"></td>
+                                    <td><input type="text" class="form-control" name="zip_code_area" value="{{ business_info.zip_code_area }}"></td>
+                                    <td><input type="email" class="form-control" name="main_email" value="{{ business_info.main_email }}"></td>
+                                    <td><input type="email" class="form-control" name="secondary_email" value="{{ business_info.secondary_email }}"></td>
+                                    <td><input type="text" class="form-control" name="main_phone" value="{{ business_info.main_phone }}"></td>
+                                    <td><input type="text" class="form-control" name="secondary_phone" value="{{ business_info.secondary_phone }}"></td>
+                                    <td><button type="submit" class="btn btn-primary">Update</button></td>
+                                </form>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
