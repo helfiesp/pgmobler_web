@@ -2,6 +2,7 @@ from django.db import models
 from django.db.models import IntegerField
 import uuid
 from django.utils.text import slugify
+from django.utils import timezone
 
 # Create your models here.
 
@@ -39,6 +40,8 @@ class product(models.Model):
                 new_string_id = f"{base_string_id}-{increment}"
                 increment += 1
             self.string_id = new_string_id
+
+        self.date_edited = timezone.now()
         super(product, self).save(*args, **kwargs)
 
     def __str__(self):
