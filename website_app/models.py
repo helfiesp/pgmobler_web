@@ -34,14 +34,11 @@ class product(models.Model):
             base_string_id = slugify(self.title)
             new_string_id = base_string_id
             increment = 1
+            # Check if the string_id already exists and increment until a unique one is found
             while product.objects.filter(string_id=new_string_id).exists():
                 new_string_id = f"{base_string_id}-{increment}"
                 increment += 1
             self.string_id = new_string_id
-        
-        # Update the date_edited to the current timestamp when saving
-        self.date_edited = timezone.now()
-
         super(product, self).save(*args, **kwargs)
 
     def __str__(self):
