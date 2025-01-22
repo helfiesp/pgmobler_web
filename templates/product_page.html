@@ -136,22 +136,14 @@ function openTab(event, tabName) {
     event.currentTarget.className += " active";
 }
 
-function updateProductImages(selectedColor) {
+function updateProductImages() {
+    const selectedColor = document.getElementById('color-selector').value;
     const thumbnails = document.querySelectorAll('.product-thumbnail');
+    const thumbnailLinks = document.querySelectorAll('.thumbnail-link');
     const mainImage = document.getElementById('main-image');
     const mainImageLink = document.getElementById('main-image-link');
-    const colorCircles = document.querySelectorAll('.color-circle');
 
-    // Update active color circle
-    colorCircles.forEach((circle) => {
-        if (circle.getAttribute('data-color') === selectedColor) {
-            circle.setAttribute('aria-current', 'true');
-        } else {
-            circle.removeAttribute('aria-current');
-        }
-    });
-
-    // Show only thumbnails matching the selected color
+    // Hide or show thumbnails based on selected color
     thumbnails.forEach((thumbnail) => {
         if (thumbnail.getAttribute('data-color') === selectedColor) {
             thumbnail.style.display = 'block';
@@ -160,7 +152,7 @@ function updateProductImages(selectedColor) {
         }
     });
 
-    // Update the main image to the first visible thumbnail
+    // Update main image to match the selected color
     const firstVisibleThumbnail = Array.from(thumbnails).find(
         (thumbnail) => thumbnail.getAttribute('data-color') === selectedColor
     );
@@ -172,17 +164,31 @@ function updateProductImages(selectedColor) {
         mainImage.src = newSrc;
         mainImage.alt = newAlt;
         mainImageLink.href = newSrc;
+
+        // Optionally update lightbox links
+        const hiddenLinksContainer = document.querySelector('.product-image-section div[style="display: none;"]');
+        if (hiddenLinksContainer) {
+            while (hiddenLinksContainer.firstChild) {
+                hiddenLinksContainer.removeChild(hiddenLinksContainer.firstChild);
+            }
+
+            thumbnailLinks.forEach((link) => {
+                if (link.getAttribute('data-color') === selectedColor) {
+                    const newLink = document.createElement('a');
+                    newLink.href = link.href;
+                    newLink.setAttribute('data-lightbox', 'product-gallery');
+                    newLink.setAttribute('data-title', link.getAttribute('data-title'));
+                    hiddenLinksContainer.appendChild(newLink);
+                }
+            });
+        }
     }
 }
 
-// Initialize with the first color on page load
+// Initialize thumbnails visibility based on the default selected color
 document.addEventListener('DOMContentLoaded', function () {
-    const firstColorCircle = document.querySelector('.color-circle[aria-current="true"]');
-    if (firstColorCircle) {
-        updateProductImages(firstColorCircle.getAttribute('data-color'));
-    }
+    updateProductImages();
 });
-
 
 </script>
 <style>
