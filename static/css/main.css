@@ -430,22 +430,6 @@ body.modal-open {
     right: 25px;
 }
 
-.color-picker {
-  font-family: Arial, sans-serif;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.color-picker label {
-  font-weight: bold;
-  margin-right: 5px;
-}
-
-.color-picker #selected-color-name {
-  font-weight: normal;
-}
-
 .color-options {
   display: flex;
   gap: 5px;
@@ -457,10 +441,12 @@ body.modal-open {
   border: 2px solid transparent;
   border-radius: 50%;
   cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
 }
 
 .color-circle.active {
   border-color: black;
+  transform: scale(1.2);
 }
 
 .color-circle.red { background-color: red; }

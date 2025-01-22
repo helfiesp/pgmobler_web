@@ -7,6 +7,7 @@
 {% block extra_head %}
 <link href="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/css/lightbox.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightbox2/2.11.3/js/lightbox-plus-jquery.min.js"></script>
+<script src="{% static 'js/main.js' %}"></script>
 <link rel="stylesheet" href="{% static 'css/product_page.css' %}">
 <link rel="stylesheet" href="{% static 'css/products.css' %}">
 <!-- Additional scripts and links specific to the product page can be added here -->
@@ -208,23 +209,20 @@ function openTab(event, tabName) {
         <p class="product-description">{{ product.subtitle }}</p>
         <div class="product-price-section">
 
-        <div class="color-picker">
-          <label for="color">Color:</label>
-          <span id="selected-color-name">Red</span>
-          <div class="color-options">
-            <button class="color-circle red active" data-color="Red"></button>
-            <button class="color-circle orange" data-color="Orange"></button>
-            <button class="color-circle yellow" data-color="Yellow"></button>
-            <button class="color-circle green" data-color="Green"></button>
-            <button class="color-circle cyan" data-color="Cyan"></button>
-            <button class="color-circle blue" data-color="Blue"></button>
-            <button class="color-circle purple" data-color="Purple"></button>
-            <button class="color-circle pink" data-color="Pink"></button>
-            <button class="color-circle white" data-color="White"></button>
-            <button class="color-circle black" data-color="Black"></button>
-            <button class="color-circle grey" data-color="Grey"></button>
-          </div>
+        <div class="color-options">
+          <button class="color-circle red active" data-color="Red"></button>
+          <button class="color-circle orange" data-color="Orange"></button>
+          <button class="color-circle yellow" data-color="Yellow"></button>
+          <button class="color-circle green" data-color="Green"></button>
+          <button class="color-circle cyan" data-color="Cyan"></button>
+          <button class="color-circle blue" data-color="Blue"></button>
+          <button class="color-circle purple" data-color="Purple"></button>
+          <button class="color-circle pink" data-color="Pink"></button>
+          <button class="color-circle white" data-color="White"></button>
+          <button class="color-circle black" data-color="Black"></button>
+          <button class="color-circle grey" data-color="Grey"></button>
         </div>
+
 
         <!-- Product price -->
         {% if product.sale_price %}
