@@ -42,105 +42,171 @@
 </script>
 
 <script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    var mainImageLink = document.getElementById('main-image-link');
-    var mainImage = document.getElementById('main-image');
-    var thumbnails = document.querySelectorAll('.product-thumbnail');
+/* ==============================
+   1) TABBED CONTENT FUNCTION
+   ============================== */
+function openTab(event, tabName) {
+    // Hide all tab-content elements
+    var tabcontent = document.getElementsByClassName("tab-content");
+    for (var i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+
+    // Remove 'active' from all tab-item elements
+    var tablinks = document.getElementsByClassName("tab-item");
+    for (var j = 0; j < tablinks.length; j++) {
+        tablinks[j].className = tablinks[j].className.replace(" active", "");
+    }
+
+    // Show the chosen tab & mark its tab-item as active
+    document.getElementById(tabName).style.display = "block";
+    event.currentTarget.className += " active";
+}
+
+/* ==============================
+   2) LIGHTBOX LINK UPDATER
+   ============================== 
+   - Rebuilds the hidden <a> tags for Lightbox
+   - Excludes the current main image (so it’s not duplicated)
+   - Filters by color if provided
+*/
+function updateLightboxLinks(selectedColor) {
     var hiddenLinksContainer = document.querySelector('.product-image-section div[style="display: none;"]');
+    var thumbnails = document.querySelectorAll('.product-thumbnail');
+    var mainImage = document.getElementById('main-image');
 
-    // Basic logic for clicking on a thumbnail to swap the main image
-    function initThumbnailClick() {
-        thumbnails.forEach(function(thumbnail, index) {
-            thumbnail.parentElement.addEventListener('click', function(event) {
-                event.preventDefault();
+    // Clear existing hidden links
+    while (hiddenLinksContainer.firstChild) {
+        hiddenLinksContainer.removeChild(hiddenLinksContainer.firstChild);
+    }
 
-                var newSrc = thumbnail.src;
-                var newAlt = thumbnail.alt;
-                if (mainImage.src !== newSrc) {
-                    mainImage.style.opacity = 0;
+    // If no color is passed, default to 'default'
+    if (!selectedColor) {
+        selectedColor = 'default';
+    }
+
+    // Create new hidden links for visible thumbnails (and skip the main image)
+    thumbnails.forEach(function(thumbnail) {
+        var thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
+
+        // Must match color filter, and skip the current main image
+        if ((selectedColor === 'default' || thumbnailColor === selectedColor) &&
+            mainImage.src !== thumbnail.src) {
+            var newLink = document.createElement('a');
+            newLink.href = thumbnail.src;
+            newLink.setAttribute('data-lightbox', 'product-gallery');
+            newLink.setAttribute('data-title', thumbnail.alt);
+            hiddenLinksContainer.appendChild(newLink);
+        }
+    });
+}
+
+/* ==============================
+   3) UPDATE PRODUCT IMAGES BY COLOR
+   ============================== 
+   - Shows/hides thumbnails by color
+   - Updates the main image to the first visible thumbnail
+   - Calls updateLightboxLinks to refresh the hidden lightbox <a> tags
+*/
+function updateProductImages(selectedColor) {
+    var thumbnails = document.querySelectorAll('.product-thumbnail');
+    var mainImage = document.getElementById('main-image');
+    var mainImageLink = document.getElementById('main-image-link');
+    var colorCircles = document.querySelectorAll('.color-circle');
+
+    // Update active color circle
+    colorCircles.forEach(function(circle) {
+        if (circle.getAttribute('data-color') === selectedColor) {
+            circle.setAttribute('aria-current', 'true');
+        } else {
+            circle.removeAttribute('aria-current');
+        }
+    });
+
+    // Show/hide thumbnails by matching color
+    var firstVisibleThumbnail = null;
+    thumbnails.forEach(function(thumbnail) {
+        var thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
+        if (selectedColor === 'default' || thumbnailColor === selectedColor) {
+            thumbnail.parentElement.style.display = 'block';
+            if (!firstVisibleThumbnail) {
+                firstVisibleThumbnail = thumbnail;
+            }
+        } else {
+            thumbnail.parentElement.style.display = 'none';
+        }
+    });
+
+    // If we found a visible thumbnail, set the main image to match
+    if (firstVisibleThumbnail) {
+        mainImage.src = firstVisibleThumbnail.src;
+        mainImage.alt = firstVisibleThumbnail.alt;
+        mainImageLink.href = firstVisibleThumbnail.src;
+    }
+
+    // Rebuild the lightbox links according to the new color
+    updateLightboxLinks(selectedColor);
+}
+
+/* ==============================
+   4) MAIN INITIALIZATION
+   ============================== */
+document.addEventListener('DOMContentLoaded', function() {
+    var mainImage = document.getElementById('main-image');
+    var mainImageLink = document.getElementById('main-image-link');
+    var thumbnails = document.querySelectorAll('.product-thumbnail');
+    var tabs = document.querySelectorAll('.tab-item');
+
+    // Fade-in/out thumbnail click logic
+    thumbnails.forEach(function(thumbnail, index) {
+        thumbnail.parentElement.addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent anchor's default behavior
+
+            var newSrc = thumbnail.src;
+            var newAlt = thumbnail.alt;
+
+            // Only proceed if the clicked thumbnail differs from the main image
+            if (mainImage.src !== newSrc) {
+                // Fade out the image
+                mainImage.style.opacity = 0;
+
+                setTimeout(function() {
+                    // After fade-out transition, change to new image
+                    mainImage.src = newSrc;
+                    mainImage.alt = newAlt;
+                    mainImageLink.href = newSrc;
+                    // If you want a Lightbox title that shows image X / total
+                    mainImageLink.setAttribute('data-title', 'Image ' + (index + 1) + '/' + thumbnails.length);
+
+                    // Wait a moment for the new image to load, then fade back in
                     setTimeout(function() {
-                        mainImage.src = newSrc;
-                        mainImage.alt = newAlt;
-                        mainImageLink.href = newSrc;
-                        mainImageLink.setAttribute('data-title', 'Image ' + (index + 1) + '/' + thumbnails.length);
-                        updateLightboxLinks();
-                        setTimeout(function() {
-                            mainImage.style.opacity = 1;
-                        }, 100);
-                    }, 600);
-                }
-            });
-        });
-    }
-
-    // Add or remove images from hidden links for the lightbox
-    function updateLightboxLinks() {
-        while (hiddenLinksContainer.firstChild) {
-            hiddenLinksContainer.removeChild(hiddenLinksContainer.firstChild);
-        }
-        thumbnails.forEach(function(thumbnail) {
-            // Only hide the one currently in mainImage
-            if (mainImage.src !== thumbnail.src) {
-                var newLink = document.createElement('a');
-                newLink.href = thumbnail.src;
-                newLink.setAttribute('data-lightbox', 'product-gallery');
-                newLink.setAttribute('data-title', thumbnail.alt);
-                hiddenLinksContainer.appendChild(newLink);
+                        mainImage.style.opacity = 1;
+                    }, 100);
+                }, 600); // match your CSS transition duration if needed
             }
         });
-    }
+    });
 
-    // Color circle filtering
-    function updateProductImages(selectedColor) {
-        const colorCircles = document.querySelectorAll('.color-circle');
-
-        // Update "active" circle
-        colorCircles.forEach((circle) => {
-            if (circle.getAttribute('data-color') === selectedColor) {
-                circle.setAttribute('aria-current', 'true');
-            } else {
-                circle.removeAttribute('aria-current');
-            }
+    // Simple tab highlighting
+    tabs.forEach(function(tab) {
+        tab.addEventListener('click', function() {
+            tabs.forEach(function(t) { t.classList.remove('active'); });
+            this.classList.add('active');
         });
+    });
 
-        // Filter thumbnails
-        let firstVisibleThumbnail = null;
-        thumbnails.forEach((thumbnail) => {
-            const thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
-            if (selectedColor === 'default' || thumbnailColor === selectedColor) {
-                thumbnail.parentElement.style.display = 'block';
-                if (!firstVisibleThumbnail) firstVisibleThumbnail = thumbnail;
-            } else {
-                thumbnail.parentElement.style.display = 'none';
-            }
-        });
-
-        // Update main image to match the first visible thumbnail
-        if (firstVisibleThumbnail) {
-            mainImage.src = firstVisibleThumbnail.src;
-            mainImage.alt = firstVisibleThumbnail.alt;
-            mainImageLink.href = firstVisibleThumbnail.src;
-        }
-
-        // Refresh the lightbox links
-        updateLightboxLinks();
-    }
-
-    // Initialize everything
-    initThumbnailClick();
-    updateLightboxLinks();
-
-    // If you use color circles, pick the first color circle (if any) and filter
-    const firstColorCircle = document.querySelector('.color-circle[aria-current="true"]');
-    const defaultColor = firstColorCircle
+    // On page load, pick the color set by the first color circle with aria-current
+    // If none is set, default to "default"
+    var firstColorCircle = document.querySelector('.color-circle[aria-current="true"]');
+    var initialColor = firstColorCircle
         ? firstColorCircle.getAttribute('data-color')
         : 'default';
-    updateProductImages(defaultColor);
+
+    // Filter images immediately on load
+    updateProductImages(initialColor);
 });
 </script>
 
-</script>
 <style>
 .featured-product-item {
     width:350px;
