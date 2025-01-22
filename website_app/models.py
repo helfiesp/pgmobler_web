@@ -6,17 +6,25 @@ from django.utils import timezone
 
 # Create your models here.
 
+from django.db import models
+from django.utils.text import slugify
+from django.utils import timezone
+
 class product(models.Model):
     string_id = models.CharField(max_length=200, unique=True, blank=True, null=True)
     title = models.CharField(max_length=200)
     subtitle = models.CharField(max_length=200, blank=True)
-    category = models.ForeignKey('category', on_delete=models.SET_NULL, null=True, blank=True, related_name='products')
+    category = models.ForeignKey(
+        'category', on_delete=models.SET_NULL, null=True, blank=True, related_name='products'
+    )
     description = models.TextField(null=True, blank=True)
     image = models.ImageField(upload_to='product_images/', null=True, blank=True)
     price = models.IntegerField(null=True, blank=True)
     sale_price = models.IntegerField(null=True, blank=True)
     material = models.CharField(max_length=200, null=True, blank=True)
-    color = models.CharField(max_length=200, default="Mange varianter tilgjengelige, flere hundre kombinasjoner ")
+    color = models.CharField(
+        max_length=200, default="Mange varianter tilgjengelige, flere hundre kombinasjoner "
+    )
     height = models.CharField(max_length=200, null=True, blank=True)
     width = models.CharField(max_length=200, null=True, blank=True)
     depth = models.CharField(max_length=200, null=True, blank=True)
@@ -28,7 +36,14 @@ class product(models.Model):
     price_tag_info = models.CharField(null=True, blank=True)
     price_tag_type = models.BooleanField(default=False)
     date_added = models.DateTimeField(auto_now_add=True)
-    date_edited = models.DateTimeField(null=True, blank=True)  
+    date_edited = models.DateTimeField(null=True, blank=True)
+
+    # Boolean fields for specific colors
+    color_black = models.BooleanField(default=False)
+    color_smoked = models.BooleanField(default=False)
+    color_greyoiled = models.BooleanField(default=False)
+    color_whiteoiled = models.BooleanField(default=False)
+    color_light_oak = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if not self.string_id:
@@ -46,6 +61,7 @@ class product(models.Model):
 
     def __str__(self):
         return self.title
+
 
 class product_image(models.Model):
     product = models.ForeignKey(product, related_name='images', on_delete=models.CASCADE)
