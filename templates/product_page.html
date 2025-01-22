@@ -135,7 +135,6 @@ function openTab(event, tabName) {
     document.getElementById(tabName).style.display = "block";
     event.currentTarget.className += " active";
 }
-
 function updateProductImages(selectedColor) {
     const thumbnails = document.querySelectorAll('.product-thumbnail');
     const mainImage = document.getElementById('main-image');
@@ -151,20 +150,21 @@ function updateProductImages(selectedColor) {
         }
     });
 
+    let firstVisibleThumbnail = null;
+
     // Show only thumbnails matching the selected color
     thumbnails.forEach((thumbnail) => {
         if (thumbnail.getAttribute('data-color') === selectedColor) {
             thumbnail.style.display = 'block';
+            if (!firstVisibleThumbnail) {
+                firstVisibleThumbnail = thumbnail; // First matching thumbnail
+            }
         } else {
             thumbnail.style.display = 'none';
         }
     });
 
     // Update the main image to the first visible thumbnail
-    const firstVisibleThumbnail = Array.from(thumbnails).find(
-        (thumbnail) => thumbnail.getAttribute('data-color') === selectedColor
-    );
-
     if (firstVisibleThumbnail) {
         const newSrc = firstVisibleThumbnail.src;
         const newAlt = firstVisibleThumbnail.alt;
@@ -222,18 +222,18 @@ document.addEventListener('DOMContentLoaded', function () {
         {% endif %}
     </div>
 
-    {% if product.images.count > 1 %}
-        <div class="product-thumbnails-section">
-            <!-- Thumbnails -->
-            {% for image in product.images.all %}
-                {% if image and image.image %}
-                    <a href="{{ image.image.url }}">
-                        <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail">
-                    </a>
-                {% endif %}
-            {% endfor %}
-        </div>
-    {% endif %}
+{% if product.images.count > 1 %}
+    <div class="product-thumbnails-section">
+        {% for image in product.images.all %}
+            {% if image and image.image %}
+                <a href="{{ image.image.url }}" class="thumbnail-link" data-color="{{ image.color }}">
+                    <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail" data-color="{{ image.color }}">
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+{% endif %}
+
         
        <div class="product-details-section">
         <a style="color: black; text-decoration: none" href="{% url 'category_search' product.category %}">
@@ -262,7 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="color-circles">
         {% for color in colors %}
             <button
-                type="button" 
+                type="button"
                 class="color-circle {% if color %}{{ color|slugify }}{% endif %}"
                 data-color="{{ color }}"
                 onclick="updateProductImages('{{ color }}')"
@@ -272,6 +272,7 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
 </div>
 {% endif %}
+
 
 
 
