@@ -141,7 +141,6 @@ function updateProductImages(selectedColor) {
     const mainImage = document.getElementById('main-image');
     const mainImageLink = document.getElementById('main-image-link');
     const colorCircles = document.querySelectorAll('.color-circle');
-    const hiddenLinksContainer = document.querySelector('.product-image-section div[style="display: none;"]');
 
     let firstVisibleThumbnail = null;
 
@@ -154,30 +153,28 @@ function updateProductImages(selectedColor) {
         }
     });
 
-    // Show/hide thumbnails based on color
+    // Filter thumbnails by color or show all if "default"
     thumbnails.forEach((thumbnail) => {
-        const thumbnailColor = thumbnail.getAttribute('data-color');
-        if (thumbnailColor === selectedColor) {
-            thumbnail.parentElement.style.display = 'block'; // Show thumbnail
+        const thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
+
+        if (selectedColor === 'default' || thumbnailColor === selectedColor) {
+            thumbnail.parentElement.style.display = 'block';
             if (!firstVisibleThumbnail) {
-                firstVisibleThumbnail = thumbnail; // Set first visible thumbnail
+                firstVisibleThumbnail = thumbnail;
             }
         } else {
-            thumbnail.parentElement.style.display = 'none'; // Hide thumbnail
+            thumbnail.parentElement.style.display = 'none';
         }
     });
 
-    // Update the main image to the first visible thumbnail
+    // Update main image to the first visible thumbnail
     if (firstVisibleThumbnail) {
-        const newSrc = firstVisibleThumbnail.src;
-        const newAlt = firstVisibleThumbnail.alt;
-
-        mainImage.src = newSrc;
-        mainImage.alt = newAlt;
-        mainImageLink.href = newSrc;
+        mainImage.src = firstVisibleThumbnail.src;
+        mainImage.alt = firstVisibleThumbnail.alt;
+        mainImageLink.href = firstVisibleThumbnail.src;
     }
 
-    // Update lightbox links to match the visible thumbnails
+    // Update lightbox links
     updateLightboxLinks(selectedColor);
 }
 
@@ -190,9 +187,11 @@ function updateLightboxLinks(selectedColor) {
         hiddenLinksContainer.removeChild(hiddenLinksContainer.firstChild);
     }
 
-    // Add lightbox links for thumbnails matching the selected color
+    // Add lightbox links for visible thumbnails matching the selected color
     thumbnails.forEach((thumbnail) => {
-        if (thumbnail.getAttribute('data-color') === selectedColor) {
+        const thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
+
+        if (selectedColor === 'default' || thumbnailColor === selectedColor) {
             const newLink = document.createElement('a');
             newLink.href = thumbnail.src;
             newLink.setAttribute('data-lightbox', 'product-gallery');
@@ -202,12 +201,12 @@ function updateLightboxLinks(selectedColor) {
     });
 }
 
-// Initialize on page load
+// Initialize with the first color on page load
 document.addEventListener('DOMContentLoaded', function () {
     const firstColorCircle = document.querySelector('.color-circle[aria-current="true"]');
-    if (firstColorCircle) {
-        updateProductImages(firstColorCircle.getAttribute('data-color'));
-    }
+    const defaultColor = firstColorCircle ? firstColorCircle.getAttribute('data-color') : 'default';
+
+    updateProductImages(defaultColor);
 });
 
 </script>
@@ -252,12 +251,13 @@ document.addEventListener('DOMContentLoaded', function () {
 <div class="product-thumbnails-section">
     {% for image in product.images.all %}
         {% if image and image.image %}
-            <a href="{{ image.image.url }}" class="thumbnail-link" data-color="{{ image.color }}">
-                <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail" data-color="{{ image.color }}">
+            <a href="{{ image.image.url }}" class="thumbnail-link" data-color="{{ image.color|default:'default' }}">
+                <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail" data-color="{{ image.color|default:'default' }}">
             </a>
         {% endif %}
     {% endfor %}
 </div>
+
 
 {% endif %}
 
