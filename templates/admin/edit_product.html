@@ -115,39 +115,42 @@
             </div>
 
 
-    <div class="form-section image-upload-section" style="margin-top:20px">
-        <h3>Bilder</h3>
-        <p>Legg til bilder til annonsen din, flere bilder kan gjøre at du får mer interesse</p>
-        <div style="display: flex; align-items: center;">
-            <!-- The label here is styled to look like a button and when clicked will open the file dialog -->
-            <label for="id_images" class="custom-file-upload" style="color:white">
-                Legg til bilder
-            </label>
-        </div>
-            
-            <input type="file" name="images" multiple id="id_images" style="display: none;"> <!-- Hide the original input -->
+<div class="form-section image-upload-section" style="margin-top:20px">
+    <h3>Bilder</h3>
+    <p>Legg til bilder til annonsen din, flere bilder kan gjøre at du får mer interesse</p>
+    <div style="display: flex; align-items: center;">
+        <!-- The label here is styled to look like a button and when clicked will open the file dialog -->
+        <label for="id_images" class="custom-file-upload" style="color:white">
+            Legg til bilder
+        </label>
+    </div>
+        
+    <input type="file" name="images" multiple id="id_images" style="display: none;"> <!-- Hide the original input -->
 
-            {{ formset.management_form }}
+    {{ formset.management_form }}
 
-            <div id="image-preview-container" style="justify-content: center; align-items: center; display: flex; flex-wrap: wrap;">
-            {% for image in product.images.all %}
-                <div class="image-preview" data-image-id="{{ image.id }}">
-                    <img src="{{ image.image.url }}" data-filename="{{ image.image.name }}">
-                </div>
-            {% endfor %}
-            </div> <!-- Container for image previews -->
+    <!-- New Code: Add inline formset for image and color selection -->
+    <div class="image-formset">
+        {% for form in formset %}
+            <div class="form-row">
+                <label>Image:</label>
+                {{ form.image }}
+                <label>Color:</label>
+                {{ form.color }}
+            </div>
+        {% endfor %}
+    </div>
+    <!-- End of New Code -->
 
-            <div class="image-formset">
-    {% for form in formset %}
-        <div class="form-row">
-            <label>Image:</label>
-            {{ form.image }}
-            <label>Color:</label>
-            {{ form.color }}
-        </div>
-    {% endfor %}
+    <div id="image-preview-container" style="justify-content: center; align-items: center; display: flex; flex-wrap: wrap;">
+        {% for image in product.images.all %}
+            <div class="image-preview" data-image-id="{{ image.id }}">
+                <img src="{{ image.image.url }}" data-filename="{{ image.image.name }}">
+            </div>
+        {% endfor %}
+    </div> <!-- Container for image previews -->
+
 </div>
-        </div>
 
         <p>
             Dato lagt til: {{ product.date_added }}<br>
