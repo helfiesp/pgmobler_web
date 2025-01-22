@@ -154,13 +154,14 @@ function updateProductImages(selectedColor) {
 
     // Show only thumbnails matching the selected color
     thumbnails.forEach((thumbnail) => {
-        if (thumbnail.getAttribute('data-color') === selectedColor) {
-            thumbnail.style.display = 'block';
+        const thumbnailColor = thumbnail.getAttribute('data-color');
+        if (thumbnailColor === selectedColor) {
+            thumbnail.parentElement.style.display = 'block'; // Show matching thumbnail
             if (!firstVisibleThumbnail) {
-                firstVisibleThumbnail = thumbnail; // First matching thumbnail
+                firstVisibleThumbnail = thumbnail; // Set the first visible thumbnail
             }
         } else {
-            thumbnail.style.display = 'none';
+            thumbnail.parentElement.style.display = 'none'; // Hide non-matching thumbnails
         }
     });
 
@@ -174,6 +175,7 @@ function updateProductImages(selectedColor) {
         mainImageLink.href = newSrc;
     }
 }
+
 
 // Initialize with the first color on page load
 document.addEventListener('DOMContentLoaded', function () {
