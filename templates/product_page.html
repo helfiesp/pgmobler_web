@@ -135,11 +135,15 @@ function openTab(event, tabName) {
     document.getElementById(tabName).style.display = "block";
     event.currentTarget.className += " active";
 }
+
 function updateProductImages(selectedColor) {
     const thumbnails = document.querySelectorAll('.product-thumbnail');
     const mainImage = document.getElementById('main-image');
     const mainImageLink = document.getElementById('main-image-link');
     const colorCircles = document.querySelectorAll('.color-circle');
+    const hiddenLinksContainer = document.querySelector('.product-image-section div[style="display: none;"]');
+
+    let firstVisibleThumbnail = null;
 
     // Update active color circle
     colorCircles.forEach((circle) => {
@@ -150,22 +154,20 @@ function updateProductImages(selectedColor) {
         }
     });
 
-    let firstVisibleThumbnail = null;
-
-    // Show only thumbnails matching the selected color
+    // Show/hide thumbnails based on color and find the first visible thumbnail
     thumbnails.forEach((thumbnail) => {
         const thumbnailColor = thumbnail.getAttribute('data-color');
         if (thumbnailColor === selectedColor) {
-            thumbnail.parentElement.style.display = 'block'; // Show matching thumbnail
+            thumbnail.parentElement.style.display = 'block';
             if (!firstVisibleThumbnail) {
-                firstVisibleThumbnail = thumbnail; // Set the first visible thumbnail
+                firstVisibleThumbnail = thumbnail;
             }
         } else {
-            thumbnail.parentElement.style.display = 'none'; // Hide non-matching thumbnails
+            thumbnail.parentElement.style.display = 'none';
         }
     });
 
-    // Update the main image to the first visible thumbnail
+    // Update main image to the first visible thumbnail
     if (firstVisibleThumbnail) {
         const newSrc = firstVisibleThumbnail.src;
         const newAlt = firstVisibleThumbnail.alt;
@@ -174,10 +176,33 @@ function updateProductImages(selectedColor) {
         mainImage.alt = newAlt;
         mainImageLink.href = newSrc;
     }
+
+    // Update lightbox links
+    updateLightboxLinks(selectedColor);
 }
 
+function updateLightboxLinks(selectedColor) {
+    const hiddenLinksContainer = document.querySelector('.product-image-section div[style="display: none;"]');
+    const thumbnails = document.querySelectorAll('.product-thumbnail');
 
-// Initialize with the first color on page load
+    // Clear existing lightbox links
+    while (hiddenLinksContainer.firstChild) {
+        hiddenLinksContainer.removeChild(hiddenLinksContainer.firstChild);
+    }
+
+    // Add lightbox links for thumbnails matching the selected color
+    thumbnails.forEach((thumbnail) => {
+        if (thumbnail.getAttribute('data-color') === selectedColor) {
+            const newLink = document.createElement('a');
+            newLink.href = thumbnail.src;
+            newLink.setAttribute('data-lightbox', 'product-gallery');
+            newLink.setAttribute('data-title', thumbnail.alt);
+            hiddenLinksContainer.appendChild(newLink);
+        }
+    });
+}
+
+// Initialize on page load
 document.addEventListener('DOMContentLoaded', function () {
     const firstColorCircle = document.querySelector('.color-circle[aria-current="true"]');
     if (firstColorCircle) {
@@ -214,7 +239,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div style="display: none;">
                 {% for image in product.images.all %}
                     {% if image and image.image %}
-                        <a href="{{ image.image.url }}" data-lightbox="product-gallery" data-title="Image {{ forloop.counter }}"></a>
+                        <a href="{{ image.image.url }}" data-lightbox="product-gallery" data-title="Image {{ forloop.counter }}" data-color="{{ image.color }}"></a>
                     {% endif %}
                 {% endfor %}
             </div>
@@ -226,14 +251,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 {% if product.images.count > 1 %}
     <div class="product-thumbnails-section">
-        {% for image in product.images.all %}
-            {% if image and image.image %}
-                <a href="{{ image.image.url }}" class="thumbnail-link" data-color="{{ image.color }}">
-                    <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail" data-color="{{ image.color }}">
-                </a>
-            {% endif %}
-        {% endfor %}
-    </div>
+    {% for image in product.images.all %}
+        {% if image and image.image %}
+            <a href="{{ image.image.url }}" class="thumbnail-link" data-color="{{ image.color }}">
+                <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail" data-color="{{ image.color }}">
+            </a>
+        {% endif %}
+    {% endfor %}
+</div>
 {% endif %}
 
         
@@ -273,6 +298,7 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
 </div>
 {% endif %}
+
 
 
 
