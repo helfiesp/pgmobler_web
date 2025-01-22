@@ -262,6 +262,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="color-circles">
         {% for color in colors %}
             <button
+                type="button" 
                 class="color-circle {% if color %}{{ color|slugify }}{% endif %}"
                 data-color="{{ color }}"
                 onclick="updateProductImages('{{ color }}')"
