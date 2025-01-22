@@ -280,7 +280,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 class="color-circle {% if color %}{{ color|slugify }}{% endif %}"
                 data-color="{{ color }}"
                 onclick="updateProductImages('{{ color }}')"
-                {% if forloop.first %}aria-current="true"{% endif %}>
+                {% if color == '' or color == None %}
+  data-color="default" aria-current="true"
+{% endif %}>
             </button>
         {% endfor %}
     </div>
