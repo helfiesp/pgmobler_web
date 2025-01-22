@@ -80,7 +80,7 @@ function updateLightboxLinks(selectedColor) {
         hiddenLinksContainer.removeChild(hiddenLinksContainer.firstChild);
     }
 
-    // If no color is passed, default to 'default'
+    // Default to 'default' if no color is passed
     if (!selectedColor) {
         selectedColor = 'default';
     }
@@ -88,8 +88,7 @@ function updateLightboxLinks(selectedColor) {
     // Create new hidden links for visible thumbnails (and skip the main image)
     thumbnails.forEach(function(thumbnail) {
         var thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
-
-        // Must match color filter, and skip the current main image
+        // Must match color filter AND skip current main image
         if ((selectedColor === 'default' || thumbnailColor === selectedColor) &&
             mainImage.src !== thumbnail.src) {
             var newLink = document.createElement('a');
@@ -106,7 +105,7 @@ function updateLightboxLinks(selectedColor) {
    ============================== 
    - Shows/hides thumbnails by color
    - Updates the main image to the first visible thumbnail
-   - Calls updateLightboxLinks to refresh the hidden lightbox <a> tags
+   - Calls updateLightboxLinks to refresh Lightbox <a> tags
 */
 function updateProductImages(selectedColor) {
     var thumbnails = document.querySelectorAll('.product-thumbnail');
@@ -114,7 +113,7 @@ function updateProductImages(selectedColor) {
     var mainImageLink = document.getElementById('main-image-link');
     var colorCircles = document.querySelectorAll('.color-circle');
 
-    // Update active color circle
+    // Update active color circle highlight
     colorCircles.forEach(function(circle) {
         if (circle.getAttribute('data-color') === selectedColor) {
             circle.setAttribute('aria-current', 'true');
@@ -137,14 +136,14 @@ function updateProductImages(selectedColor) {
         }
     });
 
-    // If we found a visible thumbnail, set the main image to match
+    // If we found a visible thumbnail, set the main image
     if (firstVisibleThumbnail) {
         mainImage.src = firstVisibleThumbnail.src;
         mainImage.alt = firstVisibleThumbnail.alt;
         mainImageLink.href = firstVisibleThumbnail.src;
     }
 
-    // Rebuild the lightbox links according to the new color
+    // Rebuild the lightbox links for the new color
     updateLightboxLinks(selectedColor);
 }
 
@@ -169,20 +168,19 @@ document.addEventListener('DOMContentLoaded', function() {
             if (mainImage.src !== newSrc) {
                 // Fade out the image
                 mainImage.style.opacity = 0;
-
                 setTimeout(function() {
-                    // After fade-out transition, change to new image
+                    // After fade-out, change to new image
                     mainImage.src = newSrc;
                     mainImage.alt = newAlt;
                     mainImageLink.href = newSrc;
-                    // If you want a Lightbox title that shows image X / total
+                    // (Optional) If you want "Image X / total" inside Lightbox
                     mainImageLink.setAttribute('data-title', 'Image ' + (index + 1) + '/' + thumbnails.length);
 
-                    // Wait a moment for the new image to load, then fade back in
+                    // Fade back in
                     setTimeout(function() {
                         mainImage.style.opacity = 1;
                     }, 100);
-                }, 600); // match your CSS transition duration if needed
+                }, 600); // match your CSS transition duration
             }
         });
     });
@@ -195,17 +193,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // On page load, pick the color set by the first color circle with aria-current
-    // If none is set, default to "default"
-    var firstColorCircle = document.querySelector('.color-circle[aria-current="true"]');
-    var initialColor = firstColorCircle
-        ? firstColorCircle.getAttribute('data-color')
-        : 'default';
-
-    // Filter images immediately on load
-    updateProductImages(initialColor);
+    // ALWAYS SHOW ALL THUMBNAILS INITIALLY (set "default" on load)
+    updateProductImages('default');
 });
 </script>
+
 
 <style>
 .featured-product-item {
