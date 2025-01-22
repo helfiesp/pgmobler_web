@@ -469,3 +469,28 @@ body.modal-open {
 .color-circle.light-oak {
   background-color: #d2b48c; /* Light oak color */
 }
+
+.image-color-assignment {
+    margin-top: 20px;
+}
+
+.image-color-row {
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 10px;
+}
+
+.image-color-row img {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.image-color-row select {
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: #f8f8f8;
+}
