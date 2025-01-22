@@ -365,6 +365,14 @@ def edit_product(request, product_id):
                 # Save the images and associated data
                 formset.save()
 
+                # Update colors for images based on dropdown selection
+                for image in product_instance.images.all():
+                    color_field_name = f"image_{image.id}_color"
+                    selected_color = request.POST.get(color_field_name, "")
+                    image.color = selected_color if selected_color else None  # Assign None if no color is selected
+                    image.save()
+
+
                 image_order_combined_json = request.POST.get('image_order_combined')
                 if image_order_combined_json:
                     handle_custom_image_order(image_order_combined_json, product_instance, request.FILES.getlist('images'))
