@@ -279,3 +279,57 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
+/* Color Bar Styling */
+.color-bar {
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+    gap: 6px;
+    padding: 5px 0;
+    border-top: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+    background-color: #f8f8f8;
+    position: relative; /* Ensures proper placement within preview */
+}
+
+.color-button {
+    width: 20px;
+    height: 20px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    outline: none;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+    position: relative; /* For alignment with color bar */
+}
+
+.color-button.selected {
+    border: 2px solid #333; /* Highlight the selected button */
+    transform: scale(1.2); /* Slight zoom for visual feedback */
+}
+
+.color-button.black {
+    background-color: black;
+}
+
+.color-button.smoked {
+    background-color: #4b3621; /* Smoked tone */
+}
+
+.color-button.greyoiled {
+    background-color: #a8a8a8; /* Grey-oiled tone */
+}
+
+.color-button.whiteoiled {
+    background-color: #f5f5f5; /* White-oiled finish */
+}
+
+.color-button.light_oak {
+    background-color: #d2b48c; /* Light oak tone */
+}
+
+/* Hover effect for buttons */
+.color-button:hover {
+    transform: scale(1.1);
+    border: 2px solid #666;
+}

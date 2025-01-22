@@ -1,11 +1,9 @@
-
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const previewContainer = document.getElementById('image-preview-container');
     const fileInput = document.getElementById('id_images');
     let dragSrcEl = null;
-    let currentEditingId = null; 
+    let currentEditingId = null;
     const existingPreviews = previewContainer.querySelectorAll('.image-preview');
-
 
     // Function to update the order of images
     function updateImageOrder() {
@@ -21,8 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             orderInput.value = index;
         });
-
     }
+
     function handleDragStart(e) {
         dragSrcEl = this;
         e.dataTransfer.effectAllowed = 'move';
@@ -62,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function enableDragAndDropForImages() {
         let images = previewContainer.querySelectorAll('.image-preview');
-        images.forEach(function(img) {
+        images.forEach(function (img) {
             img.setAttribute('draggable', true);
             img.addEventListener('dragstart', handleDragStart, false);
             img.addEventListener('dragenter', handleDragEnter, false);
@@ -73,54 +71,50 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-// Function to append buttons to the previewWrapper
+    function appendOverlaysToPreview(previewWrapper, file, imageId) {
+        const overlayLeft = document.createElement('div');
+        overlayLeft.classList.add('overlay', 'overlay-left');
+        overlayLeft.addEventListener('click', function () {
+            const prev = previewWrapper.previousElementSibling;
+            if (prev) {
+                previewContainer.insertBefore(previewWrapper, prev);
+                updateImageOrder();
+            }
+        });
 
-// Function to append overlays to the previewWrapper
-function appendOverlaysToPreview(previewWrapper, file, imageId) { 
-    const overlayLeft = document.createElement('div');
-    overlayLeft.classList.add('overlay', 'overlay-left');
-    overlayLeft.addEventListener('click', function() {
-        const prev = previewWrapper.previousElementSibling;
-        if (prev) {
-            previewContainer.insertBefore(previewWrapper, prev);
+        const overlayRight = document.createElement('div');
+        overlayRight.classList.add('overlay', 'overlay-right');
+        overlayRight.addEventListener('click', function () {
+            const next = previewWrapper.nextElementSibling;
+            if (next) {
+                previewContainer.insertBefore(next, previewWrapper);
+                updateImageOrder();
+            }
+        });
+
+        const removeButton = createRemoveButton(previewWrapper);
+
+        previewWrapper.appendChild(overlayLeft);
+        previewWrapper.appendChild(overlayRight);
+        previewWrapper.appendChild(removeButton);
+    }
+
+    function createRemoveButton(previewWrapper) {
+        const removeButton = document.createElement('button');
+        removeButton.textContent = 'X';
+        removeButton.classList.add('remove-image');
+        removeButton.addEventListener('click', function () {
+            previewWrapper.remove();
             updateImageOrder();
-        }
-    });
-
-    const overlayRight = document.createElement('div');
-    overlayRight.classList.add('overlay', 'overlay-right');
-    overlayRight.addEventListener('click', function() {
-        const next = previewWrapper.nextElementSibling;
-        if (next) {
-            previewContainer.insertBefore(next, previewWrapper);
-            updateImageOrder();
-        }
-    });
-
-    const removeButton = createRemoveButton(previewWrapper);
-
-    previewWrapper.appendChild(overlayLeft);
-    previewWrapper.appendChild(overlayRight);
-    previewWrapper.appendChild(removeButton);
-
-}
-
-function createRemoveButton(previewWrapper) {
-    const removeButton = document.createElement('button');
-    removeButton.textContent = 'X';
-    removeButton.classList.add('remove-image');
-    removeButton.addEventListener('click', function() {
-        previewWrapper.remove();
-        updateImageOrder();
-    });
-    return removeButton;
-}
+        });
+        return removeButton;
+    }
 
     // Function to handle new image file input
-    fileInput.addEventListener('change', function() {
+    fileInput.addEventListener('change', function () {
         Array.from(this.files).forEach((file, index) => {
             const reader = new FileReader();
-            reader.onload = function(e) {
+            reader.onload = function (e) {
                 const previewWrapper = document.createElement('div');
                 previewWrapper.classList.add('image-preview');
                 const img = document.createElement('img');
@@ -138,23 +132,73 @@ function createRemoveButton(previewWrapper) {
                 previewWrapper.appendChild(orderInput);
                 previewContainer.appendChild(previewWrapper);
 
+                appendColorBarToPreview(previewWrapper); // Add color bar to new previews
                 enableDragAndDropForImages();
 
                 updateImageOrder();
-
             };
             reader.readAsDataURL(file);
         });
     });
 
     // Initialize functionality for existing image previews (if any)
-    existingPreviews.forEach(function(previewWrapper) {
+    existingPreviews.forEach(function (previewWrapper) {
         const imageId = previewWrapper.dataset.imageId; // Assuming data-image-id attribute is set
         appendOverlaysToPreview(previewWrapper, null, imageId);
+        appendColorBarToPreview(previewWrapper); // Add color bar to existing previews
         enableDragAndDropForImages(); // Call to enable DnD for existing images
     });
 
     updateImageOrder(); // Initial call to ensure existing images are correctly ordered
+
+    // ------------------ NEW FUNCTIONALITY: Color Bar ------------------
+
+    const COLORS = ['black', 'smoked', 'greyoiled', 'whiteoiled', 'light_oak'];
+
+    function createColorBar(previewWrapper, selectedColor = null) {
+        const colorBar = document.createElement('div');
+        colorBar.classList.add('color-bar');
+
+        COLORS.forEach(color => {
+            const colorButton = document.createElement('button');
+            colorButton.classList.add('color-button', color);
+            colorButton.setAttribute('data-color', color);
+
+            // Highlight the selected color
+            if (color === selectedColor) {
+                colorButton.classList.add('selected');
+            }
+
+            // Add click event to select a color
+            colorButton.addEventListener('click', function () {
+                const buttons = colorBar.querySelectorAll('.color-button');
+                buttons.forEach(btn => btn.classList.remove('selected')); // Deselect other buttons
+                colorButton.classList.add('selected'); // Select the clicked button
+
+                // Save the selected color in the preview wrapper
+                previewWrapper.setAttribute('data-selected-color', color);
+            });
+
+            colorBar.appendChild(colorButton);
+        });
+
+        return colorBar;
+    }
+
+    function appendColorBarToPreview(previewWrapper, selectedColor = null) {
+        const existingBar = previewWrapper.querySelector('.color-bar');
+        if (existingBar) {
+            existingBar.remove();
+        }
+        const colorBar = createColorBar(previewWrapper, selectedColor);
+        previewWrapper.insertBefore(colorBar, previewWrapper.firstChild);
+    }
+
+    // Add color bar for existing previews
+    existingPreviews.forEach(previewWrapper => {
+        const selectedColor = previewWrapper.getAttribute('data-selected-color') || null;
+        appendColorBarToPreview(previewWrapper, selectedColor);
+    });
 });
 
 
