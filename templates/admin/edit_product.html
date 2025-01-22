@@ -115,6 +115,30 @@
             </div>
 
 
+<div class="form-section">
+    <h3>Assign Colors to Images</h3>
+    <p>Use the dropdown menus below to assign a color to each image.</p>
+    <div class="image-color-assignment">
+        {% for image in product.images.all %}
+        <div class="image-color-row" style="margin-bottom: 15px;">
+            <p>
+                <strong>Image:</strong> {{ image.image.name }}
+            </p>
+            <img src="{{ image.image.url }}" alt="Image Preview" style="max-width: 100px; max-height: 100px; margin-right: 10px;">
+            <label for="image_{{ image.id }}_color">Select Color:</label>
+            <select name="image_{{ image.id }}_color" id="image_{{ image.id }}_color" style="margin-left: 10px;">
+                <option value="" {% if not image.color %}selected{% endif %}>No Color</option>
+                <option value="black" {% if image.color == 'black' %}selected{% endif %}>Black</option>
+                <option value="smoked" {% if image.color == 'smoked' %}selected{% endif %}>Smoked</option>
+                <option value="greyoiled" {% if image.color == 'greyoiled' %}selected{% endif %}>Greyoiled</option>
+                <option value="whiteoiled" {% if image.color == 'whiteoiled' %}selected{% endif %}>Whiteoiled</option>
+                <option value="light_oak" {% if image.color == 'light_oak' %}selected{% endif %}>Light Oak</option>
+            </select>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
 <div class="form-section image-upload-section" style="margin-top:20px">
     <h3>Bilder</h3>
     <p>Legg til bilder til annonsen din, flere bilder kan gjøre at du får mer interesse</p>
