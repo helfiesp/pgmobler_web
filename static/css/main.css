@@ -494,3 +494,33 @@ body.modal-open {
     font-size: 14px;
     background-color: #f8f8f8;
 }
+.color-selection-section {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-circles {
+    display: flex;
+    gap: 10px;
+}
+
+.color-circle {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.color-circle[aria-current="true"] {
+    transform: scale(1.2);
+    border-color: black; /* Highlight the selected color */
+}
+
+.color-circle:hover {
+    transform: scale(1.1);
+    border-color: #888;
+}
