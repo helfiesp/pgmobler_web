@@ -136,6 +136,61 @@ function openTab(event, tabName) {
     event.currentTarget.className += " active";
 }
 
+function updateProductImages() {
+    const selectedColor = document.getElementById('color-selector').value;
+    const thumbnails = document.querySelectorAll('.product-thumbnail');
+    const thumbnailLinks = document.querySelectorAll('.thumbnail-link');
+    const mainImage = document.getElementById('main-image');
+    const mainImageLink = document.getElementById('main-image-link');
+
+    // Hide or show thumbnails based on selected color
+    thumbnails.forEach((thumbnail) => {
+        if (thumbnail.getAttribute('data-color') === selectedColor) {
+            thumbnail.style.display = 'block';
+        } else {
+            thumbnail.style.display = 'none';
+        }
+    });
+
+    // Update main image to match the selected color
+    const firstVisibleThumbnail = Array.from(thumbnails).find(
+        (thumbnail) => thumbnail.getAttribute('data-color') === selectedColor
+    );
+
+    if (firstVisibleThumbnail) {
+        const newSrc = firstVisibleThumbnail.src;
+        const newAlt = firstVisibleThumbnail.alt;
+
+        mainImage.src = newSrc;
+        mainImage.alt = newAlt;
+        mainImageLink.href = newSrc;
+
+        // Optionally update lightbox links
+        const hiddenLinksContainer = document.querySelector('.product-image-section div[style="display: none;"]');
+        if (hiddenLinksContainer) {
+            while (hiddenLinksContainer.firstChild) {
+                hiddenLinksContainer.removeChild(hiddenLinksContainer.firstChild);
+            }
+
+            thumbnailLinks.forEach((link) => {
+                if (link.getAttribute('data-color') === selectedColor) {
+                    const newLink = document.createElement('a');
+                    newLink.href = link.href;
+                    newLink.setAttribute('data-lightbox', 'product-gallery');
+                    newLink.setAttribute('data-title', link.getAttribute('data-title'));
+                    hiddenLinksContainer.appendChild(newLink);
+                }
+            });
+        }
+    }
+}
+
+// Initialize thumbnails visibility based on the default selected color
+document.addEventListener('DOMContentLoaded', function () {
+    updateProductImages();
+});
+
+
 </script>
 <style>
 .featured-product-item {
@@ -175,16 +230,26 @@ function openTab(event, tabName) {
     </div>
 
     {% if product.images.count > 1 %}
-        <div class="product-thumbnails-section">
-            <!-- Thumbnails -->
-            {% for image in product.images.all %}
-                {% if image and image.image %}
-                    <a href="{{ image.image.url }}">
-                        <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail">
-                    </a>
-                {% endif %}
+        {% if colors|length > 1 %}
+    <div class="color-selection-section">
+        <h3>Velg Farge</h3>
+        <select id="color-selector" onchange="updateProductImages()">
+            {% for color in colors %}
+                <option value="{{ color }}" {% if forloop.first %}selected{% endif %}>
+                    {{ color|title }}
+                </option>
             {% endfor %}
-        </div>
+        </select>
+    </div>
+{% endif %}
+
+<div class="product-thumbnails-section">
+    {% for image in product_images %}
+        <a href="{{ image.image.url }}" class="thumbnail-link" data-color="{{ image.color }}">
+            <img src="{{ image.image.url }}" alt="Thumbnail {{ forloop.counter }}" class="product-thumbnail" data-color="{{ image.color }}">
+        </a>
+    {% endfor %}
+</div>
     {% endif %}
         
        <div class="product-details-section">
@@ -208,15 +273,6 @@ function openTab(event, tabName) {
         <!-- Product description -->
         <p class="product-description">{{ product.subtitle }}</p>
         <div class="product-price-section">
-
-    <div class="color-options">
-      <button class="color-circle black active" data-color="Black"></button>
-      <button class="color-circle smoked" data-color="Smoked"></button>
-      <button class="color-circle greyoiled" data-color="Greyoiled"></button>
-      <button class="color-circle whiteoiled" data-color="Whiteoiled"></button>
-      <button class="color-circle light-oak" data-color="Light Oak"></button>
-    </div>
-    <br>
 
 
         <!-- Product price -->

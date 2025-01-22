@@ -246,11 +246,19 @@ def general_search(request):
 def product_page(request, string_id):
     product = get_object_or_404(models.product, string_id=string_id)
 
-    # Filter out images with empty values
+    # Filter out images with empty values and group by color
     product_images = product.images.exclude(image__isnull=True).exclude(image__exact='')
+    colors = product_images.values_list('color', flat=True).distinct()  # Get unique colors
 
-    context = {'product': product, 'product_images': product_images}
+    # Prepare context
+    context = {
+        'product': product,
+        'product_images': product_images,
+        'colors': [color for color in colors if color],  # Filter out empty colors
+    }
     return render(request, 'product_page.html', context)
+
+
 
 
 def handle_custom_image_order(image_order_combined_json, item_instance, uploaded_images,new_entry=None):
