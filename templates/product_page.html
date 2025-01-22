@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <div style="display: none;">
     {% for image in product.images.all %}
         {% if image and image.image %}
-            <a href="{{ image.image.url }}" data-lightbox="product-gallery" data-title="Image {{ forloop.counter }}" data-color="{{ image.color|default:'default' }}"></a>
+            <a href="{{ image.image.url }}" data-lightbox="product-gallery" data-title="Image {{ forloop.counter }}" data-color="{{ image.color|default:'default'|slugify }}"></a>
         {% endif %}
     {% endfor %}
 </div>
@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
             <button
                 type="button"
                 class="color-circle {% if color %}{{ color|slugify }}{% endif %}"
-                data-color="{{ color }}"
+                data-color="{{ color|slugify }}""
                 onclick="updateProductImages('{{ color }}')"
                 {% if color == '' or color == None %}
   data-color="default" aria-current="true"
