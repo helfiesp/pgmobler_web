@@ -42,21 +42,45 @@
 </script>
 
 <script>
-// Wait for the DOM to load
+<script>
 document.addEventListener('DOMContentLoaded', function() {
     var mainImageLink = document.getElementById('main-image-link');
     var mainImage = document.getElementById('main-image');
     var thumbnails = document.querySelectorAll('.product-thumbnail');
     var hiddenLinksContainer = document.querySelector('.product-image-section div[style="display: none;"]');
 
+    // Basic logic for clicking on a thumbnail to swap the main image
+    function initThumbnailClick() {
+        thumbnails.forEach(function(thumbnail, index) {
+            thumbnail.parentElement.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                var newSrc = thumbnail.src;
+                var newAlt = thumbnail.alt;
+                if (mainImage.src !== newSrc) {
+                    mainImage.style.opacity = 0;
+                    setTimeout(function() {
+                        mainImage.src = newSrc;
+                        mainImage.alt = newAlt;
+                        mainImageLink.href = newSrc;
+                        mainImageLink.setAttribute('data-title', 'Image ' + (index + 1) + '/' + thumbnails.length);
+                        updateLightboxLinks();
+                        setTimeout(function() {
+                            mainImage.style.opacity = 1;
+                        }, 100);
+                    }, 600);
+                }
+            });
+        });
+    }
+
+    // Add or remove images from hidden links for the lightbox
     function updateLightboxLinks() {
-        // Remove all current hidden links from the lightbox
         while (hiddenLinksContainer.firstChild) {
             hiddenLinksContainer.removeChild(hiddenLinksContainer.firstChild);
         }
-
-        // Add all thumbnails as hidden links to the lightbox except the current main image
         thumbnails.forEach(function(thumbnail) {
+            // Only hide the one currently in mainImage
             if (mainImage.src !== thumbnail.src) {
                 var newLink = document.createElement('a');
                 newLink.href = thumbnail.src;
@@ -67,155 +91,54 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-   // Add an event listener to each thumbnail
-    thumbnails.forEach(function(thumbnail, index) {
-        thumbnail.parentElement.addEventListener('click', function(event) {
-            event.preventDefault(); // Prevent default anchor behavior
+    // Color circle filtering
+    function updateProductImages(selectedColor) {
+        const colorCircles = document.querySelectorAll('.color-circle');
 
-            var newSrc = thumbnail.src;
-            var newAlt = thumbnail.getAttribute('alt');
-
-            // Only proceed if the new image is different from the current one
-            if (mainImage.src !== newSrc) {
-                // Fade out the image
-                mainImage.style.opacity = 0;
-
-                setTimeout(function() {
-                    // After fade-out transition, set the new image source
-                    mainImage.src = newSrc;
-                    mainImage.alt = newAlt;
-                    mainImageLink.href = newSrc;
-                    mainImageLink.setAttribute('data-title', 'Image ' + (index + 1) + '/' + thumbnails.length);
-                    
-                    // Update the lightbox links to exclude the current main image
-                    updateLightboxLinks();
-                    
-                    // Wait a moment before fading the image back in to ensure it has loaded
-                    setTimeout(function() {
-                        mainImage.style.opacity = 1;
-                    }, 100); // Slight delay for image to load
-                }, 600); // This timeout duration should match the CSS transition duration
+        // Update "active" circle
+        colorCircles.forEach((circle) => {
+            if (circle.getAttribute('data-color') === selectedColor) {
+                circle.setAttribute('aria-current', 'true');
+            } else {
+                circle.removeAttribute('aria-current');
             }
         });
-    });
 
+        // Filter thumbnails
+        let firstVisibleThumbnail = null;
+        thumbnails.forEach((thumbnail) => {
+            const thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
+            if (selectedColor === 'default' || thumbnailColor === selectedColor) {
+                thumbnail.parentElement.style.display = 'block';
+                if (!firstVisibleThumbnail) firstVisibleThumbnail = thumbnail;
+            } else {
+                thumbnail.parentElement.style.display = 'none';
+            }
+        });
 
-    // Initialize lightbox links
+        // Update main image to match the first visible thumbnail
+        if (firstVisibleThumbnail) {
+            mainImage.src = firstVisibleThumbnail.src;
+            mainImage.alt = firstVisibleThumbnail.alt;
+            mainImageLink.href = firstVisibleThumbnail.src;
+        }
+
+        // Refresh the lightbox links
+        updateLightboxLinks();
+    }
+
+    // Initialize everything
+    initThumbnailClick();
     updateLightboxLinks();
 
-     // Tab functionality
-    var tabs = document.querySelectorAll('.tab-item');
-    tabs.forEach(function(tab) {
-        tab.addEventListener('click', function() {
-            // Remove 'active' class from all tabs
-            tabs.forEach(function(tab) {
-                tab.classList.remove('active');
-            });
-            // Add 'active' class to the clicked tab
-            this.classList.add('active');
-        });
-    });
-
-});
-
-function openTab(event, tabName) {
-    // Get all elements with class="tab-content" and hide them
-    var tabcontent = document.getElementsByClassName("tab-content");
-    for (var i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-
-    // Get all elements with class="tab-item" and remove the class "active"
-    var tablinks = document.getElementsByClassName("tab-item");
-    for (var i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-
-    // Show the current tab, and add an "active" class to the button that opened the tab
-    document.getElementById(tabName).style.display = "block";
-    event.currentTarget.className += " active";
-}
-
-function updateProductImages(selectedColor) {
-    const thumbnails = document.querySelectorAll('.product-thumbnail');
-    const mainImage = document.getElementById('main-image');
-    const mainImageLink = document.getElementById('main-image-link');
-    const colorCircles = document.querySelectorAll('.color-circle');
-
-    // Reset visibility for all thumbnails
-    thumbnails.forEach((thumbnail) => {
-        thumbnail.parentElement.style.display = 'block';
-    });
-
-    // Update active color circle
-    colorCircles.forEach((circle) => {
-        if (circle.getAttribute('data-color') === selectedColor) {
-            circle.setAttribute('aria-current', 'true');
-        } else {
-            circle.removeAttribute('aria-current');
-        }
-    });
-
-    let firstVisibleThumbnail = null;
-
-    // Filter thumbnails by selected color
-    thumbnails.forEach((thumbnail) => {
-        const thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
-
-        if (selectedColor === 'default' || thumbnailColor === selectedColor) {
-            thumbnail.parentElement.style.display = 'block';
-            if (!firstVisibleThumbnail) {
-                firstVisibleThumbnail = thumbnail; // Set first visible thumbnail
-            }
-        } else {
-            thumbnail.parentElement.style.display = 'none';
-        }
-    });
-
-    // Update main image to match first visible thumbnail
-    if (firstVisibleThumbnail) {
-        const newSrc = firstVisibleThumbnail.src;
-        const newAlt = firstVisibleThumbnail.alt;
-
-        mainImage.src = newSrc;
-        mainImage.alt = newAlt;
-        mainImageLink.href = newSrc;
-    }
-
-    // Update lightbox links
-    updateLightboxLinks(selectedColor);
-}
-
-function updateLightboxLinks(selectedColor) {
-    const hiddenLinksContainer = document.querySelector('.product-image-section div[style="display: none;"]');
-    const thumbnails = document.querySelectorAll('.product-thumbnail');
-
-    // Clear existing lightbox links
-    while (hiddenLinksContainer.firstChild) {
-        hiddenLinksContainer.removeChild(hiddenLinksContainer.firstChild);
-    }
-
-    // Add lightbox links for visible thumbnails
-    thumbnails.forEach((thumbnail) => {
-        const thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
-
-        if (selectedColor === 'default' || thumbnailColor === selectedColor) {
-            const newLink = document.createElement('a');
-            newLink.href = thumbnail.src;
-            newLink.setAttribute('data-lightbox', 'product-gallery');
-            newLink.setAttribute('data-title', thumbnail.alt);
-            hiddenLinksContainer.appendChild(newLink);
-        }
-    });
-}
-
-// Initialize with the first color on page load
-document.addEventListener('DOMContentLoaded', function () {
+    // If you use color circles, pick the first color circle (if any) and filter
     const firstColorCircle = document.querySelector('.color-circle[aria-current="true"]');
-    const defaultColor = firstColorCircle ? firstColorCircle.getAttribute('data-color') : 'default';
-
+    const defaultColor = firstColorCircle
+        ? firstColorCircle.getAttribute('data-color')
+        : 'default';
     updateProductImages(defaultColor);
 });
+</script>
 
 </script>
 <style>
@@ -245,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function () {
             <div style="display: none;">
     {% for image in product.images.all %}
         {% if image and image.image %}
-            <a href="{{ image.image.url }}" data-lightbox="product-gallery" data-title="Image {{ forloop.counter }}" data-color="{{ image.color }}"></a>
+            <a href="{{ image.image.url }}" data-lightbox="product-gallery" data-title="Image {{ forloop.counter }}" data-color="{{ image.color|default:'default' }}"></a>
         {% endif %}
     {% endfor %}
 </div>
