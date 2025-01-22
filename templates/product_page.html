@@ -283,22 +283,6 @@ document.addEventListener('DOMContentLoaded', function () {
         <!-- Product description -->
         <p class="product-description">{{ product.subtitle }}</p>
 
-{% if colors|length > 1 %}
-<div class="color-selection-section">
-    <div class="color-circles">
-        {% for color in colors %}
-            <button
-                type="button"
-                class="color-circle {% if color %}{{ color|slugify }}{% endif %}"
-                data-color="{{ color }}"
-                onclick="updateProductImages('{{ color }}')"
-                {% if forloop.first %}aria-current="true"{% endif %}>
-            </button>
-        {% endfor %}
-    </div>
-</div>
-{% endif %}
-
 
 
 
