@@ -142,7 +142,10 @@ function updateProductImages(selectedColor) {
     const mainImageLink = document.getElementById('main-image-link');
     const colorCircles = document.querySelectorAll('.color-circle');
 
-    let firstVisibleThumbnail = null;
+    // Reset visibility for all thumbnails
+    thumbnails.forEach((thumbnail) => {
+        thumbnail.parentElement.style.display = 'block';
+    });
 
     // Update active color circle
     colorCircles.forEach((circle) => {
@@ -153,25 +156,30 @@ function updateProductImages(selectedColor) {
         }
     });
 
-    // Filter thumbnails by color or show all if "default"
+    let firstVisibleThumbnail = null;
+
+    // Filter thumbnails by selected color
     thumbnails.forEach((thumbnail) => {
         const thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
 
         if (selectedColor === 'default' || thumbnailColor === selectedColor) {
             thumbnail.parentElement.style.display = 'block';
             if (!firstVisibleThumbnail) {
-                firstVisibleThumbnail = thumbnail;
+                firstVisibleThumbnail = thumbnail; // Set first visible thumbnail
             }
         } else {
             thumbnail.parentElement.style.display = 'none';
         }
     });
 
-    // Update main image to the first visible thumbnail
+    // Update main image to match first visible thumbnail
     if (firstVisibleThumbnail) {
-        mainImage.src = firstVisibleThumbnail.src;
-        mainImage.alt = firstVisibleThumbnail.alt;
-        mainImageLink.href = firstVisibleThumbnail.src;
+        const newSrc = firstVisibleThumbnail.src;
+        const newAlt = firstVisibleThumbnail.alt;
+
+        mainImage.src = newSrc;
+        mainImage.alt = newAlt;
+        mainImageLink.href = newSrc;
     }
 
     // Update lightbox links
@@ -187,7 +195,7 @@ function updateLightboxLinks(selectedColor) {
         hiddenLinksContainer.removeChild(hiddenLinksContainer.firstChild);
     }
 
-    // Add lightbox links for visible thumbnails matching the selected color
+    // Add lightbox links for visible thumbnails
     thumbnails.forEach((thumbnail) => {
         const thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
 
@@ -257,7 +265,6 @@ document.addEventListener('DOMContentLoaded', function () {
         {% endif %}
     {% endfor %}
 </div>
-
 
 {% endif %}
 
