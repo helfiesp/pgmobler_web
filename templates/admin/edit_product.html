@@ -129,35 +129,14 @@
 
     {{ formset.management_form }}
 
-    <!-- New Code: Add inline formset for image and color selection -->
-    <div class="image-formset">
-        {% for form in formset %}
-            <div class="form-row">
-                <label>Image:</label>
-                {{ form.image }}
-                <label>Color:</label>
-                {{ form.color }}
+
+    <div id="image-preview-container" style="justify-content: center; align-items: center; display: flex; flex-wrap: wrap;">
+        {% for image in product.images.all %}
+            <div class="image-preview" data-image-id="{{ image.id }}">
+                <img src="{{ image.image.url }}" data-filename="{{ image.image.name }}">
             </div>
         {% endfor %}
-    </div>
-    
-    <!-- End of New Code -->
-<div id="image-preview-container" style="justify-content: center; align-items: center; display: flex; flex-wrap: wrap;">
-    {% for image in product.images.all %}
-        <div class="image-preview" data-image-id="{{ image.id }}" data-selected-color="{{ image.color }}">
-            <!-- Add Color Bar -->
-            <div class="color-bar">
-                <button class="color-button black {% if image.color == 'black' %}selected{% endif %}" data-color="black"></button>
-                <button class="color-button smoked {% if image.color == 'smoked' %}selected{% endif %}" data-color="smoked"></button>
-                <button class="color-button greyoiled {% if image.color == 'greyoiled' %}selected{% endif %}" data-color="greyoiled"></button>
-                <button class="color-button whiteoiled {% if image.color == 'whiteoiled' %}selected{% endif %}" data-color="whiteoiled"></button>
-                <button class="color-button light_oak {% if image.color == 'light_oak' %}selected{% endif %}" data-color="light_oak"></button>
-            </div>
-            <!-- Image Preview -->
-            <img src="{{ image.image.url }}" data-filename="{{ image.image.name }}">
-        </div>
-    {% endfor %}
-</div>
+    </div> <!-- Container for image previews -->
 
 </div>
 
