@@ -432,12 +432,12 @@ body.modal-open {
 
 .color-options {
   display: flex;
-  gap: 5px;
+  gap: 10px;
 }
 
 .color-circle {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   border: 2px solid transparent;
   border-radius: 50%;
   cursor: pointer;
@@ -449,14 +449,23 @@ body.modal-open {
   transform: scale(1.2);
 }
 
-.color-circle.red { background-color: red; }
-.color-circle.orange { background-color: orange; }
-.color-circle.yellow { background-color: yellow; }
-.color-circle.green { background-color: green; }
-.color-circle.cyan { background-color: cyan; }
-.color-circle.blue { background-color: blue; }
-.color-circle.purple { background-color: purple; }
-.color-circle.pink { background-color: pink; }
-.color-circle.white { background-color: #f8f8f8; }
-.color-circle.black { background-color: black; }
-.color-circle.grey { background-color: lightgrey; }
+/* Custom Colors */
+.color-circle.black {
+  background-color: black;
+}
+
+.color-circle.smoked {
+  background-color: #4b3621; /* A dark smoked wood tone */
+}
+
+.color-circle.greyoiled {
+  background-color: #a8a8a8; /* A neutral grey oil tone */
+}
+
+.color-circle.whiteoiled {
+  background-color: #f5f5f5; /* A white-oiled finish */
+}
+
+.color-circle.light-oak {
+  background-color: #d2b48c; /* Light oak color */
+}
