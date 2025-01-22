@@ -429,3 +429,48 @@ body.modal-open {
     top: 25px; 
     right: 25px;
 }
+
+.color-picker {
+  font-family: Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.color-picker label {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.color-picker #selected-color-name {
+  font-weight: normal;
+}
+
+.color-options {
+  display: flex;
+  gap: 5px;
+}
+
+.color-circle {
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.color-circle.active {
+  border-color: black;
+}
+
+.color-circle.red { background-color: red; }
+.color-circle.orange { background-color: orange; }
+.color-circle.yellow { background-color: yellow; }
+.color-circle.green { background-color: green; }
+.color-circle.cyan { background-color: cyan; }
+.color-circle.blue { background-color: blue; }
+.color-circle.purple { background-color: purple; }
+.color-circle.pink { background-color: pink; }
+.color-circle.white { background-color: #f8f8f8; }
+.color-circle.black { background-color: black; }
+.color-circle.grey { background-color: lightgrey; }
