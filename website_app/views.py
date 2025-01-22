@@ -350,23 +350,19 @@ def edit_product(request, product_id):
     product_instance = get_object_or_404(models.product, id=product_id)
     categories = models.category.objects.all()
     suppliers = models.supplier.objects.all()
+
     if request.method == 'POST':
-        print(request.POST)
         form = forms.product_form(request.POST, request.FILES, instance=product_instance)
         formset = forms.product_image_formset(request.POST, request.FILES, queryset=product_instance.images.all())
         if form.is_valid() and formset.is_valid():
             with transaction.atomic():
                 # Save product instance
                 product_instance = form.save(commit=False)
-                enabled = request.POST.get('enabled')
-                if enabled:
-                    product_instance.enabled = True
-                bestseller = request.POST.get('bestseller')
-                if bestseller:
-                    product_instance.bestseller = True
+                product_instance.enabled = bool(request.POST.get('enabled'))
+                product_instance.bestseller = bool(request.POST.get('bestseller'))
                 product_instance.save()
 
-                # Update the remaining images
+                # Save the images and associated data
                 formset.save()
 
                 image_order_combined_json = request.POST.get('image_order_combined')
@@ -386,6 +382,7 @@ def edit_product(request, product_id):
             'categories': categories,
             'suppliers': suppliers,
         })
+
 
 
 

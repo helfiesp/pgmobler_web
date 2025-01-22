@@ -66,7 +66,23 @@ class product(models.Model):
 class product_image(models.Model):
     product = models.ForeignKey(product, related_name='images', on_delete=models.CASCADE)
     image = models.ImageField(upload_to='product_images/', null=True, blank=True)
-    order = models.IntegerField(default=0) 
+    order = models.IntegerField(default=0)
+
+    # Optional color association
+    COLOR_CHOICES = [
+        ('black', 'Black'),
+        ('smoked', 'Smoked'),
+        ('greyoiled', 'Greyoiled'),
+        ('whiteoiled', 'Whiteoiled'),
+        ('light_oak', 'Light Oak'),
+    ]
+    color = models.CharField(
+        max_length=20, choices=COLOR_CHOICES, null=True, blank=True,
+        help_text="Associate this image with a specific color, or leave blank."
+    )
+
+    def __str__(self):
+        return f"{self.product.title} - Image {self.order} ({self.color or 'No Color'})"
 
 
 

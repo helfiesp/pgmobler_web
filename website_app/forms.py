@@ -10,11 +10,10 @@ class product_form(forms.ModelForm):
 
 product_image_formset = inlineformset_factory(
     product, product_image,
-    fields=('image',),
+    fields=('image', 'color'),
     extra=3,
     can_delete=True
 )
-
 
 class category_form(forms.ModelForm):
     class Meta:

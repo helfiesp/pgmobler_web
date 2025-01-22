@@ -136,6 +136,17 @@
                 </div>
             {% endfor %}
             </div> <!-- Container for image previews -->
+
+            <div class="image-formset">
+    {% for form in formset %}
+        <div class="form-row">
+            <label>Image:</label>
+            {{ form.image }}
+            <label>Color:</label>
+            {{ form.color }}
+        </div>
+    {% endfor %}
+</div>
         </div>
 
         <p>
