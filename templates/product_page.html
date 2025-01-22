@@ -154,20 +154,20 @@ function updateProductImages(selectedColor) {
         }
     });
 
-    // Show/hide thumbnails based on color and find the first visible thumbnail
+    // Show/hide thumbnails based on color
     thumbnails.forEach((thumbnail) => {
         const thumbnailColor = thumbnail.getAttribute('data-color');
         if (thumbnailColor === selectedColor) {
-            thumbnail.parentElement.style.display = 'block';
+            thumbnail.parentElement.style.display = 'block'; // Show thumbnail
             if (!firstVisibleThumbnail) {
-                firstVisibleThumbnail = thumbnail;
+                firstVisibleThumbnail = thumbnail; // Set first visible thumbnail
             }
         } else {
-            thumbnail.parentElement.style.display = 'none';
+            thumbnail.parentElement.style.display = 'none'; // Hide thumbnail
         }
     });
 
-    // Update main image to the first visible thumbnail
+    // Update the main image to the first visible thumbnail
     if (firstVisibleThumbnail) {
         const newSrc = firstVisibleThumbnail.src;
         const newAlt = firstVisibleThumbnail.alt;
@@ -177,7 +177,7 @@ function updateProductImages(selectedColor) {
         mainImageLink.href = newSrc;
     }
 
-    // Update lightbox links
+    // Update lightbox links to match the visible thumbnails
     updateLightboxLinks(selectedColor);
 }
 
@@ -210,7 +210,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-
 </script>
 <style>
 .featured-product-item {
@@ -237,12 +236,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
             <!-- Hidden links for lightbox -->
             <div style="display: none;">
-                {% for image in product.images.all %}
-                    {% if image and image.image %}
-                        <a href="{{ image.image.url }}" data-lightbox="product-gallery" data-title="Image {{ forloop.counter }}" data-color="{{ image.color }}"></a>
-                    {% endif %}
-                {% endfor %}
-            </div>
+    {% for image in product.images.all %}
+        {% if image and image.image %}
+            <a href="{{ image.image.url }}" data-lightbox="product-gallery" data-title="Image {{ forloop.counter }}" data-color="{{ image.color }}"></a>
+        {% endif %}
+    {% endfor %}
+</div>
         {% else %}
             <!-- Fallback if no images are available -->
             <img src="{{ MEDIA_URL }}default_image.png" alt="Default Image" class="main-product-image">
@@ -250,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function () {
     </div>
 
 {% if product.images.count > 1 %}
-    <div class="product-thumbnails-section">
+<div class="product-thumbnails-section">
     {% for image in product.images.all %}
         {% if image and image.image %}
             <a href="{{ image.image.url }}" class="thumbnail-link" data-color="{{ image.color }}">
@@ -259,6 +258,7 @@ document.addEventListener('DOMContentLoaded', function () {
         {% endif %}
     {% endfor %}
 </div>
+
 {% endif %}
 
         
