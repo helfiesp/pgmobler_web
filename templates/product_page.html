@@ -73,28 +73,23 @@ function openTab(event, tabName) {
 function updateLightboxLinks(selectedColor) {
     var hiddenLinksContainer = document.querySelector('.product-image-section div[style="display: none;"]');
     var thumbnails = document.querySelectorAll('.product-thumbnail');
-    var mainImage = document.getElementById('main-image');
 
     // Clear existing hidden links
     while (hiddenLinksContainer.firstChild) {
         hiddenLinksContainer.removeChild(hiddenLinksContainer.firstChild);
     }
 
-    // Default to 'default' if no color is passed
-    if (!selectedColor) {
-        selectedColor = 'default';
-    }
-
-    // Create new hidden links for visible thumbnails (and skip the main image)
-thumbnails.forEach(function(thumbnail) {
-    var thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
-    if (selectedColor === 'default' || thumbnailColor === selectedColor) {
-        thumbnail.parentElement.style.display = 'block';
-    } else {
-        thumbnail.parentElement.style.display = 'none';
-    }
-});
+    // (Optional) If you only want to show *matching* images in the Lightbox,
+    // you could still filter them. Otherwise, add them all:
+    thumbnails.forEach(function(thumbnail) {
+        var newLink = document.createElement('a');
+        newLink.href = thumbnail.src;
+        newLink.setAttribute('data-lightbox', 'product-gallery');
+        newLink.setAttribute('data-title', thumbnail.alt);
+        hiddenLinksContainer.appendChild(newLink);
+    });
 }
+
 
 /* ==============================
    3) UPDATE PRODUCT IMAGES BY COLOR
@@ -105,11 +100,11 @@ thumbnails.forEach(function(thumbnail) {
 */
 function updateProductImages(selectedColor) {
     var thumbnails = document.querySelectorAll('.product-thumbnail');
-    var mainImage = document.getElementById('main-image');
+    var mainImage   = document.getElementById('main-image');
     var mainImageLink = document.getElementById('main-image-link');
-    var colorCircles = document.querySelectorAll('.color-circle');
+    var colorCircles  = document.querySelectorAll('.color-circle');
 
-    // Update active color circle highlight
+    // 1) Highlight the color button
     colorCircles.forEach(function(circle) {
         if (circle.getAttribute('data-color') === selectedColor) {
             circle.setAttribute('aria-current', 'true');
@@ -118,31 +113,30 @@ function updateProductImages(selectedColor) {
         }
     });
 
-    // Show/hide thumbnails by matching color
-    var firstVisibleThumbnail = null;
+    // 2) Identify the first thumbnail that matches the color
+    //    (but DO NOT hide the others)
+    let firstVisibleThumbnail = null;
     thumbnails.forEach(function(thumbnail) {
         var thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
-        if (selectedColor === 'default' || thumbnailColor === selectedColor) {
-            thumbnail.parentElement.style.display = 'block';
-            if (!firstVisibleThumbnail) {
-                firstVisibleThumbnail = thumbnail;
-            }
-        } else {
-            thumbnail.parentElement.style.display = 'none';
+        // If it’s the right color, we remember it as the main image candidate
+        if (!firstVisibleThumbnail && 
+            (selectedColor === 'default' || thumbnailColor === selectedColor)) {
+            firstVisibleThumbnail = thumbnail;
         }
+        // DO NOT hide anything; keep them all visible
+        thumbnail.parentElement.style.display = 'block';
     });
 
-    // If we found a visible thumbnail, set the main image
+    // 3) Update the main image to the color’s first matching thumbnail, if any
     if (firstVisibleThumbnail) {
         mainImage.src = firstVisibleThumbnail.src;
         mainImage.alt = firstVisibleThumbnail.alt;
         mainImageLink.href = firstVisibleThumbnail.src;
     }
 
-    // Rebuild the lightbox links for the new color
+    // 4) Rebuild Lightbox links
     updateLightboxLinks(selectedColor);
 }
-
 /* ==============================
    4) MAIN INITIALIZATION
    ============================== */
