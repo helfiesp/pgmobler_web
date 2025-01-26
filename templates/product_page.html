@@ -280,26 +280,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-        {% if colors|length > 1 %}
-        <p>Fargevalg</p>
-        <div class="color-selection-section">
-            <div class="color-circles">
-                {% for color in colors %}
-                    <button
-    type="button"
-    class="color-circle {% if color %}{{ color|slugify }}{% endif %}"
-    data-color="{{ color|slugify }}"
-    onclick="updateProductImages('{{ color }}')"
-    {% if color == '' or color == None %}
-        data-color="default" aria-current="true"
-    {% endif %}
->
-</button>
-                {% endfor %}
-            </div>
-        </div>
-        {% endif %}
-
+{% if colors|length > 1 %}
+<div class="color-selection-section">
+    <h2 class="color-selection-title">Fargevalg</h2>
+    <div class="color-circles">
+        {% for color in colors %}
+            <button
+                type="button"
+                class="color-circle {% if color %}{{ color|slugify }}{% endif %}"
+                data-color="{{ color|slugify }}"
+                onclick="updateProductImages('{{ color }}')"
+                {% if color == '' or color == None %}
+                    data-color="default" aria-current="true"
+                {% endif %}
+            >
+            </button>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
     </div>
 
