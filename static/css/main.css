@@ -431,17 +431,24 @@ body.modal-open {
 }
 
 .color-selection-section {
-    margin-top: 20px; /* a bit of spacing above the color section */
+    margin-top: 20px; /* Some spacing before color section */
 }
 
+/* Small horizontal rule that doesn't span full width */
+.color-selection-hr {
+    width: 80px;          /* or whatever small size you want */
+    border: none;
+    border-bottom: 1px solid #ccc;
+    margin: 1rem 0;       /* spacing above/below line */
+}
+
+/* Minimal heading (not bold) */
 .color-selection-title {
-    font-size: 1rem;        /* keep it fairly small and modern */
-    font-weight: 600;       /* give it a bit more prominence */
-    color: #333;            /* nice neutral color */
-    margin-bottom: 10px;    /* spacing before circles */
-    letter-spacing: 0.5px;  /* subtle spacing for a modern look */
+    font-size: 1rem;      /* keep it small or adjust to suit */
+    font-weight: normal;  /* not bold */
+    color: #333;
+    margin-bottom: 10px;  
 }
-
 
 .color-circles {
     display: flex;

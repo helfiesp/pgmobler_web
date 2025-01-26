@@ -278,11 +278,15 @@ document.addEventListener('DOMContentLoaded', function() {
         {% endif %} 
     </div>  
 
-<hr>
+
 
 {% if colors|length > 1 %}
 <div class="color-selection-section">
-    <h2 class="color-selection-title">Fargevalg</h2>
+    <!-- Horizontal rule (limited width) -->
+    <hr class="color-selection-hr">
+    <!-- Minimal heading -->
+    <h3 class="color-selection-title">Fargevalg</h3>
+    
     <div class="color-circles">
         {% for color in colors %}
             <button
@@ -293,12 +297,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 {% if color == '' or color == None %}
                     data-color="default" aria-current="true"
                 {% endif %}
-            >
-            </button>
+            ></button>
         {% endfor %}
     </div>
 </div>
 {% endif %}
+
 
     </div>
 
