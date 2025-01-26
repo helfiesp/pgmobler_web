@@ -86,18 +86,14 @@ function updateLightboxLinks(selectedColor) {
     }
 
     // Create new hidden links for visible thumbnails (and skip the main image)
-    thumbnails.forEach(function(thumbnail) {
-        var thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
-        // Must match color filter AND skip current main image
-        if ((selectedColor === 'default' || thumbnailColor === selectedColor) &&
-            mainImage.src !== thumbnail.src) {
-            var newLink = document.createElement('a');
-            newLink.href = thumbnail.src;
-            newLink.setAttribute('data-lightbox', 'product-gallery');
-            newLink.setAttribute('data-title', thumbnail.alt);
-            hiddenLinksContainer.appendChild(newLink);
-        }
-    });
+thumbnails.forEach(function(thumbnail) {
+    var thumbnailColor = thumbnail.getAttribute('data-color') || 'default';
+    if (selectedColor === 'default' || thumbnailColor === selectedColor) {
+        thumbnail.parentElement.style.display = 'block';
+    } else {
+        thumbnail.parentElement.style.display = 'none';
+    }
+});
 }
 
 /* ==============================
