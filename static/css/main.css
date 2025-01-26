@@ -436,7 +436,7 @@ body.modal-open {
 
 /* Small horizontal rule that doesn't span full width */
 .color-selection-hr {
-    width: 80px;          /* or whatever small size you want */
+    width: 140px;          /* or whatever small size you want */
     border: none;
     border-bottom: 1px solid #ccc;
     margin: 1rem 0;       /* spacing above/below line */
