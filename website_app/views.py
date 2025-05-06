@@ -100,16 +100,17 @@ def index(request):
     return render(request, 'index.html')
 
 def fetch_admin_alerts():
-    # Calculate the date 1 day ago from now
     alert_interval = 180
     days_ago = timezone.now() - timedelta(days=alert_interval)
 
-    # Query to find products not updated in the last day and return only their id and title
-    alerts = models.product.objects.filter(date_edited__isnull=True, date_added__lt=days_ago) | \
-             models.product.objects.filter(date_edited__lt=days_ago) \
-             .values('string_id', 'title')  # Use .values() to specify which fields to include
+    alerts = (
+        models.product.objects
+        .filter(date_edited__isnull=True, date_added__lt=days_ago) |
+        models.product.objects.filter(date_edited__lt=days_ago)
+    ).values('id', 'string_id', 'title')  # Include 'id' here
 
     return list(alerts), alert_interval
+
 
 
 
