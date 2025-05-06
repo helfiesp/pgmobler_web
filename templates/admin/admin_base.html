@@ -25,11 +25,12 @@
     <h2>Varslinger</h2>
       <p>
         {% for alert in alerts %}
-        {% if alert and alert.string_id %}
-  Produkt <a href="{% url 'edit_product' alert.string_id %}" style="color: black;">{{ alert }}</a> har ikke vært oppdatert på {{ alert_interval }} dager
+      {% if alert and alert.id %}
+  Produkt <a href="{% url 'edit_product' alert.id %}" style="color: black;">{{ alert }}</a> har ikke vært oppdatert på {{ alert_interval }} dager
 {% else %}
   Produkt <span style="color: black;">{{ alert }}</span> har ikke vært oppdatert på {{ alert_interval }} dager
 {% endif %}
+
         
 <br>
 {% endfor %}
