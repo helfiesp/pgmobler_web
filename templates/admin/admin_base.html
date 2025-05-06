@@ -25,7 +25,12 @@
     <h2>Varslinger</h2>
       <p>
         {% for alert in alerts %}
-          Produkt <a href="{% url 'edit_product' alert.string_id %}" style="color: black;">{{ alert }}</a> har ikke vært oppdatert på {{ alert_interval }} dager <br>
+          Produkt {% if alert.id %}
+  <a href="{% url 'edit_product' alert.id %}" style="color: black;">{{ alert }}</a>
+{% else %}
+  <span style="color: black;">{{ alert }}</span>
+{% endif %}
+ har ikke vært oppdatert på {{ alert_interval }} dager <br>
         {% endfor %}
          </p>
         
