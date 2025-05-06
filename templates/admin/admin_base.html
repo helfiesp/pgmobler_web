@@ -20,24 +20,27 @@
 
 </style>
 <div class="main-container">
-  {% if alerts %}
+ {% if alerts %}
   <div class="alert-container">
     <h2>Varslinger</h2>
-      <p>
-        {% for alert in alerts %}
-     {% if alert.id %}
-  Produkt <a href="{% url 'edit_product' alert.id %}" style="color: black;">{{ alert.title }}</a> har ikke vært oppdatert på {{ alert_interval }} dager
-{% else %}
-  Produkt <span style="color: black;">{{ alert.title }}</span> har ikke vært oppdatert på {{ alert_interval }} dager
+    <p id="alerts-list">
+      {% for alert in alerts %}
+        <span class="alert-item" style="{% if forloop.counter > 5 %}display: none;{% endif %}">
+          {% if alert.id %}
+            Produkt <a href="{% url 'edit_product' alert.id %}" style="color: black;">{{ alert.title }}</a> har ikke vært oppdatert på {{ alert_interval }} dager
+          {% else %}
+            Produkt <span style="color: black;">{{ alert.title }}</span> har ikke vært oppdatert på {{ alert_interval }} dager
+          {% endif %}
+          <br>
+        </span>
+      {% endfor %}
+    </p>
+    {% if alerts|length > 5 %}
+      <button id="toggle-alerts" style="margin-top: 10px;">Vis mer</button>
+    {% endif %}
+  </div>
 {% endif %}
 
-
-        
-<br>
-{% endfor %}
-        
-  </div>
-  {% endif %}
   <div class="product-categories">
     <div class="category-item">
       <a style="text-decoration: none; color: black;" href="{% url 'all_orders' %}">
@@ -92,5 +95,25 @@
 
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const toggleBtn = document.getElementById('toggle-alerts');
+    if (!toggleBtn) return;
+
+    toggleBtn.addEventListener('click', function () {
+      const hiddenItems = document.querySelectorAll('.alert-item:nth-child(n+6)');
+      const isExpanded = toggleBtn.dataset.expanded === "true";
+
+      hiddenItems.forEach(el => {
+        el.style.display = isExpanded ? 'none' : 'inline';
+      });
+
+      toggleBtn.innerText = isExpanded ? 'Vis mer' : 'Vis mindre';
+      toggleBtn.dataset.expanded = !isExpanded;
+    });
+  });
+</script>
+
 
 {% endblock %}
