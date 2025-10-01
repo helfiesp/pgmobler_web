@@ -61,3 +61,5 @@
     if (prevFocus && typeof prevFocus.focus === 'function') prevFocus.focus();
   }
 })();
+const dialog = modal.querySelector('.gw-dialog');
+if (dialog) dialog.addEventListener('click', (e) => e.stopPropagation());
