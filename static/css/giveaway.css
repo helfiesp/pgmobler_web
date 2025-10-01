@@ -109,3 +109,9 @@
   height: auto;
   margin: 0 auto 16px auto;
 }
+@media (max-width: 500px) {
+  .gw-logo {
+    max-width: 110px;
+    margin-bottom: 12px;
+  }
+}
