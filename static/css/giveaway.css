@@ -103,3 +103,9 @@
     to { transform: translateY(0) scale(1); opacity: 1; }
   }
 }
+.gw-logo {
+  display: block;
+  max-width: 140px;   /* balansert for popupen */
+  height: auto;
+  margin: 0 auto 16px auto;
+}
