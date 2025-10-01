@@ -190,5 +190,24 @@ function closeMobileMenu() {
   }, 300); // Match the timeout to your CSS transition time
 }
 </script>
+<!-- Giveaway modal -->
+<div id="giveaway-modal" class="gw-modal" aria-hidden="true" role="dialog" aria-labelledby="gw-title" aria-describedby="gw-desc">
+  <div class="gw-backdrop" data-gw-close></div>
+  <div class="gw-dialog" role="document">
+    <button class="gw-close" type="button" aria-label="Lukk" title="Lukk" data-gw-close>&times;</button>
+    <div class="gw-content">
+      <h2 id="gw-title">Vinn gavekort på 10&nbsp;000&nbsp;kr</h2>
+      <p id="gw-desc">Kom innom butikken og skriv ned kontaktinformasjon for å melde deg på konkurransen.</p>
+      <p><strong>Konkurransen varer ut oktober.</strong></p>
+      <button class="gw-cta" type="button" data-gw-close>Skjønner</button>
+    </div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="{% static 'css/giveaway.css' %}">
+<script defer src="{% static 'js/giveaway.js' %}"></script>
 </body>
+  
+</body>
+
 </html>
