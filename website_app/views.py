@@ -6,6 +6,7 @@ from . import models
 from . import forms
 from django.shortcuts import render, redirect
 from django.http import QueryDict
+from functools import wraps
 
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -20,9 +21,9 @@ from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm
-from django.contrib.auth import authenticate, login, get_user_model
+from django.contrib.auth import login
+from django.contrib.auth.views import redirect_to_login
 import json
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
@@ -33,6 +34,22 @@ import os
 from django.http import FileResponse, Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
+from django.core.exceptions import PermissionDenied
+from django.utils.http import url_has_allowed_host_and_scheme
+
+
+def administration_access_required(view_func):
+    @wraps(view_func)
+    def wrapped_view(request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect_to_login(request.get_full_path(), reverse('login'))
+
+        if not request.user.is_staff:
+            raise PermissionDenied
+
+        return view_func(request, *args, **kwargs)
+
+    return wrapped_view
 
 
 def apply_sort_and_pagination(request, base_queryset, default_sort='newly_added'):
@@ -114,7 +131,7 @@ def fetch_admin_alerts():
 
 
 
-@login_required(login_url='/admin')
+@administration_access_required
 def administration(request):
     admin_alerts = fetch_admin_alerts()
     context = {
@@ -298,7 +315,7 @@ def handle_custom_image_order(image_order_combined_json, item_instance, uploaded
 
 
 
-@login_required(login_url='/admin')
+@administration_access_required
 def add_product(request):
     categories = models.category.objects.all()
     suppliers = models.supplier.objects.all()
@@ -354,7 +371,7 @@ def add_product(request):
         return render(request, 'admin/add_product.html', context)
 
 
-@login_required(login_url='/admin')
+@administration_access_required
 def edit_product(request, product_id):
     product_instance = get_object_or_404(models.product, id=product_id)
     categories = models.category.objects.all()
@@ -404,19 +421,19 @@ def edit_product(request, product_id):
 
 
 @require_POST
-@login_required(login_url='/admin')
+@administration_access_required
 def delete_product_image(request, image_id):
     image = get_object_or_404(models.product_image, id=image_id)
     image.delete()
     return JsonResponse({"success": True, "redirect_url": reverse('edit_product', kwargs={'product_id': image.product.id})})
 
-@login_required(login_url='/admin')
+@administration_access_required
 def delete_product(request, product_id):
     product = get_object_or_404(models.product, id=product_id)
     product.delete()
     return redirect('products')
 
-@login_required(login_url='/admin')
+@administration_access_required
 def add_category(request):
     if request.method == 'POST':
         form = forms.category_form(request.POST, request.FILES)
@@ -434,7 +451,7 @@ def add_category(request):
     return render(request, 'admin/add_category.html', {'category_form': form})
 
 
-@login_required(login_url='/admin')
+@administration_access_required
 def add_supplier(request):
     if request.method == 'POST':
         form = forms.supplier_form(request.POST, request.FILES)
@@ -454,7 +471,7 @@ def add_supplier(request):
 
     return render(request, 'admin/add_supplier.html', {'supplier_form': form})
 
-@login_required(login_url='/admin')
+@administration_access_required
 def product_list_and_update(request, product_id=None):
     if request.method == 'POST':
         product = get_object_or_404(models.product, pk=product_id)
@@ -479,7 +496,7 @@ def product_list_and_update(request, product_id=None):
 
 
 
-@login_required(login_url='/admin')
+@administration_access_required
 def category_list_and_update(request, category_id=None):
     if request.method == 'POST':
         category = get_object_or_404(models.category, pk=category_id)
@@ -492,7 +509,7 @@ def category_list_and_update(request, category_id=None):
         categories = models.category.objects.all()
         return render(request, 'admin/update_categories.html', {'categories': categories, 'admin':True })
 
-@login_required(login_url='/admin')
+@administration_access_required
 def text_areas_list_and_update(request, text_area_id=None, footer_text_area_id=None, business_info_id=None):
     context = {
         'text_areas': models.text_areas.objects.all(),
@@ -543,7 +560,7 @@ def text_areas_list_and_update(request, text_area_id=None, footer_text_area_id=N
     return render(request, 'admin/update_text_areas.html', context)
 
 
-@login_required(login_url='/admin')
+@administration_access_required
 def business_information_update(request, business_info_id=None):
     if request.method == 'POST':
         if business_info_id:
@@ -577,13 +594,29 @@ def business_information_update(request, business_info_id=None):
 
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect('administration')
+        if request.user.is_staff:
+            return redirect('administration')
+        return redirect('hjem')
+
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             user = form.get_user()
+            if not user.is_staff:
+                form.add_error(None, 'Denne brukeren har ikke tilgang til administrasjonen.')
+                return render(request, 'login.html', {'form': form}, status=403)
+
             login(request, user)
-            return redirect('administration')  # Redirect to the user's home page after login
+
+            next_url = request.POST.get('next') or request.GET.get('next')
+            if next_url and url_has_allowed_host_and_scheme(
+                next_url,
+                allowed_hosts={request.get_host()},
+                require_https=request.is_secure(),
+            ):
+                return redirect(next_url)
+
+            return redirect('administration')
         else:
             # Return the form with errors
             return render(request, 'login.html', {'form': form})
@@ -591,6 +624,7 @@ def login_view(request):
         form = AuthenticationForm()
         return render(request, 'login.html', {'form': form})
 
+@administration_access_required
 def add_customer(request, customer_id=None):
 
     all_customers = models.customers.objects.all()  # Fetch all customers
@@ -625,7 +659,7 @@ def add_customer(request, customer_id=None):
     })
 
 
-
+@administration_access_required
 def customer_detail(request, customer_id):
     customer = get_object_or_404(models.customers, id=customer_id)
     customer_orders = models.orders.objects.filter(customer=customer).order_by('-date_added')
@@ -660,7 +694,7 @@ def clean_post_data(request):
                 post_copy.pop(key)
     
     return post_copy
-
+@administration_access_required
 def add_order(request, customer_id):
     customer = get_object_or_404(models.customers, id=customer_id)
     products = models.product.objects.all().order_by('-date_added')
@@ -709,7 +743,7 @@ def add_order(request, customer_id):
             if existing_orders:
                 for existing_order in existing_orders:
                     existing_items_list = json.loads(existing_order.items)
-                    if existing_items_list == items_list and existing_order.date_added.date() == datetime.now().date():
+                    if existing_items_list == items_list and existing_order.date_added.date() == timezone.now().date():
                         # Order with the same customer and items already exists
                         return redirect(reverse('order_detail', args=[existing_order.order_number]))
 
@@ -727,6 +761,7 @@ def add_order(request, customer_id):
 
     return render(request, 'admin/order_form.html', {'form': form, 'customer': customer, 'products_json':products_json})
 
+@administration_access_required
 def all_orders(request):
     all_orders = models.orders.objects.filter(deleted=False).order_by('-date_added')
     return render(request, 'admin/all_orders.html', {'orders': all_orders})
@@ -742,6 +777,7 @@ def pdf_exists_for_order(order_number):
     # Return True if the PDF file exists, False otherwise
     return os.path.exists(file_path)
 
+@administration_access_required
 def order_detail(request, order_number):
     order = get_object_or_404(models.orders, order_number=order_number)
     items = json.loads(order.items)
@@ -755,6 +791,7 @@ def order_detail(request, order_number):
         'pdf_exists': pdf_file_exists,
     })
 
+@administration_access_required
 def update_order(request, order_number):
     order = get_object_or_404(models.orders, order_number=order_number)
     if request.method == 'POST':
@@ -807,7 +844,7 @@ def update_order(request, order_number):
         items = json.loads(order.items)
         return render(request, 'admin/order_detail.html', {'form': form, 'order': order, 'items': items})
 
-@login_required
+@administration_access_required
 @require_POST
 def remove_order(request, order_number):
     try:
@@ -819,7 +856,7 @@ def remove_order(request, order_number):
         return JsonResponse({'success': False}, status=404)
 
 
-@login_required
+@administration_access_required
 @require_POST
 def complete_order(request, order_number):
     try:
@@ -831,7 +868,7 @@ def complete_order(request, order_number):
         # Handle the error or redirect as appropriate
         return redirect('all_orders')
 
-
+@administration_access_required
 def show_order_pdf(request, order_number):
     # Define the path to the 'orders' directory within 'files' in your BASE_DIR
     orders_dir = os.path.join(settings.BASE_DIR, 'files', 'orders')
@@ -849,7 +886,7 @@ def show_order_pdf(request, order_number):
     else:
         # If the PDF does not exist, raise 404 not found
         raise Http404("PDF file does not exist")
-
+@administration_access_required
 def order_confirmation(request, order_number):
     # Fetch the order and customer from the database using order ID
     order = get_object_or_404(models.orders, pk=order_number)
@@ -898,6 +935,7 @@ def order_confirmation(request, order_number):
 
     return response
 
+@administration_access_required
 def show_price_tag_pdf(request, product_id):
     # Fetch the product data from the database using product ID
     product = get_object_or_404(models.product, pk=product_id)

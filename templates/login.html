@@ -37,13 +37,29 @@ padding:10px;
         <h2 class="login-title">Logg inn</h2>
         <form method="post" class="login-form">
             {% csrf_token %}
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {% for error in form.non_field_errors %}
+                        <p>{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% if request.GET.next %}
+                <input type="hidden" name="next" value="{{ request.GET.next }}">
+            {% endif %}
             <div class="form-group">
                 <label for="{{ form.username.id_for_label }}">Brukernavn</label><br>
                 {{ form.username }}
+                {% for error in form.username.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
             </div><br>
             <div class="form-group">
                 <label for="{{ form.password.id_for_label }}">Passord</label><br>
                 {{ form.password }}
+                {% for error in form.password.errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
             </div>
             <br>
             <div class="form-group form-group-actions">

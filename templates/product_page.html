@@ -407,7 +407,7 @@ document.addEventListener('DOMContentLoaded', function() {
             {% endif %}
         </p>
         </div>
-        {% if user.is_authenticated %}
+        {% if user.is_staff %}
             <br>
             <p>Du er logget inn som admin, vil du <a style="color: black;" href="{% url 'edit_product' product.id %}">redigere produktet?</a><br>
             Eller vil du <a href="{% url 'show_price_tag_pdf' product.id %}" target="_blank">lage prislapp</a>?</p>
@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', function() {
 {% else %}
 <div style="text-align: center;">
 <p>Dette produktet er dessverre deaktivert.</p>
-{% if user.is_authenticated %}
+{% if user.is_staff %}
     <br>
     <p>Du er logget inn som admin, vil du <a style="color: black;" href="{% url 'edit_product' product.id %}">redigere produktet?</a></p>
 </div>
