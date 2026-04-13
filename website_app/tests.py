@@ -34,15 +34,9 @@ class AdministrationAccessTests(TestCase):
             title="Test Product",
             price=1000,
         )
-        cls.staff_user = get_user_model().objects.create_user(
-            username="staff",
+        cls.authenticated_user = get_user_model().objects.create_user(
+            username="admin-user",
             password="strong-password-123",
-            is_staff=True,
-        )
-        cls.non_staff_user = get_user_model().objects.create_user(
-            username="customer-user",
-            password="strong-password-123",
-            is_staff=False,
         )
 
     def test_sensitive_admin_routes_redirect_anonymous_users_to_login(self):
@@ -68,15 +62,8 @@ class AdministrationAccessTests(TestCase):
                     fetch_redirect_response=False,
                 )
 
-    def test_non_staff_users_get_forbidden_for_admin_routes(self):
-        self.client.force_login(self.non_staff_user)
-
-        response = self.client.get(reverse('all_orders'))
-
-        self.assertEqual(response.status_code, 403)
-
-    def test_staff_users_can_access_order_overview(self):
-        self.client.force_login(self.staff_user)
+    def test_authenticated_users_can_access_admin_routes(self):
+        self.client.force_login(self.authenticated_user)
 
         response = self.client.get(reverse('all_orders'))
 

@@ -34,7 +34,6 @@ import os
 from django.http import FileResponse, Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.conf import settings
-from django.core.exceptions import PermissionDenied
 from django.utils.http import url_has_allowed_host_and_scheme
 
 
@@ -43,9 +42,6 @@ def administration_access_required(view_func):
     def wrapped_view(request, *args, **kwargs):
         if not request.user.is_authenticated:
             return redirect_to_login(request.get_full_path(), reverse('login'))
-
-        if not request.user.is_staff:
-            raise PermissionDenied
 
         return view_func(request, *args, **kwargs)
 
@@ -594,19 +590,12 @@ def business_information_update(request, business_info_id=None):
 
 def login_view(request):
     if request.user.is_authenticated:
-        if request.user.is_staff:
-            return redirect('administration')
-        return redirect('hjem')
+        return redirect('administration')
 
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            user = form.get_user()
-            if not user.is_staff:
-                form.add_error(None, 'Denne brukeren har ikke tilgang til administrasjonen.')
-                return render(request, 'login.html', {'form': form}, status=403)
-
-            login(request, user)
+            login(request, form.get_user())
 
             next_url = request.POST.get('next') or request.GET.get('next')
             if next_url and url_has_allowed_host_and_scheme(
