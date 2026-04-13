@@ -1,0 +1,32 @@
+name = "pgmobler-web"
+compatibility_date = "2024-12-01"
+pages_build_output_dir = "./build/client"
+
+[vars]
+ENVIRONMENT = "production"
+SITE_URL = "https://pgmobler.no"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pgmobler-db"
+database_id = "local"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "pgmobler-media"
+
+[[kv_namespaces]]
+binding = "KV"
+id = "local"
+
+# Secrets (set via `wrangler secret put`):
+# SESSION_SECRET
+# VIPPS_CLIENT_ID
+# VIPPS_CLIENT_SECRET
+# VIPPS_MSN
+# VIPPS_SUBSCRIPTION_KEY
+# KLARNA_API_KEY
+# KLARNA_API_SECRET
+# STRIPE_SECRET_KEY
+# STRIPE_WEBHOOK_SECRET
+# RESEND_API_KEY

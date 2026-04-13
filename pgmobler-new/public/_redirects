@@ -1,0 +1,11 @@
+# Legacy URL redirects (Django -> Remix)
+/categories       /kategorier       301
+/categories/*     /kategorier/:splat 301
+/products         /produkter        301
+/products/supplier/* /produkter/leverandor/:splat 301
+/product/*        /produkt/:splat   301
+/about_us         /om-oss           301
+/contact          /kontakt          301
+/sale_catalogue   /salgsbrosjyre    301
+/login            /konto/logg-inn   301
+/administration   /admin            301

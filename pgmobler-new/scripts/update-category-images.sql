@@ -1,0 +1,18 @@
+UPDATE categories SET image_url = '/media/category_images/palermo_pic_1_OEyXCRT.png', image_key = 'category_images/palermo_pic_1_OEyXCRT.png' WHERE name = 'stue';
+UPDATE categories SET image_url = '/media/category_images/caso_pic_2_Bo3oUPB.png', image_key = 'category_images/caso_pic_2_Bo3oUPB.png' WHERE name = 'spisestue';
+UPDATE categories SET image_url = '/media/category_images/karma_classic_gI6w8r3.png', image_key = 'category_images/karma_classic_gI6w8r3.png' WHERE name = 'soverom';
+UPDATE categories SET image_url = '/media/category_images/palermo_pic_1_8VXedPY.png', image_key = 'category_images/palermo_pic_1_8VXedPY.png' WHERE name = 'modulsofa';
+UPDATE categories SET image_url = '/media/category_images/veslemøy_kontinental_1_6247bWq.png', image_key = 'category_images/veslemøy_kontinental_1_6247bWq.png' WHERE name = 'kontinentalsenger';
+UPDATE categories SET image_url = '/media/category_images/casø_fiskeben_4AjCB15.png', image_key = 'category_images/casø_fiskeben_4AjCB15.png' WHERE name = 'spisebord';
+UPDATE categories SET image_url = '/media/category_images/spisestoler_ZQ94dPw.png', image_key = 'category_images/spisestoler_ZQ94dPw.png' WHERE name = 'spisestoler';
+UPDATE categories SET image_url = '/media/category_images/familiekoye_detalj_1.jpg', image_key = 'category_images/familiekoye_detalj_1.jpg' WHERE name = 'hyttemøbler';
+UPDATE categories SET image_url = '/media/category_images/skjenk.png', image_key = 'category_images/skjenk.png' WHERE name = 'skjenk &amp; kommode';
+UPDATE categories SET image_url = '/media/category_images/Carnella_i_rust.png', image_key = 'category_images/Carnella_i_rust.png' WHERE name = 'sofa';
+UPDATE categories SET image_url = '/media/category_images/Sule_konsollbord.png', image_key = 'category_images/Sule_konsollbord.png' WHERE name = 'avlastningsbord';
+UPDATE categories SET image_url = '/media/category_images/Jade_lux_ny.jpg', image_key = 'category_images/Jade_lux_ny.jpg' WHERE name = 'hvilestol';
+UPDATE categories SET image_url = '/media/category_images/54188_Lena_stol_m_skammel_1.jpg', image_key = 'category_images/54188_Lena_stol_m_skammel_1.jpg' WHERE name = 'senior stol';
+UPDATE categories SET image_url = '/media/category_images/coffee_break_settbord.jpg', image_key = 'category_images/coffee_break_settbord.jpg' WHERE name = 'salongbord';
+UPDATE categories SET image_url = '/media/category_images/tucan-tv-benk-2-scaled.jpg', image_key = 'category_images/tucan-tv-benk-2-scaled.jpg' WHERE name = 'tv-benk';
+UPDATE categories SET image_url = '/media/category_images/Broholm_Vitrine.png', image_key = 'category_images/Broholm_Vitrine.png' WHERE name = 'vitrineskap';
+UPDATE categories SET image_url = '/media/category_images/stripe_stol.png', image_key = 'category_images/stripe_stol.png' WHERE name = 'lenestol';
+UPDATE categories SET image_url = '/media/category_images/Epona.jpg', image_key = 'category_images/Epona.jpg' WHERE name = 'sovesofa';
